@@ -1,0 +1,365 @@
+.wrap {
+  width: min(1120px, 100% - 48px);
+  margin-inline: auto;
+}
+
+.bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 max(24px, calc((100% - 1120px) / 2));
+  border-bottom: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.bar.solid {
+  background: rgba(13, 13, 14, 0.88);
+  backdrop-filter: blur(14px);
+  border-color: var(--line);
+}
+
+.brand img {
+  height: 29px;
+  width: auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav a:not(.btn) {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.18s;
+}
+
+.nav a:not(.btn):hover {
+  color: var(--white);
+}
+
+.nav .btn {
+  min-height: 40px;
+  padding: 0 20px;
+  font-size: 14px;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 48px;
+  min-height: 100svh;
+  padding: 120px max(24px, calc((100% - 1120px) / 2)) 80px;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  left: -12%;
+  bottom: -18%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(255, 122, 0, 0.2), transparent);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  max-width: 600px;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5.6vw, 4.7rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: 0;
+  color: var(--white);
+}
+
+.hero h1 span {
+  display: block;
+  color: var(--orange);
+}
+
+.lead {
+  max-width: 520px;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1.05;
+  animation: arrive 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.stage::before,
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(16% 0, 100% 0, 84% 100%, 0 100%);
+}
+
+.stage::before {
+  background: linear-gradient(160deg, var(--orange), rgba(255, 122, 0, 0.1) 55%, var(--gold));
+}
+
+.stage::after {
+  inset: 2px;
+  background: linear-gradient(150deg, #1d1d1f, #0f0f10 70%);
+}
+
+.stage img {
+  position: relative;
+  z-index: 1;
+  width: 62%;
+  filter: drop-shadow(0 0 38px rgba(255, 122, 0, 0.35));
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tools {
+  padding: 110px 0;
+  background: var(--panel-2);
+  border-block: 1px solid var(--line);
+}
+
+.tools h2,
+.why h2 {
+  max-width: 640px;
+  color: var(--white);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.tool-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 64px;
+  margin: 56px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tool-list li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 22px;
+  padding: 28px 18px 28px 0;
+  border-top: 1px solid var(--line);
+  border-inline-start: 3px solid transparent;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.tool-list li:hover {
+  border-inline-start-color: var(--orange);
+  background: linear-gradient(270deg, var(--orange-soft), transparent 60%);
+}
+
+.tool-list svg {
+  width: 44px;
+  height: 44px;
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tool-list h3 {
+  color: var(--white);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.tool-list p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 46ch;
+}
+
+.tool-list .join {
+  display: block;
+  padding: 0;
+  border-inline-start: 0;
+}
+
+.tool-list .join:hover {
+  background: none;
+}
+
+.tool-list .join a {
+  display: block;
+  height: 100%;
+  padding: 28px 24px;
+  background: var(--orange);
+  color: #120a00;
+  text-decoration: none;
+  transition: background 0.18s;
+}
+
+.tool-list .join a:hover {
+  background: #ff9124;
+}
+
+.tool-list .join h3,
+.tool-list .join p {
+  color: #120a00;
+}
+
+.why {
+  padding: 110px 0;
+}
+
+.why .wrap {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+}
+
+.why-item {
+  padding-top: 22px;
+  border-top: 3px solid var(--orange);
+}
+
+.why-item:nth-child(2) {
+  border-top-color: var(--silver);
+}
+
+.why-item:nth-child(3) {
+  border-top-color: var(--gold);
+}
+
+.why-item h3 {
+  color: var(--white);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.why-item p {
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+.band {
+  padding: 56px 0;
+  background: linear-gradient(100deg, #1a1a1a 0 40%, #251300 100%);
+  border-block: 1px solid var(--line);
+}
+
+.band .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.motto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  color: var(--white);
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  font-weight: 600;
+}
+
+.motto i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.motto b {
+  color: var(--orange);
+  font-weight: 800;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 40px max(24px, calc((100% - 1120px) / 2));
+}
+
+.foot img {
+  width: 150px;
+  height: auto;
+}
+
+.foot p {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 112px;
+  }
+
+  .stage {
+    max-width: 380px;
+    justify-self: center;
+    width: 100%;
+  }
+
+  .tool-list {
+    grid-template-columns: 1fr;
+  }
+
+  .why .wrap {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav a:not(.btn) {
+    display: none;
+  }
+
+  .tools,
+  .why {
+    padding: 72px 0;
+  }
+}

@@ -1,0 +1,89 @@
+.gate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+
+.gate img {
+  width: 64px;
+  height: auto;
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+  padding: 0 max(20px, 4vw);
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
+}
+
+.top img {
+  height: 29px;
+  width: auto;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.who span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.who .btn {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.view {
+  width: min(1120px, 100% - 40px);
+  margin: 0 auto;
+  padding: 96px 0;
+}
+
+.view h1 {
+  color: var(--white);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.view p {
+  margin-top: 14px;
+  color: var(--muted);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 560px) {
+  .who span {
+    display: none;
+  }
+}
