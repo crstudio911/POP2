@@ -27,18 +27,18 @@
   var timer = null;
 
   var MESSAGES = {
-    invalid_email: 'اكتب إيميل صحيح.',
-    invalid_name: 'اكتب الاسم الأول واسم العيلة بشكل صحيح (حرفين على الأقل).',
-    weak_password: 'كلمة السر مش مطابقة للقواعد.',
-    mismatch: 'كلمتين السر مش زي بعض.',
-    invalid_login: 'الإيميل أو كلمة السر غلط.',
-    invalid_code: 'الكود غلط أو انتهت صلاحيته.',
-    invalid_request: 'راجع البيانات اللي كتبتها وجرب تاني.',
-    exists: 'الإيميل ده عليه حساب بالفعل. سجل دخول بدل كده.',
-    rate: 'محاولات كتير. استنى كام دقيقة وجرب تاني.',
-    locked: 'كود غلط كذا مرة. اطلب كود جديد.',
-    unavailable: 'POP مش متاح دلوقتي. جرب كمان شوية.',
-    network: 'مش قادرين نوصل لـ POP. اتأكد من النت وجرب تاني.'
+    invalid_email: 'يرجى إدخال بريد إلكتروني صحيح.',
+    invalid_name: 'يرجى إدخال الاسم الأول واسم العائلة بشكل صحيح (حرفان على الأقل).',
+    weak_password: 'كلمة المرور لا تستوفي الشروط المطلوبة.',
+    mismatch: 'كلمتا المرور غير متطابقتين.',
+    invalid_login: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+    invalid_code: 'الرمز غير صحيح أو انتهت صلاحيته.',
+    invalid_request: 'يرجى مراجعة البيانات المدخلة والمحاولة مرة أخرى.',
+    exists: 'يوجد حساب مسجّل بهذا البريد الإلكتروني. يرجى تسجيل الدخول.',
+    rate: 'محاولات كثيرة. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.',
+    locked: 'أُدخل رمز غير صحيح عدة مرات. يرجى طلب رمز جديد.',
+    unavailable: 'الخدمة غير متاحة حاليًا. يرجى المحاولة بعد قليل.',
+    network: 'تعذّر الاتصال. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.'
   };
 
   function say(text, ok) {
@@ -101,7 +101,7 @@
       window.location.replace(HOME);
       return true;
     }
-    say('المتصفح منع حفظ الجلسة. فعّل التخزين وجرب تاني.');
+    say('تعذّر حفظ الجلسة في المتصفح. يرجى السماح بالتخزين والمحاولة مرة أخرى.');
     return false;
   }
 
@@ -140,7 +140,7 @@
       var showIt = input.type === 'password';
       input.type = showIt ? 'text' : 'password';
       btn.classList.toggle('on', showIt);
-      btn.setAttribute('aria-label', showIt ? 'إخفاء كلمة السر' : 'إظهار كلمة السر');
+      btn.setAttribute('aria-label', showIt ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
     });
   });
 
@@ -174,7 +174,7 @@
       return;
     }
     if (!password) {
-      say('اكتب كلمة السر.');
+      say('يرجى إدخال كلمة المرور.');
       $('login-pass').focus();
       return;
     }
@@ -241,7 +241,7 @@
     var left = COOLDOWN;
     var resend = $('resend');
     resend.disabled = true;
-    resend.textContent = 'ابعت الكود تاني (' + left + ')';
+    resend.textContent = 'إعادة إرسال الرمز (' + left + ')';
     clearInterval(timer);
     timer = setInterval(function () {
       left -= 1;
@@ -249,9 +249,9 @@
         clearInterval(timer);
         timer = null;
         resend.disabled = false;
-        resend.textContent = 'ابعت الكود تاني';
+        resend.textContent = 'إعادة إرسال الرمز';
       } else {
-        resend.textContent = 'ابعت الكود تاني (' + left + ')';
+        resend.textContent = 'إعادة إرسال الرمز (' + left + ')';
       }
     }, 1000);
   }
@@ -284,7 +284,7 @@
     var code = codeValue();
     if (!/^\d{6}$/.test(code)) {
       codeBox.classList.add('bad');
-      say('اكتب الـ 6 أرقام كلهم.');
+      say('يرجى إدخال الأرقام الستة كاملة.');
       return;
     }
     var btn = $('verify');
@@ -309,7 +309,7 @@
     clearDigits();
     sendRegister().then(function (ok) {
       if (ok) {
-        say('بعتنالك كود جديد.', true);
+        say('أرسلنا إليك رمزًا جديدًا.', true);
         startCooldown();
         digits[0].focus();
       } else if (!timer) {

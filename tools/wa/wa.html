@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>مرسل واتساب جماعي - POP</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="theme-color" content="#0e0e10">
 <link rel="icon" type="image/png" href="../../img/fav.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../../img/favicon-192.png">
 <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../base.css">
 <link rel="stylesheet" href="../../main/main.css">
 <link rel="stylesheet" href="wa.css">
 <link rel="stylesheet" href="../../ui.css">
+<script src="../../i18n.js"></script>
 </head>
 <body>
 <div class="gate" id="gate">
@@ -24,39 +25,65 @@
 </div>
 
 <header class="top" id="top" hidden>
-  <div class="crumbs">
-    <a href="../../main/main.html" aria-label="الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
-    <a class="back" href="../../main/main.html">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-      كل الأدوات
-    </a>
-  </div>
-  <div class="who">
-    <span id="who"></span>
-    <button class="btn ghost" id="out" type="button">تسجيل الخروج</button>
+  <div class="top-in">
+    <a class="brand" href="../../main/main.html" aria-label="لوحة الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">مرسل واتساب جماعي</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
 <main class="wa" id="view" hidden>
   <div class="wa-head">
     <h1>مرسل واتساب جماعي</h1>
-    <p>اربط رقمك، واكتب رسالتك، وحط الأرقام، ودوس إرسال. الرسايل بتطلع من رقمك انت.</p>
+    <p>اربط رقمك، واكتب رسالتك، وأضف الأرقام، ثم اضغط «إرسال». تُرسل الرسائل من رقمك أنت.</p>
   </div>
 
   <details class="card about">
-    <summary>الأداة دي بتعمل إيه وإزاي تستخدمها؟ دوس عشان تشوف الشرح كله أو تخفيه</summary>
+    <summary>ما وظيفة هذه الأداة وكيف تستخدمها؟ اضغط لعرض الشرح أو إخفائه</summary>
     <div class="about-body">
-      <p>بتبعت رسالة واحدة لعدد كبير من العملاء من رقم الواتساب بتاعك، وكل رسالة ممكن تتغير حسب العميل، زي إنها تبدأ باسمه.</p>
+      <p>ترسل رسالة واحدة إلى عدد كبير من العملاء من رقم واتساب الخاص بك، ويمكن أن تختلف كل رسالة بحسب العميل، كأن تبدأ باسمه.</p>
       <ol>
-        <li><b>اربط رقمك:</b> امسح الكود من «الأجهزة المرتبطة» في الموبايل. موبايلك بيفضل شغال عادي.</li>
-        <li><b>المتغيرات (اختياري):</b> زي «الاسم»، وتكتب القيم كل قيمة في سطر.</li>
-        <li><b>الرسالة:</b> استخدم {الاسم} للمتغير، و{أهلا|مرحبا} عشان كل عميل يوصله صيغة مختلفة.</li>
+        <li><b>اربط رقمك:</b> امسح الرمز من «الأجهزة المرتبطة» في هاتفك، ويظل هاتفك يعمل كالمعتاد.</li>
+        <li><b>المتغيرات (اختياري):</b> مثل «الاسم»، وتُكتب القيم كل قيمة في سطر.</li>
+        <li><b>الرسالة:</b> استخدم {الاسم} للمتغير، و{أهلًا|مرحبًا} لتصل إلى كل عميل صيغة مختلفة.</li>
         <li><b>الأرقام:</b> رقم في كل سطر، أو ارفع ملف CSV، أو انسخها من أداة «مستخرج بيانات العملاء».</li>
-        <li><b>راجع المعاينة ودوس إرسال:</b> وتابع كل خطوة في سجل العمليات.</li>
+        <li><b>راجع المعاينة واضغط «إرسال»:</b> وتابع كل خطوة في سجل العمليات.</li>
       </ol>
-      <p><b>الوقت:</b> الإرسال بطيء بقصد عشان يحمي رقمك. حوالي 30 لـ 45 رسالة في الساعة، واستراحة كل شوية، وأقصى 150 رسالة في اليوم للرقم.</p>
-      <p><b>حماية الرقم:</b> بيظهر للعميل إنك «بتكتب» قبل كل رسالة، والإرسال بيقف لوحده لو أرقام كتير مش على واتساب أو لو واتساب طلب نبطأ. وأي رسالة تظهر عند العميل «في انتظار هذه الرسالة» بتتبعتله تاني تلقائيًا عشان تتفتح.</p>
-      <p><b>نصايح:</b> ابعت لناس تعرفك أو طلبت تتواصل معاك، ولو الرقم جديد ابدأ بأعداد صغيرة وزوّد كل يوم، ورد على اللي بيردوا عليك.</p>
+      <p><b>الوقت:</b> الإرسال بطيء عن قصد لحماية رقمك: من 30 إلى 45 رسالة في الساعة تقريبًا، مع فترات استراحة منتظمة، وبحد أقصى 150 رسالة يوميًا للرقم.</p>
+      <p><b>حماية الرقم:</b> يظهر للعميل أنك «تكتب» قبل كل رسالة، ويتوقف الإرسال تلقائيًا إذا كانت أرقام كثيرة غير مسجّلة في واتساب أو إذا طلب واتساب الإبطاء. وأي رسالة تظهر لدى العميل بعبارة «في انتظار هذه الرسالة» يُعاد إرسالها تلقائيًا.</p>
+      <p><b>نصائح:</b> راسل من يعرفونك أو من طلبوا التواصل معك، وإن كان الرقم جديدًا فابدأ بأعداد صغيرة وزدها يوميًا، وردّ على من يراسلك.</p>
     </div>
   </details>
 
@@ -68,7 +95,7 @@
     </div>
 
     <div class="link" id="link-idle">
-      <p>مفيش رقم مربوط دلوقتي. دوس على الزرار وهيظهر لك كود تمسحه من موبايلك.</p>
+      <p>لا يوجد رقم مربوط حاليًا. اضغط الزر ليظهر لك رمز تمسحه بهاتفك.</p>
       <button class="btn" id="connect" type="button">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
         ربط رقم واتساب
@@ -77,17 +104,17 @@
 
     <div class="link" id="link-wait" hidden>
       <span class="spin" aria-hidden="true"></span>
-      <p id="wait-text">جاري الاتصال...</p>
+      <p id="wait-text">جارٍ الاتصال...</p>
     </div>
 
     <div class="link qr-box" id="link-qr" hidden>
-      <img id="qr" alt="كود ربط واتساب" width="260" height="260">
+      <img id="qr" alt="رمز ربط واتساب" width="260" height="260">
       <ol>
-        <li>افتح واتساب على موبايلك</li>
-        <li>ادخل على <b>الأجهزة المرتبطة</b> من القايمة أو الإعدادات</li>
-        <li>دوس <b>ربط جهاز</b> وامسح الكود ده</li>
+        <li>افتح واتساب على هاتفك</li>
+        <li>انتقل إلى <b>الأجهزة المرتبطة</b> من القائمة أو الإعدادات</li>
+        <li>اضغط <b>ربط جهاز</b> وامسح هذا الرمز</li>
       </ol>
-      <p class="hint">الكود بيتجدد لوحده كل شوية. لو خلص وقته هتقدر تطلب كود جديد.</p>
+      <p class="hint">يتجدد الرمز تلقائيًا كل فترة، وإذا انتهت صلاحيته يمكنك طلب رمز جديد.</p>
       <button class="btn ghost small" id="cancel-qr" type="button">إلغاء</button>
     </div>
 
@@ -102,12 +129,12 @@
         </div>
         <button class="btn ghost small" id="logout" type="button">فصل الرقم</button>
       </div>
-      <p class="timer" id="left">الربط شغال طول ما الصفحة مفتوحة أو في إرسال شغال</p>
+      <p class="timer" id="left">يظل الربط فعّالًا ما دامت الصفحة مفتوحة أو كان هناك إرسال جارٍ</p>
     </div>
 
     <p class="note">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
-      <span>لحماية رقمك، بيانات الربط بتتحفظ عندنا متشفرة طول ما الصفحة مفتوحة أو الإرسال شغال، وبتتمسح تلقائيا بعد ساعة واحدة من قفل الصفحة وخلص الإرسال. بعدها هتحتاج تمسح الكود تاني. وتقدر تفصل الرقم في أي وقت.</span>
+      <span>لحماية رقمك، تُحفظ بيانات الربط مشفّرة ما دامت الصفحة مفتوحة أو كان الإرسال جاريًا، وتُحذف تلقائيًا بعد ساعة واحدة من إغلاق الصفحة وانتهاء الإرسال، وبعدها ستحتاج إلى مسح الرمز مجددًا. ويمكنك فصل الرقم في أي وقت.</span>
     </p>
     <p class="alert" id="link-error" role="alert" hidden></p>
   </section>
@@ -118,7 +145,7 @@
       <h2 id="t-vars">المتغيرات</h2>
       <span class="count" id="vars-count">0 / 6</span>
     </div>
-    <p class="hint">اعمل متغير زي «الاسم» واكتب قيمه كل قيمة في سطر. في الرسالة اكتب {الاسم}: أول رقم ياخد أول قيمة، وتاني رقم تاني قيمة، وهكذا. لو الأرقام أكتر من القيم، القيم بتتكرر من الأول.</p>
+    <p class="hint">أنشئ متغيرًا مثل «الاسم» واكتب قيمه، كل قيمة في سطر. واكتب في الرسالة {الاسم}: يأخذ الرقم الأول القيمة الأولى، والثاني القيمة الثانية، وهكذا. وإذا زادت الأرقام على القيم، تتكرر القيم من البداية.</p>
     <div class="vars" id="vars"></div>
     <button class="btn ghost small" id="add-var" type="button">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -140,11 +167,11 @@
         </button>
         <div class="menu" id="menu" role="menu" hidden></div>
       </div>
-      <span class="hint">حط المؤشر في المكان اللي عايزه، ودوس الزرار واختار المتغير.</span>
+      <span class="hint">ضع المؤشر في الموضع المطلوب، ثم اضغط الزر واختر المتغير.</span>
     </div>
     <label class="sr" for="msg">نص الرسالة</label>
-    <textarea id="msg" rows="7" maxlength="4096" placeholder="مثال: {أهلا|مرحبا|ازيك} {الاسم}، جاهز نبدأ؟"></textarea>
-    <p class="hint">عشان رقمك يفضل في الأمان، خلي كل رسالة مختلفة شوية: اكتب كذا كلمة بينهم شرطة بالشكل ده {أهلا|مرحبا|ازيك} وكل عميل هتوصله كلمة منهم بشكل عشوائي.</p>
+    <textarea id="msg" rows="7" maxlength="4096" placeholder="مثال: {أهلًا|مرحبًا|تحية طيبة} {الاسم}، هل أنت مستعد للبدء؟"></textarea>
+    <p class="hint">للحفاظ على أمان رقمك، اجعل كل رسالة مختلفة قليلًا: اكتب عدة كلمات تفصل بينها شرطة رأسية بهذا الشكل {أهلًا|مرحبًا|تحية طيبة}، وستصل إلى كل عميل كلمة منها عشوائيًا.</p>
     <p class="alert soft" id="msg-warn" hidden></p>
   </section>
 
@@ -166,13 +193,13 @@
       </label>
       <button class="btn ghost small" id="clear-nums" type="button">مسح الأرقام</button>
     </div>
-    <p class="hint" id="nums-hint">رقم واحد في كل سطر. القيم بتتوزع على الأرقام بالترتيب. ولو حبيت تحدد قيمة لرقم معين، اكتبها بعده بفاصلة.</p>
+    <p class="hint" id="nums-hint">رقم واحد في كل سطر، وتُوزّع القيم على الأرقام بالترتيب. ولتحديد قيمة لرقم بعينه، اكتبها بعده مفصولة بفاصلة.</p>
     <label class="sr" for="nums">الأرقام</label>
     <textarea id="nums" rows="7" dir="ltr" placeholder="01012345678
 01112345678"></textarea>
     <div class="stats" id="nums-stats"></div>
     <div class="table-wrap" id="table-wrap" hidden>
-      <table id="table"></table>
+      <table id="table" translate="no"></table>
     </div>
   </section>
 
@@ -183,23 +210,23 @@
     </div>
     <div class="preview">
       <div class="preview-bar">
-        <button class="icon-btn" id="prev-next" type="button" aria-label="الرقم اللي بعده">
+        <button class="icon-btn" id="prev-next" type="button" aria-label="الرقم التالي">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         </button>
         <span class="mono" id="prev-to" dir="ltr">-</span>
-        <button class="icon-btn" id="prev-back" type="button" aria-label="الرقم اللي قبله">
+        <button class="icon-btn" id="prev-back" type="button" aria-label="الرقم السابق">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
         </button>
       </div>
-      <div class="bubble" id="bubble">اكتب رسالة وحط أرقام عشان تشوف المعاينة.</div>
+      <div class="bubble" id="bubble" translate="no">اكتب رسالة وأضف أرقامًا لعرض المعاينة.</div>
     </div>
 
     <div class="send-row">
       <label class="field">
         <span>سرعة الإرسال</span>
         <select id="speed">
-          <option value="safe">آمنة: رسالة كل 30 لـ 65 ثانية، أقصى 30 في الساعة</option>
-          <option value="normal">أسرع: رسالة كل 18 لـ 40 ثانية، أقصى 45 في الساعة</option>
+          <option value="safe">آمنة: رسالة كل 30 إلى 65 ثانية، بحد أقصى 30 في الساعة</option>
+          <option value="normal">أسرع: رسالة كل 18 إلى 40 ثانية، بحد أقصى 45 في الساعة</option>
         </select>
       </label>
       <button class="btn" id="send" type="button" disabled>
@@ -221,10 +248,10 @@
       <div class="bar"><span id="bar"></span></div>
       <div class="job-stats">
         <span><b id="j-done">0</b> من <b id="j-total">0</b></span>
-        <span class="s-ok"><b id="j-sent">0</b> اتبعتت</span>
+        <span class="s-ok"><b id="j-sent">0</b> أُرسلت</span>
         <span class="s-ok"><b id="j-deliv">0</b> وصلت</span>
-        <span class="s-no"><b id="j-invalid">0</b> مش على واتساب</span>
-        <span class="s-bad"><b id="j-failed">0</b> فشلت أو اتأجلت</span>
+        <span class="s-no"><b id="j-invalid">0</b> غير مسجّلة في واتساب</span>
+        <span class="s-bad"><b id="j-failed">0</b> لم تُرسل أو أُجّلت</span>
       </div>
       <p class="hint" id="j-state"></p>
       <div class="job-actions">
@@ -249,15 +276,28 @@
       <h2 id="t-log">سجل العمليات</h2>
       <button class="btn ghost small" id="log-clear" type="button">مسح السجل</button>
     </div>
-    <p class="hint">هنا بتشوف كل اللي بيحصل لحظة بلحظة: الربط، كل رسالة، الانتظار بين الرسايل، ومسح بيانات الربط.</p>
-    <p class="hint" id="log-empty">لسه مفيش حاجة حصلت.</p>
+    <p class="hint">هنا تتابع كل ما يجري لحظة بلحظة: الربط، وكل رسالة، والانتظار بين الرسائل، وحذف بيانات الربط.</p>
+    <p class="hint" id="log-empty">لا توجد أحداث بعد.</p>
     <ol class="log" id="log" aria-live="polite"></ol>
   </section>
 </main>
 
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../../index.html">عن POP</a>
+      <a href="../../main/main.html">لوحة الأدوات</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
+
 <script src="../../config.js"></script>
 <script src="../../auth.js"></script>
 <script src="wa.js"></script>
-<p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
 </body>
 </html>

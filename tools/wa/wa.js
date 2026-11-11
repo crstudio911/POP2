@@ -12,7 +12,7 @@
   var MAX_LIST = 60000;
   var SPEED_AVG = { safe: 120, normal: 80 };
   var WAKE_MAX = 20;
-  var STATUS_TEXT = { s: 'اتبعتت', n: 'مش على واتساب', f: 'فشلت', k: 'اتأجلت حماية لرقمك' };
+  var STATUS_TEXT = { s: 'أُرسلت', n: 'غير مسجّل في واتساب', f: 'لم تُرسل', k: 'أُجّلت لحماية رقمك' };
   var TRASH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
 
   var $ = function (id) {
@@ -40,42 +40,42 @@
   var lastCaret = null;
   var logSeq = 0;
   var LOG_TEXT = {
-    qr: function (e) { return 'ظهر كود QR جديد (محاولة ' + e.x + ' من 5)'; },
-    qr_timeout: function () { return 'كود QR خلص وقته من غير ما يتمسح'; },
-    open: function (e) { return 'الرقم اتربط بنجاح' + (e.p ? ' (+' + e.p + ')' : ''); },
-    resume: function () { return 'رجعنا للربط القديم المحفوظ'; },
-    reconnect: function (e) { return 'الاتصال وقع، بنحاول نوصل تاني (محاولة ' + e.x + ')'; },
-    conn_failed: function () { return 'ماقدرناش نرجع الاتصال بواتساب'; },
-    logged_out: function () { return 'الرقم اتفصل من الموبايل'; },
-    expired: function () { return 'مدة الربط خلصت (ساعة من غير نشاط)'; },
-    wiped: function () { return 'بيانات الربط اتمسحت نهائيًا من السيرفر والشيت'; },
-    wipe_retry: function () { return 'المسح ماكملش، السيرفر هيعيد المحاولة تلقائيًا كل 30 ثانية'; },
-    start: function (e) { return 'بدأ الإرسال لـ ' + e.x + ' رقم'; },
-    sent: function (e) { return 'اتبعتت لـ +' + e.p; },
-    not_wa: function (e) { return '+' + e.p + ' مش على واتساب'; },
+    qr: function (e) { return 'ظهر رمز QR جديد (المحاولة ' + e.x + ' من 5)'; },
+    qr_timeout: function () { return 'انتهت صلاحية رمز QR قبل مسحه'; },
+    open: function (e) { return 'تم ربط الرقم بنجاح' + (e.p ? ' (+' + e.p + ')' : ''); },
+    resume: function () { return 'استُعيد الربط المحفوظ سابقًا'; },
+    reconnect: function (e) { return 'انقطع الاتصال، وجارٍ إعادة المحاولة (المحاولة ' + e.x + ')'; },
+    conn_failed: function () { return 'تعذّرت إعادة الاتصال بواتساب'; },
+    logged_out: function () { return 'فُصل الرقم من الهاتف'; },
+    expired: function () { return 'انتهت مدة الربط (ساعة دون نشاط)'; },
+    wiped: function () { return 'حُذفت بيانات الربط نهائيًا'; },
+    wipe_retry: function () { return 'لم يكتمل الحذف، وستُعاد المحاولة تلقائيًا'; },
+    start: function (e) { return 'بدأ الإرسال إلى ' + e.x + ' رقم'; },
+    sent: function (e) { return 'أُرسلت إلى +' + e.p; },
+    not_wa: function (e) { return '+' + e.p + ' غير مسجّل في واتساب'; },
     failed: function (e) {
-      var why = { rate: 'واتساب طلب نبطأ', timeout: 'الطلب أخد وقت طويل', conn: 'الاتصال وقع', other: 'خطأ غير معروف' };
-      return 'فشلت لـ +' + e.p + (e.x && why[e.x] ? ' (' + why[e.x] + ')' : '');
+      var why = { rate: 'طلب واتساب إبطاء الإرسال', timeout: 'استغرق الطلب وقتًا طويلًا', conn: 'انقطع الاتصال', other: 'سبب غير معروف' };
+      return 'تعذّر الإرسال إلى +' + e.p + (e.x && why[e.x] ? ' (' + why[e.x] + ')' : '');
     },
-    wait: function (e) { return 'استنى ' + e.x + ' ثانية قبل الرسالة الجاية'; },
-    rest: function (e) { return 'استراحة ' + e.x + ' دقيقة عشان الرقم يفضل في الأمان'; },
-    cap: function (e) { return 'وصلنا ' + e.x[0] + ' رسالة في الساعة، هنكمل بعد ' + e.x[1] + ' دقيقة'; },
-    settle: function (e) { return 'الرقم لسه متربط، بنستنى ' + e.x + ' ثانية عشان الرسايل توصل مفتوحة'; },
-    resent: function () { return 'موبايل العميل طلب الرسالة تاني، وبعتناها له تلقائيًا عشان تتفتح'; },
-    invalid_rest: function (e) { return 'أرقام كتير ورا بعض مش على واتساب، استراحة ' + e.x + ' دقيقة'; },
-    invalid_stop: function () { return 'أكتر من نص الأرقام مش على واتساب، وقفنا حماية لرقمك. نضّف القايمة وابعت تاني'; },
-    day_cap: function (e) { return 'وصلت ' + e.x + ' رسالة النهارده من الرقم ده، الباقي اتأجل لبكره حماية لرقمك'; },
-    restricted: function () { return 'واتساب قيّد الرقم مؤقتًا'; },
-    restricted_stop: function () { return 'وقفنا الإرسال فورًا لأن واتساب قيّد الرقم. الربط فاضل زي ما هو'; },
-    replaced: function () { return 'الرقم اتفتح من مكان تاني، وقفنا عشان مايحصلش تعارض'; },
-    rate_pause: function (e) { return 'واتساب طلب نبطأ، هنستنى ' + e.x + ' دقيقة'; },
-    rate_stop: function () { return 'واتساب طلب نبطأ تاني، وقفنا الإرسال حماية لرقمك'; },
-    lost: function () { return 'الرقم فضل مفصول 30 دقيقة، الباقي اتأجل'; },
-    paused: function () { return 'الإرسال اتوقف مؤقتًا لحد ما الرقم يرجع يتربط'; },
-    resumed: function (e) { return 'الرقم رجع، الإرسال كمل من الرقم ' + ((e.x || 0) + 1); },
-    stopping: function () { return 'طلبت إيقاف الإرسال'; },
-    stopped: function (e) { return 'الإرسال وقف. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; },
-    done: function (e) { return 'الإرسال خلص. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; }
+    wait: function (e) { return 'انتظار ' + e.x + ' ثانية قبل الرسالة التالية'; },
+    rest: function (e) { return 'استراحة ' + e.x + ' دقيقة للحفاظ على أمان الرقم'; },
+    cap: function (e) { return 'بلغ الإرسال ' + e.x[0] + ' رسالة في الساعة، وسيُستأنف بعد ' + e.x[1] + ' دقيقة'; },
+    settle: function (e) { return 'الرقم مربوط حديثًا، وجارٍ الانتظار ' + e.x + ' ثانية لضمان وصول الرسائل بشكل سليم'; },
+    resent: function () { return 'طلب هاتف العميل الرسالة مجددًا، فأُعيد إرسالها تلقائيًا'; },
+    invalid_rest: function (e) { return 'أرقام متتالية كثيرة غير مسجّلة في واتساب، استراحة ' + e.x + ' دقيقة'; },
+    invalid_stop: function () { return 'أكثر من نصف الأرقام غير مسجّل في واتساب، فأُوقف الإرسال لحماية رقمك. يرجى تنقية القائمة ثم الإرسال مجددًا'; },
+    day_cap: function (e) { return 'بلغ هذا الرقم ' + e.x + ' رسالة اليوم، وأُجّل الباقي إلى الغد لحماية رقمك'; },
+    restricted: function () { return 'قيّد واتساب الرقم مؤقتًا'; },
+    restricted_stop: function () { return 'أُوقف الإرسال فورًا لأن واتساب قيّد الرقم، ويبقى الربط كما هو'; },
+    replaced: function () { return 'فُتح الرقم من مكان آخر، فأُوقف الإرسال لتجنّب التعارض'; },
+    rate_pause: function (e) { return 'طلب واتساب إبطاء الإرسال، وسيُستأنف بعد ' + e.x + ' دقيقة'; },
+    rate_stop: function () { return 'طلب واتساب الإبطاء مجددًا، فأُوقف الإرسال لحماية رقمك'; },
+    lost: function () { return 'ظل الرقم مفصولًا 30 دقيقة، فأُجّل الباقي'; },
+    paused: function () { return 'توقف الإرسال مؤقتًا حتى يُعاد ربط الرقم'; },
+    resumed: function (e) { return 'عاد الرقم، واستُؤنف الإرسال من الرقم ' + ((e.x || 0) + 1); },
+    stopping: function () { return 'طُلب إيقاف الإرسال'; },
+    stopped: function (e) { return 'توقف الإرسال. أُرسلت ' + e.x[0] + '، غير مسجّلة ' + e.x[1] + '، لم تُرسل ' + e.x[2]; },
+    done: function (e) { return 'اكتمل الإرسال. أُرسلت ' + e.x[0] + '، غير مسجّلة ' + e.x[1] + '، لم تُرسل ' + e.x[2]; }
   };
 
   function leave() {
@@ -304,7 +304,7 @@
       var name = document.createElement('input');
       name.type = 'text';
       name.maxLength = 20;
-      name.placeholder = 'اسم المتغير، مثلا: الاسم';
+      name.placeholder = 'اسم المتغير، مثلًا: الاسم';
       name.value = v.n;
       name.setAttribute('aria-label', 'اسم المتغير ' + (i + 1));
       var def = document.createElement('textarea');
@@ -407,7 +407,7 @@
     if (!any) {
       var e = document.createElement('div');
       e.className = 'empty';
-      e.textContent = 'ضيف متغير وسميه الأول من الخطوة 2.';
+      e.textContent = 'أضف متغيرًا وسمّه أولًا من الخطوة 2.';
       menu.appendChild(e);
     }
   }
@@ -450,9 +450,9 @@
       stats.appendChild(s);
     }
     chip(parsed.rows.length + ' رقم صحيح');
-    if (parsed.dupes) chip(parsed.dupes + ' مكرر اتشال', 'warn');
-    if (parsed.invalid) chip(parsed.invalid + ' رقم غلط', 'bad');
-    if (parsed.rows.length > perSend) chip('الحد في المرة الواحدة ' + perSend + ' رقم', 'bad');
+    if (parsed.dupes) chip(parsed.dupes + ' مكرر حُذف', 'warn');
+    if (parsed.invalid) chip(parsed.invalid + ' رقم غير صحيح', 'bad');
+    if (parsed.rows.length > perSend) chip('الحد الأقصى في المرة الواحدة ' + perSend + ' رقم', 'bad');
     $('nums-count').textContent = String(parsed.rows.length);
 
     var wrap = $('table-wrap');
@@ -489,7 +489,7 @@
       draft.vars.forEach(function (v, i) {
         var td = document.createElement('td');
         var val = valueFor(r, i);
-        td.textContent = val || 'فاضي';
+        td.textContent = val || 'فارغ';
         if (!val) td.className = 'empty';
         tr.appendChild(td);
       });
@@ -507,7 +507,7 @@
     $('prev-next').disabled = previewAt >= rows.length - 1;
     bubble.textContent = '';
     if (!draft.msg.trim()) {
-      bubble.textContent = 'اكتب رسالة وحط أرقام عشان تشوف المعاينة.';
+      bubble.textContent = 'اكتب رسالة وأضف أرقامًا لعرض المعاينة.';
       return;
     }
     var row = rows[previewAt] || null;
@@ -525,7 +525,7 @@
       if (i >= 0 && val) bubble.appendChild(document.createTextNode(val));
       else {
         var mark = document.createElement('mark');
-        mark.textContent = i >= 0 ? name + ': فاضي' : m;
+        mark.textContent = i >= 0 ? name + ': فارغ' : m;
         bubble.appendChild(mark);
       }
       last = at + m.length;
@@ -538,10 +538,10 @@
     $('msg-count').textContent = draft.msg.length + ' / ' + MAX_MSG;
     var warn = [];
     var unknown = unknownTokens();
-    if (unknown.length) warn.push('في الرسالة متغير مش متعرف: ' + unknown.join('، '));
+    if (unknown.length) warn.push('تحتوي الرسالة على متغير غير معرّف: ' + unknown.join('، '));
     var miss = missingCount();
-    if (miss) warn.push(miss + ' رقم ناقصهم قيمة متغير، والمكان ده هيفضل فاضي في رسايلهم.');
-    if (draft.msg.trim() && !usesVariety()) warn.push('نصيحة لحماية رقمك: الرسالة هتطلع واحدة بالظبط لكل الناس. حط متغير زي {الاسم} أو اكتب بدايل بالشكل ده {أهلا|مرحبا|ازيك} وكل عميل هتوصله صيغة مختلفة.');
+    if (miss) warn.push(miss + ' رقم تنقصه قيمة متغير، وسيبقى موضعها فارغًا في رسائلهم.');
+    if (draft.msg.trim() && !usesVariety()) warn.push('نصيحة لحماية رقمك: ستصل الرسالة متطابقة تمامًا إلى الجميع. أضف متغيرًا مثل {الاسم} أو اكتب بدائل بهذا الشكل {أهلًا|مرحبًا|تحية طيبة} لتصل إلى كل عميل صيغة مختلفة.');
     $('msg-warn').hidden = !warn.length;
     $('msg-warn').textContent = warn.join(' ');
   }
@@ -601,18 +601,18 @@
 
   function renderSend() {
     var reason = '';
-    if (wa.state !== 'open') reason = 'اربط رقم الواتساب الأول.';
-    else if (jobRunning()) reason = 'في إرسال شغال دلوقتي.';
-    else if (!draft.msg.trim()) reason = 'اكتب الرسالة.';
-    else if (!allNamesOk()) reason = 'كل متغير لازم يبقى ليه اسم مختلف، من غير رموز.';
-    else if (unknownTokens().length) reason = 'صلّح المتغيرات اللي مش متعرفة في الرسالة.';
-    else if (!parsed.rows.length) reason = 'حط رقم واحد على الأقل.';
-    else if (parsed.rows.length > perSend) reason = 'الحد في المرة الواحدة ' + perSend + ' رقم.';
+    if (wa.state !== 'open') reason = 'يرجى ربط رقم واتساب أولًا.';
+    else if (jobRunning()) reason = 'توجد عملية إرسال جارية حاليًا.';
+    else if (!draft.msg.trim()) reason = 'يرجى كتابة الرسالة.';
+    else if (!allNamesOk()) reason = 'يجب أن يكون لكل متغير اسم مختلف دون رموز.';
+    else if (unknownTokens().length) reason = 'يرجى تصحيح المتغيرات غير المعرّفة في الرسالة.';
+    else if (!parsed.rows.length) reason = 'يرجى إضافة رقم واحد على الأقل.';
+    else if (parsed.rows.length > perSend) reason = 'الحد الأقصى في المرة الواحدة ' + perSend + ' رقم.';
     $('send').disabled = !!reason;
     if (reason) {
       $('send-hint').textContent = reason;
     } else {
-      $('send-hint').textContent = 'الوقت المتوقع: حوالي ' + formatDuration(parsed.rows.length * SPEED_AVG[draft.speed]) + '. خلي الصفحة مفتوحة لحد ما الإرسال يخلص.';
+      $('send-hint').textContent = 'الوقت المتوقع: نحو ' + formatDuration(parsed.rows.length * SPEED_AVG[draft.speed]) + '. يرجى إبقاء الصفحة مفتوحة حتى يكتمل الإرسال.';
     }
     if (reason) $('confirm').hidden = true;
   }
@@ -648,19 +648,20 @@
   }
 
   var ERR_TEXT = {
-    qr_timeout: 'الكود خلص وقته من غير ما يتمسح. دوس ربط تاني عشان كود جديد.',
-    expired: 'عدّت ساعة من آخر استخدام واتمسحت بيانات الربط. اربط الرقم تاني لو محتاج.',
-    logged_out: 'الرقم اتفصل من الموبايل. لو في إرسال شغال، اربطه تاني وهيكمل من آخر رقم.',
-    failed: 'معرفناش نتصل بواتساب. جرب تربط تاني.',
-    busy: 'السيرفر مشغول دلوقتي. جرب كمان دقيقة.',
-    unavailable: 'الخدمة مش متاحة دلوقتي. جرب كمان شوية.',
-    network: 'في مشكلة في الإنترنت. اتأكد من الاتصال وجرب تاني.',
-    not_open: 'الرقم مش متصل دلوقتي.',
-    job_running: 'في إرسال شغال بالفعل.',
-    restricted: 'واتساب قيّد الرقم ده مؤقتًا. سيبه يوم أو اتنين من غير إرسال جماعي، واستخدمه عادي مع ناس تعرفك، وبعدها ابدأ بأعداد صغيرة.',
-    replaced: 'الرقم اتفتح في مكان تاني بنفس الربط. اقفل الصفحة التانية واربط من هنا.',
-    day_cap: 'الرقم ده بعت الحد اليومي (150 رسالة). كمل بكره عشان رقمك يفضل في الأمان.',
-    invalid_request: 'في بيانات مش مظبوطة في الإرسال. راجع الرسالة والأرقام.'
+    qr_timeout: 'انتهت صلاحية الرمز قبل مسحه. اضغط «ربط» مجددًا للحصول على رمز جديد.',
+    expired: 'مضت ساعة على آخر استخدام فحُذفت بيانات الربط. يمكنك ربط الرقم مجددًا عند الحاجة.',
+    logged_out: 'فُصل الرقم من الهاتف. إن كان هناك إرسال جارٍ، فأعد ربطه وسيُستأنف من آخر رقم.',
+    failed: 'تعذّر الاتصال بواتساب. يرجى إعادة محاولة الربط.',
+    busy: 'الخدمة مشغولة حاليًا. يرجى المحاولة بعد دقيقة.',
+    unavailable: 'الخدمة غير متاحة حاليًا. يرجى المحاولة بعد قليل.',
+    network: 'يوجد خلل في الاتصال بالإنترنت. يرجى التحقق منه والمحاولة مرة أخرى.',
+    not_open: 'الرقم غير متصل حاليًا.',
+    job_running: 'توجد عملية إرسال جارية بالفعل.',
+    restricted: 'قيّد واتساب هذا الرقم مؤقتًا. اتركه يومًا أو يومين دون إرسال جماعي، واستخدمه استخدامًا عاديًا مع معارفك، ثم ابدأ بأعداد صغيرة.',
+    replaced: 'فُتح الرقم في مكان آخر بالربط نفسه. أغلق الصفحة الأخرى ثم اربط من هنا.',
+    day_cap: 'بلغ هذا الرقم الحد اليومي (150 رسالة). يرجى المتابعة غدًا للحفاظ على أمان رقمك.',
+    no_access: 'هذه الأداة غير متاحة في خطتك الحالية.',
+    invalid_request: 'بعض بيانات الإرسال غير صحيحة. يرجى مراجعة الرسالة والأرقام.'
   };
 
   function renderLink() {
@@ -673,15 +674,15 @@
       $('phone').textContent = wa.phone ? '+' + wa.phone : '';
     } else if (wa.state === 'qr' && wa.qr) {
       show('link-qr');
-      pill.textContent = 'مستني المسح';
+      pill.textContent = 'بانتظار المسح';
       pill.classList.add('wait');
       $('qr').src = wa.qr;
     } else if (wa.state === 'connecting' || wa.state === 'waking' || wa.state === 'qr') {
       show('link-wait');
-      pill.textContent = 'جاري الاتصال';
+      pill.textContent = 'جارٍ الاتصال';
       pill.classList.add('wait');
       $('wait-text').textContent =
-        wa.state === 'waking' ? 'السيرفر بيصحى دلوقتي، ده ممكن ياخد لحد دقيقة. خليك معانا...' : 'جاري الاتصال بواتساب...';
+        wa.state === 'waking' ? 'جارٍ تجهيز الخدمة، وقد يستغرق ذلك دقيقة واحدة...' : 'جارٍ الاتصال بواتساب...';
     } else {
       show('link-idle');
       pill.textContent = 'غير متصل';
@@ -774,12 +775,12 @@
     $('stop').hidden = !j.running;
     $('report').disabled = !results.length;
     var st = '';
-    if (j.running && j.paused && !j.stopped) st = 'الإرسال واقف مؤقتًا. اربط الرقم تاني من فوق وهيكمل من الرقم ' + (j.done + 1) + '. هنستنى لحد 30 دقيقة.';
-    else if (j.running && j.stopped) st = 'جاري الإيقاف...';
-    else if (j.running) st = 'الإرسال شغال. خلي الصفحة مفتوحة، والتقرير بيتحفظ على جهازك بس.';
-    else if (j.stopped) st = 'الإرسال وقف قبل ما يخلص. الأرقام اللي ماتبعتلهاش مش هتظهر في التقرير.';
-    else if (j.skipped) st = 'الإرسال وقف حماية لرقمك، و' + j.skipped + ' رقم اتأجلوا. شوف السجل تحت عشان تعرف السبب.';
-    else st = 'الإرسال خلص. عدد «وصلت» بيزيد لوحده لما موبايلات العملاء تستلم الرسايل، فسيب الصفحة مفتوحة شوية.';
+    if (j.running && j.paused && !j.stopped) st = 'الإرسال متوقف مؤقتًا. أعد ربط الرقم من الأعلى، وسيُستأنف من الرقم ' + (j.done + 1) + '. سننتظر مدة أقصاها 30 دقيقة.';
+    else if (j.running && j.stopped) st = 'جارٍ الإيقاف...';
+    else if (j.running) st = 'الإرسال جارٍ. يرجى إبقاء الصفحة مفتوحة، ويُحفظ التقرير على جهازك فقط.';
+    else if (j.stopped) st = 'توقف الإرسال قبل اكتماله، ولن تظهر الأرقام التي لم يُرسل إليها في التقرير.';
+    else if (j.skipped) st = 'توقف الإرسال لحماية رقمك، وأُجّل ' + j.skipped + ' رقم. راجع السجل أدناه لمعرفة السبب.';
+    else st = 'اكتمل الإرسال. يزداد عدد «وصلت» تلقائيًا عند استلام هواتف العملاء للرسائل، لذا أبقِ الصفحة مفتوحة قليلًا.';
     $('j-state').textContent = st;
     var table = $('results');
     var have = table.querySelectorAll('tbody tr').length;
@@ -889,7 +890,7 @@
     if ($('send').disabled) return;
     var n = parsed.rows.length;
     $('confirm-text').textContent =
-      'هتتبعت الرسالة لـ ' + n + ' رقم من رقمك +' + (wa.phone || '') + '. الوقت المتوقع حوالي ' + formatDuration(n * SPEED_AVG[draft.speed]) + '. متأكد؟';
+      'ستُرسل الرسالة إلى ' + n + ' رقم من رقمك +' + (wa.phone || '') + '. الوقت المتوقع نحو ' + formatDuration(n * SPEED_AVG[draft.speed]) + '. هل أنت متأكد؟';
     $('confirm').hidden = false;
     $('confirm-yes').focus();
   }
@@ -1028,7 +1029,7 @@
       $('file').value = '';
       if (!f) return;
       if (f.size > 2 * 1024 * 1024) {
-        setError('الملف كبير. أقصى حجم 2 ميجا.');
+        setError('حجم الملف كبير. الحد الأقصى 2 ميغابايت.');
         return;
       }
       var reader = new FileReader();
@@ -1088,15 +1089,7 @@
     });
   }
 
-  A.call('/api/session/check', session.t).then(function (r) {
-    if (!r.ok && r.error !== 'network') {
-      leave();
-      return;
-    }
-    if (r.ok) {
-      var name = [r.firstName, r.lastName].filter(Boolean).join(' ');
-      $('who').textContent = name ? name + ' - ' + r.email : r.email;
-    }
+  A.access('wa', { login: LOGIN, home: '../../main/main.html' }, function () {
     $('gate').hidden = true;
     $('top').hidden = false;
     $('view').hidden = false;

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منشئ روابط واتساب - POP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../../img/fav.png">
+<link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../base.css">
+<link rel="stylesheet" href="../../main/main.css">
+<link rel="stylesheet" href="../wa/wa.css">
+<link rel="stylesheet" href="link.css">
+<link rel="stylesheet" href="../../ui.css">
+<script src="../../i18n.js"></script>
+</head>
+<body>
+<div class="gate" id="gate">
+  <img src="../../img/symbol.png" alt="" width="64" height="56">
+</div>
+
+<header class="top" id="top" hidden>
+  <div class="top-in">
+    <a class="brand" href="../../main/main.html" aria-label="لوحة الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">منشئ روابط واتساب</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wa" id="view" hidden>
+  <div class="wa-head">
+    <h1>منشئ روابط واتساب</h1>
+    <p>أنشئ رابطًا مباشرًا يفتح محادثة واتساب مع رقمك ومعه رسالة جاهزة، لتضعه في موقعك أو حساباتك أو إعلاناتك.</p>
+  </div>
+
+  <section class="card" aria-labelledby="t-make">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2 id="t-make">بيانات الرابط</h2>
+    </div>
+    <div class="form-row">
+      <label class="field">
+        <span>رمز الدولة</span>
+        <input id="cc" type="text" inputmode="numeric" maxlength="4" value="20" dir="ltr">
+      </label>
+      <label class="field grow">
+        <span>رقم واتساب</span>
+        <input id="phone" type="tel" inputmode="tel" maxlength="20" dir="ltr" placeholder="1001234567">
+      </label>
+    </div>
+    <label class="field">
+      <span>الرسالة الجاهزة (اختياري)</span>
+      <textarea id="msg" rows="4" maxlength="1000" placeholder="مثال: مرحبًا، أودّ الاستفسار عن خدماتكم."></textarea>
+    </label>
+    <p class="hint" id="state" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" id="out-card" hidden aria-labelledby="t-link">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2 id="t-link">الرابط الجاهز</h2>
+    </div>
+    <div class="link-out">
+      <span class="link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35M12.05 21.78h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89a11.82 11.82 0 0 0-3.48-8.41Z"/></svg></span>
+      <input id="result" type="text" readonly dir="ltr" aria-label="الرابط الجاهز">
+    </div>
+    <div class="row-actions">
+      <button class="btn" id="copy" type="button">نسخ الرابط</button>
+      <a class="btn ghost" id="open" href="#" target="_blank" rel="noopener noreferrer">تجربة الرابط</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../../index.html">عن POP</a>
+      <a href="../../main/main.html">لوحة الأدوات</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
+
+<script src="../../config.js"></script>
+<script src="../../auth.js"></script>
+<script src="link.js"></script>
+</body>
+</html>

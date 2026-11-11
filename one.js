@@ -8,6 +8,9 @@
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  var yr = document.getElementById('yr');
+  if (yr) yr.textContent = String(new Date().getFullYear());
+
   function stored() {
     var key = (window.POP && window.POP.storageKey) || 'pop_s';
     var raw = null;
@@ -30,7 +33,7 @@
       var el = document.getElementById(id);
       if (!el) return;
       el.href = 'main/main.html';
-      el.textContent = 'افتح POP';
+      el.textContent = 'لوحة الأدوات';
     });
   }
 })();

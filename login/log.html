@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>تسجيل الدخول - POP</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="theme-color" content="#0e0e10">
 <link rel="icon" type="image/png" href="../img/fav.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../img/favicon-192.png">
 <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../base.css">
 <link rel="stylesheet" href="log.css">
 <link rel="stylesheet" href="../ui.css">
+<script src="../i18n.js"></script>
 </head>
 <body>
 <div class="shell">
@@ -23,10 +24,11 @@
     <a href="../index.html" class="side-logo" aria-label="الصفحة الرئيسية لـ POP">
       <img src="../img/logo-pixel.png" alt="POP" width="624" height="269">
     </a>
-    <p class="side-line">أدوات أكتر. <span>إمكانيات أكبر.</span></p>
+    <p class="side-line">أدوات أكثر. <span>إمكانات أكبر.</span></p>
   </aside>
 
   <main class="panel">
+    <div class="panel-top" data-lang-slot></div>
     <div class="box">
       <a href="../index.html" class="mobile-logo" aria-label="الصفحة الرئيسية لـ POP">
         <img src="../img/logo-word.png" alt="POP" width="110" height="33">
@@ -38,31 +40,31 @@
       </div>
 
       <form id="form-login" novalidate>
-        <h1>أهلا بيك تاني</h1>
-        <p class="sub">ادخل بالإيميل وكلمة السر بتوعك.</p>
+        <h1>مرحبًا بعودتك</h1>
+        <p class="sub">سجّل الدخول ببريدك الإلكتروني وكلمة المرور.</p>
 
-        <label for="login-email">الإيميل</label>
+        <label for="login-email">البريد الإلكتروني</label>
         <input class="field" id="login-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
 
-        <label for="login-pass">كلمة السر</label>
+        <label for="login-pass">كلمة المرور</label>
         <div class="pass">
           <input class="field" id="login-pass" type="password" dir="ltr" autocomplete="current-password" maxlength="64" required>
-          <button class="eye" type="button" aria-label="إظهار كلمة السر" data-for="login-pass">
+          <button class="eye" type="button" aria-label="إظهار كلمة المرور" data-for="login-pass">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
 
         <label class="check" for="login-remember">
           <input id="login-remember" type="checkbox">
-          <span>افتكر الجهاز ده لمدة 14 يوم</span>
+          <span>تذكّر هذا الجهاز لمدة 14 يومًا</span>
         </label>
 
-        <button class="btn" id="login-btn" type="submit">دخول</button>
+        <button class="btn" id="login-btn" type="submit">تسجيل الدخول</button>
       </form>
 
       <form id="form-register" novalidate hidden>
-        <h1>اعمل حسابك في POP</h1>
-        <p class="sub">هنبعتلك كود من 6 أرقام على إيميلك عشان نتأكد منه.</p>
+        <h1>أنشئ حسابك في POP</h1>
+        <p class="sub">سنرسل رمزًا من 6 أرقام إلى بريدك الإلكتروني للتحقق منه.</p>
 
         <div class="two">
           <div>
@@ -70,18 +72,18 @@
             <input class="field" id="reg-first" type="text" autocomplete="given-name" maxlength="40" required>
           </div>
           <div>
-            <label for="reg-last">اسم العيلة</label>
+            <label for="reg-last">اسم العائلة</label>
             <input class="field" id="reg-last" type="text" autocomplete="family-name" maxlength="40" required>
           </div>
         </div>
 
-        <label for="reg-email">الإيميل</label>
+        <label for="reg-email">البريد الإلكتروني</label>
         <input class="field" id="reg-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
 
-        <label for="reg-pass">كلمة السر</label>
+        <label for="reg-pass">كلمة المرور</label>
         <div class="pass">
           <input class="field" id="reg-pass" type="password" dir="ltr" autocomplete="new-password" maxlength="64" required aria-describedby="rules">
-          <button class="eye" type="button" aria-label="إظهار كلمة السر" data-for="reg-pass">
+          <button class="eye" type="button" aria-label="إظهار كلمة المرور" data-for="reg-pass">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
@@ -89,30 +91,30 @@
         <div class="meter" aria-hidden="true"><i id="meter-bar"></i></div>
 
         <ul class="rules" id="rules">
-          <li data-rule="len"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>8 خانات على الأقل</li>
-          <li data-rule="upper"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>حرفين كابيتال على الأقل (A-Z)</li>
+          <li data-rule="len"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>8 أحرف على الأقل</li>
+          <li data-rule="upper"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>حرفان كبيران على الأقل (A-Z)</li>
           <li data-rule="digit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>رقم واحد على الأقل</li>
-          <li data-rule="special"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>علامة مميزة واحدة على الأقل مثل ! @ # $</li>
-          <li data-rule="ascii"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>إنجليزي بس ومن غير مسافات</li>
-          <li data-rule="repeat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>من غير تكرار ولا اسمك أو إيميلك جواها</li>
+          <li data-rule="special"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>رمز خاص واحد على الأقل مثل ! @ # $</li>
+          <li data-rule="ascii"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>أحرف إنجليزية فقط ودون مسافات</li>
+          <li data-rule="repeat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>دون تكرار، ولا تتضمن اسمك أو بريدك الإلكتروني</li>
         </ul>
 
-        <label for="reg-pass2">تأكيد كلمة السر</label>
+        <label for="reg-pass2">تأكيد كلمة المرور</label>
         <input class="field" id="reg-pass2" type="password" dir="ltr" autocomplete="new-password" maxlength="64" required>
 
         <label class="check" for="reg-remember">
           <input id="reg-remember" type="checkbox">
-          <span>افتكر الجهاز ده لمدة 14 يوم</span>
+          <span>تذكّر هذا الجهاز لمدة 14 يومًا</span>
         </label>
 
         <button class="btn" id="reg-btn" type="submit">إنشاء الحساب</button>
       </form>
 
       <form id="form-code" novalidate hidden>
-        <h1>ادخل كود التأكيد</h1>
-        <p class="sub">بعتنا كود من 6 أرقام على <strong id="who" dir="ltr"></strong>. الكود صالح لمدة 5 دقائق.</p>
+        <h1>أدخل رمز التحقق</h1>
+        <p class="sub">أرسلنا رمزًا من 6 أرقام إلى <strong id="who" dir="ltr"></strong>. الرمز صالح لمدة 5 دقائق.</p>
 
-        <div class="code" id="code" role="group" aria-label="كود من 6 أرقام" dir="ltr">
+        <div class="code" id="code" role="group" aria-label="رمز من 6 أرقام" dir="ltr">
           <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="الرقم 1">
           <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="الرقم 2">
           <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="الرقم 3">
@@ -124,19 +126,19 @@
         <button class="btn" id="verify" type="submit">تأكيد</button>
 
         <div class="row">
-          <button class="link" id="resend" type="button" disabled>ابعت الكود تاني</button>
+          <button class="link" id="resend" type="button" disabled>إعادة إرسال الرمز</button>
           <button class="link" id="back" type="button">تعديل البيانات</button>
         </div>
       </form>
 
       <p class="status" id="status" role="status" aria-live="polite"></p>
     </div>
+    <p class="panel-foot"><a href="../index.html">عن POP</a><span>برمجة وتصميم <a class="mc" href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
   </main>
 </div>
 
 <script src="../config.js"></script>
 <script src="../rules.js"></script>
 <script src="log.js"></script>
-<p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
 </body>
 </html>

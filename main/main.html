@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مساحتك - POP</title>
+<title>لوحة الأدوات - POP</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="theme-color" content="#0e0e10">
 <link rel="icon" type="image/png" href="../img/fav.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../img/favicon-192.png">
 <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../base.css">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="../ui.css">
+<script src="../i18n.js"></script>
 </head>
 <body>
 <div class="gate" id="gate">
@@ -23,46 +24,149 @@
 </div>
 
 <header class="top" id="top" hidden>
-  <a href="../index.html" aria-label="الصفحة الرئيسية لـ POP"><img src="../img/logo-word.png" alt="POP" width="96" height="29"></a>
-  <div class="who">
-    <span id="who"></span>
-    <button class="btn ghost" id="out" type="button">تسجيل الخروج</button>
+  <div class="top-in">
+    <a class="brand" href="../main/main.html" aria-label="لوحة الأدوات"><img src="../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
-<main class="view" id="view" hidden>
-  <h1 id="hello">أهلا بيك في POP</h1>
-  <p>اختار الأداة اللي عايز تشتغل بيها. كل الأدوات مجانية دلوقتي.</p>
+<main class="dash" id="view" hidden>
+  <section class="welcome">
+    <div class="welcome-copy">
+      <p class="eyebrow"><i aria-hidden="true"></i><span id="today" translate="no"></span></p>
+      <h1>مرحبًا، <span id="hello" translate="no"></span></h1>
+      <p>اختر الأداة التي تريد العمل بها. تتحقق كل أداة من صلاحيات حسابك قبل أن تبدأ.</p>
+    </div>
+    <dl class="facts">
+      <div><dt>خطتك الحالية</dt><dd id="f-plan">الخطة المجانية</dd></div>
+      <div><dt>الأدوات المتاحة</dt><dd><span id="f-tools" translate="no">0</span> من <span id="f-all" translate="no">0</span></dd></div>
+      <div><dt>تنتهي الجلسة في</dt><dd id="f-exp" translate="no">-</dd></div>
+    </dl>
+  </section>
 
-  <section class="tools" aria-label="الأدوات">
-    <a class="tool tool-wa" href="../tools/wa/wa.html">
-      <span class="tool-art"><img src="../img/wa-card.webp" alt="" width="800" height="450" decoding="async" fetchpriority="high"></span>
-      <span class="tool-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>
-      </span>
-      <span class="tool-body">
-        <strong>مرسل واتساب جماعي</strong>
-        <span>ابعت رسالة واحدة لأرقام كتير من رقمك، مع متغيرات زي اسم كل عميل.</span>
-      </span>
-      <span class="tool-tag">مجاني</span>
-    </a>
-    <a class="tool tool-wa" href="../tools/leads/leads.html">
-      <span class="tool-art"><img src="../img/leads-card.webp" alt="" width="800" height="450" decoding="async" loading="lazy"></span>
-      <span class="tool-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-      </span>
-      <span class="tool-body">
-        <strong>مستخرج بيانات العملاء</strong>
-        <span>اكتب نوع النشاط والمدينة وخد شيت Excel فيه الاسم والرقم والعنوان، جاهز لأداة الواتساب.</span>
-      </span>
-      <span class="tool-tag">مجاني</span>
-    </a>
+  <section class="board" aria-labelledby="t-tools">
+    <div class="board-head">
+      <h2 id="t-tools">الأدوات</h2>
+      <div class="filters" role="group" aria-label="تصفية الأدوات">
+        <button type="button" class="chip on" data-filter="all">الكل</button>
+        <button type="button" class="chip" data-filter="msg">المراسلة</button>
+        <button type="button" class="chip" data-filter="data">البيانات</button>
+      </div>
+      <label class="search">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="ابحث عن أداة" aria-label="ابحث عن أداة">
+      </label>
+    </div>
+    <div class="tgrid" id="grid">
+      <a class="tcard" href="../tools/wa/wa.html" data-tool="wa" data-cat="msg">
+        <span class="tcard-art"><img src="../img/wa-card.webp" alt="" width="800" height="450" decoding="async" fetchpriority="high"></span>
+        <span class="tcard-body">
+          <span class="tcard-top">
+            <span class="tcard-icon is-wa"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35M12.05 21.78h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89a11.82 11.82 0 0 0-3.48-8.41Z"/></svg></span>
+            <span class="tcard-cat">المراسلة</span>
+          </span>
+          <strong>مرسل واتساب جماعي</strong>
+          <span class="tcard-desc">أرسل رسالة واحدة إلى عدد كبير من الأرقام من رقمك، مع متغيرات تخصّص كل رسالة.</span>
+          <span class="tcard-foot">
+            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          </span>
+        </span>
+      </a>
+      <a class="tcard" href="../tools/leads/leads.html" data-tool="leads" data-cat="data">
+        <span class="tcard-art"><img src="../img/leads-card.webp" alt="" width="800" height="450" decoding="async" loading="lazy"></span>
+        <span class="tcard-body">
+          <span class="tcard-top">
+            <span class="tcard-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+            <span class="tcard-cat">البيانات</span>
+          </span>
+          <strong>مستخرج بيانات العملاء</strong>
+          <span class="tcard-desc">اجمع أسماء الأنشطة التجارية وأرقامها وعناوينها في أي مدينة، في جدول جاهز.</span>
+          <span class="tcard-foot">
+            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          </span>
+        </span>
+      </a>
+      <a class="tcard" href="../tools/clean/clean.html" data-tool="clean" data-cat="data">
+        <span class="tcard-art"><img src="../img/clean-card.webp" alt="" width="800" height="450" decoding="async" loading="lazy"></span>
+        <span class="tcard-body">
+          <span class="tcard-top">
+            <span class="tcard-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8L3 5Z"/></svg></span>
+            <span class="tcard-cat">البيانات</span>
+          </span>
+          <strong>منظّف قوائم الأرقام</strong>
+          <span class="tcard-desc">استخرج الأرقام من أي نص، ووحّد صيغتها الدولية، واحذف المكرر وغير الصالح.</span>
+          <span class="tcard-foot">
+            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          </span>
+        </span>
+      </a>
+      <a class="tcard" href="../tools/link/link.html" data-tool="link" data-cat="msg">
+        <span class="tcard-art"><img src="../img/link-card.webp" alt="" width="800" height="450" decoding="async" loading="lazy"></span>
+        <span class="tcard-body">
+          <span class="tcard-top">
+            <span class="tcard-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></span>
+            <span class="tcard-cat">المراسلة</span>
+          </span>
+          <strong>منشئ روابط واتساب</strong>
+          <span class="tcard-desc">أنشئ رابطًا يفتح محادثة مع رقمك ورسالة جاهزة، لموقعك وحساباتك وإعلاناتك.</span>
+          <span class="tcard-foot">
+            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          </span>
+        </span>
+      </a>
+    </div>
+    <p class="empty" id="empty" hidden>لا توجد أداة مطابقة لبحثك.</p>
   </section>
 </main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../index.html">عن POP</a>
+      <a href="../main/main.html">لوحة الأدوات</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
 
 <script src="../config.js"></script>
 <script src="../auth.js"></script>
 <script src="main.js"></script>
-<p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
 </body>
 </html>

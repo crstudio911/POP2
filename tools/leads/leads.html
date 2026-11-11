@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>مستخرج بيانات العملاء - POP</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="theme-color" content="#0e0e10">
 <link rel="icon" type="image/png" href="../../img/fav.png">
 <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../base.css">
 <link rel="stylesheet" href="../../main/main.css">
 <link rel="stylesheet" href="../wa/wa.css">
 <link rel="stylesheet" href="leads.css">
 <link rel="stylesheet" href="../../ui.css">
+<script src="../../i18n.js"></script>
 </head>
 <body>
 <div class="gate" id="gate">
@@ -23,45 +24,71 @@
 </div>
 
 <header class="top" id="top" hidden>
-  <div class="crumbs">
-    <a href="../../main/main.html" aria-label="الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
-    <a class="back" href="../../main/main.html">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-      كل الأدوات
-    </a>
-  </div>
-  <div class="who">
-    <span id="who"></span>
-    <button class="btn ghost" id="out" type="button">تسجيل الخروج</button>
+  <div class="top-in">
+    <a class="brand" href="../../main/main.html" aria-label="لوحة الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">مستخرج بيانات العملاء</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
 <main class="wa" id="view" hidden>
   <div class="wa-head">
     <h1>مستخرج بيانات العملاء</h1>
-    <p>اكتب نوع النشاط والمدينة، وهنجيبلك الأماكن اللي ليها رقم تليفون في شيت تقدر تفتحه في Excel أو تبعتله بأداة الواتساب.</p>
+    <p>اكتب نوع النشاط والمدينة، وسنجمع لك الأماكن التي لها رقم هاتف في جدول يمكنك فتحه في Excel أو مراسلته بأداة واتساب.</p>
   </div>
 
   <details class="card about">
-    <summary>الأداة دي بتعمل إيه وإزاي تستخدمها؟ دوس عشان تشوف الشرح كله أو تخفيه</summary>
+    <summary>ما وظيفة هذه الأداة وكيف تستخدمها؟ اضغط لعرض الشرح أو إخفائه</summary>
     <div class="about-body">
-      <p>بتدورلك على محلات وشركات وعيادات في أي منطقة، وتجمعلك اسم كل مكان ورقمه وعنوانه ومكانه على الخريطة.</p>
+      <p>تبحث لك عن المتاجر والشركات والعيادات في أي منطقة، وتجمع اسم كل مكان ورقمه وعنوانه وموقعه على الخريطة.</p>
       <ol>
-        <li><b>اختار النشاط:</b> زي عيادات أو مطاعم أو مكاتب عقارات.</li>
-        <li><b>اكتب المدينة أو الحي:</b> كل ما المنطقة تبقى أصغر، النتايج بتطلع أسرع وأدق.</li>
-        <li><b>كلمة في الاسم (اختياري):</b> عشان تضيّق البحث، زي «أسنان».</li>
-        <li><b>دوس ابحث واستنى:</b> البحث ممكن ياخد من ثواني لكام دقيقة، وبتشوف الوقت قدامك. لو سيرفر الخرائط مشغول بنجرب سيرفر تاني لوحدنا.</li>
-        <li><b>خد النتايج:</b> نزلها شيت Excel، أو انسخ الأرقام والصقها في أداة الواتساب.</li>
+        <li><b>اختر النشاط:</b> مثل العيادات أو المطاعم أو المكاتب العقارية.</li>
+        <li><b>اكتب المدينة أو الحي:</b> كلما صغرت المنطقة كانت النتائج أسرع وأدق.</li>
+        <li><b>كلمة في الاسم (اختياري):</b> لتضييق نطاق البحث، مثل «أسنان».</li>
+        <li><b>اضغط «ابحث» وانتظر:</b> قد يستغرق البحث من ثوانٍ إلى بضع دقائق، ويظهر لك الوقت المنقضي أمامك.</li>
+        <li><b>احصل على النتائج:</b> نزّلها جدول Excel، أو انسخ الأرقام والصقها في أداة واتساب.</li>
       </ol>
-      <p><b>مصدر البيانات:</b> خرائط OpenStreetMap المفتوحة، فممكن تلاقي أماكن مش موجودة عليها أو أرقام قديمة. الأداة بتجيب الأماكن اللي ليها رقم بس.</p>
-      <p><b>تنبيه:</b> قبل ما تبعت رسايل للأرقام دي، خلي رسالتك مفيدة ومحترمة، وابعت بأعداد صغيرة عشان رقمك مايتقيدش.</p>
+      <p><b>مصدر البيانات:</b> خرائط مفتوحة المصدر، لذا قد تجد أماكن غير مدرجة أو أرقامًا قديمة. وتعرض الأداة الأماكن التي لها رقم فقط.</p>
+      <p><b>تنبيه:</b> قبل مراسلة هذه الأرقام، احرص على أن تكون رسالتك مفيدة ولائقة، وأرسل بأعداد صغيرة حتى لا يُقيَّد رقمك.</p>
     </div>
   </details>
 
   <section class="card" aria-labelledby="t-find">
     <div class="card-head">
       <span class="step">1</span>
-      <h2 id="t-find">بتدور على إيه؟</h2>
+      <h2 id="t-find">عمّ تبحث؟</h2>
     </div>
     <form class="lead-form" id="form">
       <label class="field">
@@ -70,11 +97,11 @@
       </label>
       <label class="field">
         <span>المدينة أو المنطقة</span>
-        <input id="city" type="text" maxlength="80" placeholder="مثلا: القاهرة أو مدينة نصر أو الرياض" required>
+        <input id="city" type="text" maxlength="80" placeholder="مثلًا: القاهرة أو مدينة نصر أو الرياض" required>
       </label>
       <label class="field">
         <span>كلمة في الاسم (اختياري)</span>
-        <input id="word" type="text" maxlength="40" placeholder="مثلا: أسنان">
+        <input id="word" type="text" maxlength="40" placeholder="مثلًا: أسنان">
       </label>
       <button class="btn" id="go" type="submit">ابحث</button>
     </form>
@@ -84,26 +111,39 @@
   <section class="card" id="res-card" hidden aria-labelledby="t-res">
     <div class="card-head">
       <span class="step">2</span>
-      <h2 id="t-res">النتايج</h2>
+      <h2 id="t-res">النتائج</h2>
       <span class="pill" id="count"></span>
     </div>
     <div class="lead-actions">
-      <button class="btn" id="xls" type="button">تنزيل شيت Excel</button>
-      <button class="btn ghost" id="copy" type="button">نسخ الأرقام لأداة الواتساب</button>
+      <button class="btn" id="xls" type="button">تنزيل جدول Excel</button>
+      <button class="btn ghost" id="copy" type="button">نسخ الأرقام لأداة واتساب</button>
     </div>
     <div class="lead-table">
       <table>
         <thead><tr><th>الاسم</th><th>رقم الواتساب</th><th>العنوان</th><th>الموقع</th></tr></thead>
-        <tbody id="rows"></tbody>
+        <tbody id="rows" translate="no"></tbody>
       </table>
     </div>
-    <p class="hint">البيانات جاية من خرائط OpenStreetMap المفتوحة. مش كل الأماكن مسجل ليها رقم، والأرقام الأرضي ممكن ماتكونش على واتساب.</p>
+    <p class="hint">البيانات مأخوذة من خرائط مفتوحة المصدر. ليست كل الأماكن مسجّلًا لها رقم، وقد لا تكون الأرقام الأرضية مسجّلة في واتساب.</p>
   </section>
 </main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../../index.html">عن POP</a>
+      <a href="../../main/main.html">لوحة الأدوات</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
 
 <script src="../../config.js"></script>
 <script src="../../auth.js"></script>
 <script src="leads.js"></script>
-<p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
 </body>
 </html>

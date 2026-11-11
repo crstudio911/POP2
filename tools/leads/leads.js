@@ -5,26 +5,26 @@
   var ROUNDS = 3;
   var WAIT_MS = 240000;
   var KINDS = [
-    ['عيادات ودكاترة', '["amenity"~"^(clinic|doctors|dentist)$"]'],
-    ['صيدليات', '["amenity"="pharmacy"]'],
-    ['مستشفيات', '["amenity"="hospital"]'],
-    ['مطاعم', '["amenity"="restaurant"]'],
-    ['كافيهات', '["amenity"="cafe"]'],
-    ['جيم ونوادي رياضية', '["leisure"="fitness_centre"]'],
-    ['صالونات وكوافير', '["shop"~"^(hairdresser|beauty)$"]'],
-    ['محلات ملابس', '["shop"="clothes"]'],
-    ['سوبر ماركت', '["shop"~"^(supermarket|convenience)$"]'],
-    ['محلات موبايلات وإلكترونيات', '["shop"~"^(mobile_phone|electronics|computer)$"]'],
-    ['معارض وتوكيلات عربيات', '["shop"="car"]'],
-    ['ورش وصيانة عربيات', '["shop"="car_repair"]'],
-    ['مدارس وحضانات', '["amenity"~"^(school|kindergarten)$"]'],
-    ['مراكز تعليمية', '["amenity"~"^(college|language_school|training)$"]'],
-    ['فنادق', '["tourism"~"^(hotel|guest_house)$"]'],
-    ['شركات ومكاتب', '["office"]'],
-    ['شركات مقاولات', '["craft"~"^(builder|construction)$"]'],
-    ['مكاتب محاماة', '["office"="lawyer"]'],
-    ['مكاتب عقارات', '["office"="estate_agent"]'],
-    ['محلات أثاث', '["shop"~"^(furniture|interior_decoration)$"]'],
+    ['العيادات والأطباء', '["amenity"~"^(clinic|doctors|dentist)$"]'],
+    ['الصيدليات', '["amenity"="pharmacy"]'],
+    ['المستشفيات', '["amenity"="hospital"]'],
+    ['المطاعم', '["amenity"="restaurant"]'],
+    ['المقاهي', '["amenity"="cafe"]'],
+    ['الصالات والأندية الرياضية', '["leisure"="fitness_centre"]'],
+    ['صالونات التجميل والحلاقة', '["shop"~"^(hairdresser|beauty)$"]'],
+    ['متاجر الملابس', '["shop"="clothes"]'],
+    ['المتاجر الكبرى والبقالات', '["shop"~"^(supermarket|convenience)$"]'],
+    ['متاجر الهواتف والإلكترونيات', '["shop"~"^(mobile_phone|electronics|computer)$"]'],
+    ['معارض السيارات ووكالاتها', '["shop"="car"]'],
+    ['ورش صيانة السيارات', '["shop"="car_repair"]'],
+    ['المدارس ورياض الأطفال', '["amenity"~"^(school|kindergarten)$"]'],
+    ['المراكز التعليمية', '["amenity"~"^(college|language_school|training)$"]'],
+    ['الفنادق', '["tourism"~"^(hotel|guest_house)$"]'],
+    ['الشركات والمكاتب', '["office"]'],
+    ['شركات المقاولات', '["craft"~"^(builder|construction)$"]'],
+    ['مكاتب المحاماة', '["office"="lawyer"]'],
+    ['المكاتب العقارية', '["office"="estate_agent"]'],
+    ['متاجر الأثاث', '["shop"~"^(furniture|interior_decoration)$"]'],
     ['أي نشاط تجاري', '["shop"]']
   ];
   var MAX = 2000;
@@ -38,14 +38,7 @@
   function leave() { A.clear(); window.location.replace(LOGIN); }
   function show() { $('gate').hidden = true; $('top').hidden = false; $('view').hidden = false; }
 
-  A.call('/api/session/check', session.t).then(function (r) {
-    if (!r.ok && r.error !== 'network') { leave(); return; }
-    if (r.ok) {
-      var name = [r.firstName, r.lastName].filter(Boolean).join(' ');
-      $('who').textContent = name ? name + ' - ' + r.email : r.email;
-    }
-    show();
-  });
+  A.access('leads', { login: LOGIN, home: '../../main/main.html' }, show);
   $('out').addEventListener('click', function () { A.call('/api/session/end', session.t).then(leave, leave); });
 
   KINDS.forEach(function (k, i) {
@@ -91,7 +84,7 @@
       .then(function (j) { clearTimeout(timer); return j; }, function (e) {
         clearTimeout(timer);
         if (i + 1 < OVERPASS.length * ROUNDS) {
-          say('خدمة الخرائط عليها ضغط، بنجرب سيرفر تاني... كمل استنى، البحث ممكن ياخد كام دقيقة');
+          say('خدمة الخرائط تشهد ضغطًا، وجارٍ إعادة المحاولة... يرجى الانتظار، فقد يستغرق البحث بضع دقائق');
           return sleep(i + 1 < OVERPASS.length ? 1500 : 8000).then(function () { return overpass(q, i + 1); });
         }
         throw e;
@@ -122,10 +115,10 @@
     started = Date.now();
     clearInterval(clock);
     clock = setInterval(tick, 1000);
-    say('بندور على المنطقة...');
+    say('جارٍ البحث عن المنطقة...');
     area(city).then(function (b) {
       if ((b.n - b.s) * (b.e - b.w) > 9) throw new Error('big');
-      say('بنجمع الأماكن في ' + b.name + '... البحث بياخد وقته، سيب الصفحة مفتوحة');
+      say('جارٍ جمع الأماكن في ' + b.name + '... قد يستغرق البحث بعض الوقت، يرجى إبقاء الصفحة مفتوحة');
       var tag = KINDS[$('kind').value][1];
       var nm = word ? '["name"~"' + word + '",i]' : '';
       var bb = '(' + b.s + ',' + b.w + ',' + b.n + ',' + b.e + ')';
@@ -141,13 +134,13 @@
         seen[p] = 1;
         var lat = el.lat || (el.center && el.center.lat);
         var lon = el.lon || (el.center && el.center.lon);
-        list.push({ name: t['name:ar'] || t.name || 'بدون اسم', phone: p, address: addr(t), map: lat ? 'https://www.google.com/maps?q=' + lat + ',' + lon : '' });
+        list.push({ name: t['name:ar'] || t.name || 'دون اسم', phone: p, address: addr(t), map: lat ? 'https://www.google.com/maps?q=' + lat + ',' + lon : '' });
       });
       render();
-      say(list.length ? 'لقينا ' + list.length + ' مكان ليه رقم.' : 'مالقيناش أماكن ليها أرقام هنا. جرب منطقة أكبر أو نشاط تاني.');
+      say(list.length ? 'عُثر على ' + list.length + ' مكان له رقم.' : 'لم يُعثر على أماكن لها أرقام هنا. جرّب منطقة أوسع أو نشاطًا آخر.');
     }).catch(function (e) {
       var m = e && e.message;
-      say(m === 'nf' ? 'مالقيناش المنطقة دي، اكتبها بشكل تاني.' : m === 'big' ? 'المنطقة كبيرة أوي، اكتب مدينة أو حي بدل دولة.' : 'جربنا كل سيرفرات الخرائط وكلها مشغولة دلوقتي. جرب تاني بعد كام دقيقة، أو صغّر المنطقة.');
+      say(m === 'nf' ? 'لم يُعثر على هذه المنطقة، يرجى كتابتها بصيغة أخرى.' : m === 'big' ? 'المنطقة واسعة جدًا، يرجى كتابة مدينة أو حي بدلًا من دولة.' : 'خدمة الخرائط مشغولة حاليًا. يرجى المحاولة بعد بضع دقائق، أو تضييق المنطقة.');
     }).then(function () { busy = false; started = 0; clearInterval(clock); tick(); $('go').disabled = false; });
   }
 
@@ -160,7 +153,7 @@
         var td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
       });
       var td = document.createElement('td');
-      if (r.map) { var a = document.createElement('a'); a.href = r.map; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'افتح'; td.appendChild(a); }
+      if (r.map) { var a = document.createElement('a'); a.href = r.map; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'فتح'; td.appendChild(a); }
       tr.appendChild(td);
       tb.appendChild(tr);
     });
@@ -185,7 +178,7 @@
 
   $('copy').addEventListener('click', function () {
     var t = list.map(function (r) { return r.phone; }).join('\n');
-    navigator.clipboard.writeText(t).then(function () { say('الأرقام اتنسخت. افتح أداة الواتساب والصقها في خانة الأرقام.'); }, function () { say('ماقدرناش ننسخ، نزل الشيت بدل كده.'); });
+    navigator.clipboard.writeText(t).then(function () { say('نُسخت الأرقام. افتح أداة واتساب والصقها في خانة الأرقام.'); }, function () { say('تعذّر النسخ، يرجى تنزيل الجدول بدلًا من ذلك.'); });
   });
 
   $('form').addEventListener('submit', search);

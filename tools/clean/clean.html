@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منظّف قوائم الأرقام - POP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../../img/fav.png">
+<link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../base.css">
+<link rel="stylesheet" href="../../main/main.css">
+<link rel="stylesheet" href="../wa/wa.css">
+<link rel="stylesheet" href="clean.css">
+<link rel="stylesheet" href="../../ui.css">
+<script src="../../i18n.js"></script>
+</head>
+<body>
+<div class="gate" id="gate">
+  <img src="../../img/symbol.png" alt="" width="64" height="56">
+</div>
+
+<header class="top" id="top" hidden>
+  <div class="top-in">
+    <a class="brand" href="../../main/main.html" aria-label="لوحة الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">منظّف قوائم الأرقام</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wa" id="view" hidden>
+  <div class="wa-head">
+    <h1>منظّف قوائم الأرقام</h1>
+    <p>الصق أي نص يحتوي على أرقام هواتف، وستحصل على قائمة مرتبة بالصيغة الدولية دون تكرار أو أرقام غير صالحة، جاهزة للإرسال.</p>
+  </div>
+
+  <details class="card about">
+    <summary>ما وظيفة هذه الأداة وكيف تستخدمها؟ اضغط لعرض الشرح أو إخفائه</summary>
+    <div class="about-body">
+      <p>تستخرج الأداة أرقام الهواتف من أي نص، سواء كان منسوخًا من جدول أو محادثة أو ملف، ثم توحّد صيغتها وتحذف المكرر وغير الصالح.</p>
+      <ol>
+        <li><b>الصق النص:</b> يمكن أن يحتوي على أسماء وعلامات ومسافات، وستُستخرج الأرقام وحدها.</li>
+        <li><b>اختر رمز الدولة:</b> يُضاف إلى الأرقام المحلية التي تبدأ بصفر.</li>
+        <li><b>انسخ النتيجة أو نزّلها:</b> يمكنك لصقها مباشرة في أداة مرسل واتساب الجماعي.</li>
+      </ol>
+      <p><b>الخصوصية:</b> تتم المعالجة بالكامل داخل متصفحك، ولا تُرسل الأرقام إلى أي جهة.</p>
+    </div>
+  </details>
+
+  <section class="card" aria-labelledby="t-in">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2 id="t-in">النص المصدر</h2>
+    </div>
+    <div class="form-row">
+      <label class="field">
+        <span>رمز الدولة</span>
+        <input id="cc" type="text" inputmode="numeric" maxlength="4" value="20" dir="ltr">
+      </label>
+      <label class="field">
+        <span>صيغة الناتج</span>
+        <select id="fmt">
+          <option value="plus">دولية مع علامة + (مثل ‎+201001234567)</option>
+          <option value="digits">أرقام فقط (مثل 201001234567)</option>
+        </select>
+      </label>
+    </div>
+    <label class="sr" for="src">النص المصدر</label>
+    <textarea id="src" rows="8" maxlength="200000" placeholder="الصق هنا النص أو الأرقام، رقمًا في كل سطر أو بأي شكل آخر"></textarea>
+    <div class="row-actions">
+      <button class="btn" id="run" type="button">تنظيف القائمة</button>
+      <button class="btn ghost" id="reset" type="button">مسح</button>
+    </div>
+  </section>
+
+  <section class="card" id="out-card" hidden aria-labelledby="t-out">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2 id="t-out">القائمة النظيفة</h2>
+    </div>
+    <div class="stats" id="stats"></div>
+    <label class="sr" for="result">القائمة النظيفة</label>
+    <textarea id="result" rows="8" readonly dir="ltr"></textarea>
+    <div class="row-actions">
+      <button class="btn" id="copy" type="button">نسخ القائمة</button>
+      <button class="btn ghost" id="csv" type="button">تنزيل ملف CSV</button>
+      <a class="btn ghost" href="../wa/wa.html">فتح مرسل واتساب</a>
+    </div>
+    <p class="hint" id="state" role="status" aria-live="polite"></p>
+  </section>
+</main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../../index.html">عن POP</a>
+      <a href="../../main/main.html">لوحة الأدوات</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
+
+<script src="../../config.js"></script>
+<script src="../../auth.js"></script>
+<script src="clean.js"></script>
+</body>
+</html>
