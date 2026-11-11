@@ -7,7 +7,8 @@
   var MAX_MSG = 4096;
   var MAX_VALUE = 300;
   var NAME_RE = /^[\p{L}\p{N}_ ]{1,20}$/u;
-  var TOKEN_RE = /\{\{([^{}]{1,40})\}\}/g;
+  var TOKEN_RE = /\{\{?([^{}]{1,40})\}?\}/g;
+  var MAX_LIST = 60000;
   var SPEED_AVG = { safe: 11.5, normal: 6 };
   var STATUS_TEXT = { s: 'اتبعتت', n: 'مش على واتساب', f: 'فشلت' };
   var TRASH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
@@ -35,6 +36,31 @@
   var wakeTries = 0;
   var previewAt = 0;
   var lastCaret = null;
+  var logSeq = 0;
+  var LOG_TEXT = {
+    qr: function (e) { return 'ظهر كود QR جديد (محاولة ' + e.x + ' من 5)'; },
+    qr_timeout: function () { return 'كود QR خلص وقته من غير ما يتمسح'; },
+    open: function (e) { return 'الرقم اتربط بنجاح' + (e.p ? ' (+' + e.p + ')' : ''); },
+    resume: function () { return 'رجعنا للربط القديم المحفوظ'; },
+    reconnect: function (e) { return 'الاتصال وقع، بنحاول نوصل تاني (محاولة ' + e.x + ')'; },
+    conn_failed: function () { return 'ماقدرناش نرجع الاتصال بواتساب'; },
+    logged_out: function () { return 'الرقم اتفصل من الموبايل'; },
+    expired: function () { return 'مدة الربط خلصت (ساعة من غير نشاط)'; },
+    wiped: function () { return 'بيانات الربط اتمسحت نهائيًا من السيرفر والشيت'; },
+    wipe_retry: function () { return 'المسح ماكملش، السيرفر هيعيد المحاولة تلقائيًا كل 30 ثانية'; },
+    start: function (e) { return 'بدأ الإرسال لـ ' + e.x + ' رقم'; },
+    sent: function (e) { return 'اتبعتت لـ +' + e.p; },
+    not_wa: function (e) { return '+' + e.p + ' مش على واتساب'; },
+    failed: function (e) {
+      var why = { rate: 'واتساب طلب نبطأ', timeout: 'الطلب أخد وقت طويل', conn: 'الاتصال وقع', other: 'خطأ غير معروف' };
+      return 'فشلت لـ +' + e.p + (e.x && why[e.x] ? ' (' + why[e.x] + ')' : '');
+    },
+    wait: function (e) { return 'استنى ' + e.x + ' ثانية قبل الرسالة الجاية'; },
+    lost: function () { return 'الاتصال وقع أثناء الإرسال، الباقي اتسجل فشل'; },
+    stopping: function () { return 'طلبت إيقاف الإرسال'; },
+    stopped: function (e) { return 'الإرسال وقف. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; },
+    done: function (e) { return 'الإرسال خلص. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; }
+  };
 
   function leave() {
     A.clear();
@@ -50,7 +76,7 @@
     return {
       vars: Array.isArray(d.vars)
         ? d.vars.slice(0, MAX_VARS).map(function (v) {
-            return { n: String((v && v.n) || '').slice(0, 20), d: String((v && v.d) || '').slice(0, MAX_VALUE) };
+            return { n: String((v && v.n) || '').slice(0, 20), d: String((v && v.d) || '').slice(0, MAX_LIST) };
           })
         : [],
       msg: typeof d.msg === 'string' ? d.msg.slice(0, MAX_MSG) : '',
@@ -103,7 +129,8 @@
   function waCall(path, body, retried) {
     return getTicket(false)
       .then(function (t) {
-        return A.post(path, body || {}, { 'X-WA-Ticket': t });
+        var b = Object.assign({}, body || {}, { lf: logSeq });
+        return A.post(path, b, { 'X-WA-Ticket': t });
       })
       .then(function (r) {
         if (!r.ok && r.error === 'invalid_ticket' && !retried) {
@@ -174,7 +201,7 @@
       seen[p] = true;
       var v = [];
       for (var k = 0; k < n; k++) v.push(String(cells[k + 1] || '').slice(0, MAX_VALUE));
-      rows.push({ p: p, v: v });
+      rows.push({ p: p, v: v, i: rows.length });
     }
     parsed = { rows: rows, invalid: invalid, dupes: dupes };
   }
@@ -187,7 +214,19 @@
   function valueFor(row, i) {
     var own = row && row.v[i];
     if (own) return own;
-    return draft.vars[i] ? draft.vars[i].d : '';
+    var list = draft.vars[i] ? valuesOf(draft.vars[i]) : [];
+    if (!list.length) return '';
+    return list[(row ? row.i : 0) % list.length];
+  }
+
+  function valuesOf(v) {
+    return v.d.split(/\r?\n/).map(function (x) {
+      return x.trim().slice(0, MAX_VALUE);
+    }).filter(Boolean);
+  }
+
+  function swapToken(text, from, to) {
+    return text.split('{{' + from + '}}').join(to).split('{' + from + '}').join(to);
   }
 
   function unknownTokens() {
@@ -241,12 +280,15 @@
       name.placeholder = 'اسم المتغير، مثلا: الاسم';
       name.value = v.n;
       name.setAttribute('aria-label', 'اسم المتغير ' + (i + 1));
-      var def = document.createElement('input');
-      def.type = 'text';
-      def.maxLength = MAX_VALUE;
-      def.placeholder = 'القيمة اللي تتكتب للكل (اختياري)';
+      var def = document.createElement('textarea');
+      def.rows = 3;
+      def.maxLength = MAX_LIST;
+      def.placeholder = 'القيم، كل قيمة في سطر:\nمحمد\nأحمد\nمحمود';
       def.value = v.d;
-      def.setAttribute('aria-label', 'القيمة العامة للمتغير ' + (i + 1));
+      def.setAttribute('aria-label', 'قيم المتغير ' + (i + 1));
+      var cnt = document.createElement('span');
+      cnt.className = 'vals-count';
+      cnt.textContent = valuesOf(v).length + ' قيمة';
       var del = document.createElement('button');
       del.type = 'button';
       del.className = 'icon-btn del';
@@ -268,7 +310,7 @@
         draft.vars[i].n = now;
         name.value = now;
         if (before.trim() && now && before.trim() !== now && nameOk(i)) {
-          draft.msg = draft.msg.split('{{' + before.trim() + '}}').join('{{' + now + '}}');
+          draft.msg = swapToken(draft.msg, before.trim(), '{' + now + '}');
           $('msg').value = draft.msg;
         }
         before = now;
@@ -276,13 +318,14 @@
       });
       def.addEventListener('input', function () {
         draft.vars[i].d = def.value;
+        cnt.textContent = valuesOf(draft.vars[i]).length + ' قيمة';
         refresh(false);
       });
       del.addEventListener('click', function () {
         var gone = draft.vars[i].n.trim();
         draft.vars.splice(i, 1);
         if (gone) {
-          draft.msg = draft.msg.split('{{' + gone + '}}').join('');
+          draft.msg = swapToken(draft.msg, gone, '');
           $('msg').value = draft.msg;
         }
         renderVars();
@@ -291,7 +334,11 @@
       if (!nameOk(i)) name.classList.add('bad');
       row.appendChild(num);
       row.appendChild(name);
-      row.appendChild(def);
+      var vb = document.createElement('div');
+      vb.className = 'vals';
+      vb.appendChild(def);
+      vb.appendChild(cnt);
+      row.appendChild(vb);
       row.appendChild(del);
       box.appendChild(row);
     });
@@ -353,7 +400,7 @@
 
   function insertToken(name) {
     var ta = $('msg');
-    var token = '{{' + name + '}}';
+    var token = '{' + name + '}';
     var start = lastCaret ? lastCaret[0] : ta.value.length;
     var end = lastCaret ? lastCaret[1] : ta.value.length;
     if (ta.value.length - (end - start) + token.length > MAX_MSG) return;
@@ -416,7 +463,7 @@
         var td = document.createElement('td');
         var val = valueFor(r, i);
         td.textContent = val || 'فاضي';
-        if (!r.v[i]) td.className = 'empty';
+        if (!val) td.className = 'empty';
         tr.appendChild(td);
       });
       body.appendChild(tr);
@@ -567,9 +614,44 @@
     wa.expiresAt = Number(r.expiresAt) || 0;
     if (r.error && ERR_TEXT[r.error]) setError(ERR_TEXT[r.error]);
     else if (wa.state === 'open' || wa.state === 'qr') setError('');
+    applyLog(r);
     applyJob(r.job);
     renderLink();
     renderSend();
+  }
+
+  function applyLog(r) {
+    if (typeof r.logSeq !== 'number') return;
+    if (r.logSeq < logSeq) {
+      logSeq = 0;
+      return;
+    }
+    var list = $('log');
+    var stick = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
+    (Array.isArray(r.log) ? r.log : []).forEach(function (e) {
+      if (!e || typeof e.n !== 'number' || e.n <= logSeq) return;
+      logSeq = e.n;
+      var fn = LOG_TEXT[e.k];
+      if (!fn) return;
+      var text;
+      try {
+        text = fn(e);
+      } catch (x) {
+        return;
+      }
+      var li = document.createElement('li');
+      li.className = 'lg-' + e.k;
+      var t = document.createElement('time');
+      t.textContent = new Date(e.t).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      var span = document.createElement('span');
+      span.textContent = text;
+      li.appendChild(t);
+      li.appendChild(span);
+      list.appendChild(li);
+    });
+    while (list.children.length > 400) list.removeChild(list.firstChild);
+    $('log-empty').hidden = list.children.length > 0;
+    if (stick) list.scrollTop = list.scrollHeight;
   }
 
   function applyJob(j) {
@@ -728,10 +810,17 @@
     var rows = parsed.rows.slice(0, perSend);
     var body = {
       template: templateForSend(),
-      defs: draft.vars.map(function (v) {
-        return v.d.slice(0, MAX_VALUE);
+      defs: draft.vars.map(function () {
+        return '';
       }),
-      rows: rows,
+      rows: rows.map(function (r) {
+        return {
+          p: r.p,
+          v: draft.vars.map(function (v, i) {
+            return valueFor(r, i);
+          })
+        };
+      }),
       speed: draft.speed
     };
     jobMeta = { id: '', phones: rows.map(function (r) {
@@ -894,6 +983,10 @@
     });
     $('stop').addEventListener('click', stop);
     $('report').addEventListener('click', downloadReport);
+    $('log-clear').addEventListener('click', function () {
+      $('log').textContent = '';
+      $('log-empty').hidden = false;
+    });
     $('out').addEventListener('click', function () {
       A.call('/api/session/end', session.t).then(leave, leave);
     });

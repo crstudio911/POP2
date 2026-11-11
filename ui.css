@@ -1,0 +1,216 @@
+:root {
+  --bg: #09090b;
+  --panel: rgba(24, 24, 27, 0.72);
+  --panel-2: #0f0f12;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --muted: #9b9ba6;
+  --orange: #ff7a00;
+  --orange-2: #ffa340;
+  --orange-soft: rgba(255, 122, 0, 0.12);
+  --glow: 0 10px 40px -12px rgba(255, 122, 0, 0.55);
+  --lift: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 20px 50px -24px rgba(0, 0, 0, 0.8);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(255, 122, 0, 0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(255, 122, 0, 0.06), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: rgba(255, 122, 0, 0.35);
+  color: #fff;
+}
+
+.btn {
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--orange-2), var(--orange));
+  border-color: transparent;
+  box-shadow: var(--glow), 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), filter 0.2s;
+}
+
+.btn:hover {
+  background: linear-gradient(180deg, #ffb35c, #ff8a1a);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 44px -12px rgba(255, 122, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn.ghost {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--line-2);
+  box-shadow: none;
+  backdrop-filter: blur(8px);
+}
+
+.btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 122, 0, 0.6);
+}
+
+input,
+select,
+textarea {
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-color: var(--line-2) !important;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(255, 122, 0, 0.7) !important;
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.14);
+}
+
+.bar.solid,
+.top {
+  background: rgba(9, 9, 11, 0.7);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border-color: var(--line);
+}
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.hero h1 {
+  letter-spacing: -0.01em;
+  background: linear-gradient(180deg, #fff 30%, #c9c9cf);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero h1 span {
+  background: linear-gradient(90deg, var(--orange-2), var(--orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stage::after {
+  background: linear-gradient(150deg, #18181b, #0b0b0d 70%);
+}
+
+.tools,
+.band {
+  background: transparent;
+}
+
+.tool-list li {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  margin-bottom: 14px;
+  padding: 24px;
+  background: var(--panel);
+  box-shadow: var(--lift);
+  transition: transform 0.25s var(--ease), border-color 0.25s, background 0.25s;
+}
+
+.tool-list li:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 122, 0, 0.45);
+  background: linear-gradient(180deg, rgba(255, 122, 0, 0.08), var(--panel));
+}
+
+.tool-list .join a {
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--orange-2), var(--orange));
+}
+
+.tool-list {
+  gap: 0 18px;
+}
+
+.why-item {
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-top-width: 3px;
+  background: var(--panel);
+}
+
+.card,
+.tool,
+.box,
+.panel .box {
+  border-radius: 16px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--panel) !important;
+  box-shadow: var(--lift);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.panel .box {
+  padding: clamp(24px, 4vw, 40px);
+}
+
+.tool {
+  transition: transform 0.25s var(--ease), border-color 0.25s;
+}
+
+.tool:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 122, 0, 0.5) !important;
+}
+
+.tool-icon,
+.step {
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 122, 0, 0.22), rgba(255, 122, 0, 0.06));
+  box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.25) inset;
+}
+
+.card {
+  animation: rise 0.5s var(--ease) both;
+}
+
+.bubble {
+  border-radius: 14px 14px 4px 14px;
+}
+
+.vals {
+  display: grid;
+  gap: 4px;
+}
+
+.vals textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.vals-count {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.var {
+  align-items: start;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

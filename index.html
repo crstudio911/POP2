@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>POP - كل الأدوات في مكان واحد</title>
+<meta property="og:title" content="POP - كل الأدوات في مكان واحد">
+<meta property="og:description" content="أدوات برمجة وألعاب وميديا وتصميم ومرسل واتساب جماعي في حساب واحد.">
+<meta property="og:type" content="website">
 <meta name="description" content="POP بيجمع أدوات البرمجة والألعاب والميديا والـ 3D والتصميم والأدوات اليومية والتخزين السحابي في مساحة شغل واحدة. أدوات أكتر، إمكانيات أكبر.">
 <meta name="theme-color" content="#0d0d0e">
 <link rel="icon" type="image/png" href="img/fav.png">
@@ -12,8 +15,10 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="one.css">
+<link rel="stylesheet" href="ui.css">
 </head>
 <body>
 <header class="bar" id="bar">
@@ -38,7 +43,7 @@
       </div>
     </div>
     <div class="stage" aria-hidden="true">
-      <img src="img/symbol.png" alt="" width="327" height="287">
+      <img src="img/symbol.png" alt="" width="327" height="287" fetchpriority="high" decoding="async">
     </div>
   </section>
 
@@ -95,6 +100,10 @@
         <p>كلمة السر لازم تكون قوية، وبتتحفظ مشفرة بهاش ومحدش يقدر يشوفها، حتى إحنا.</p>
       </div>
       <div class="why-item">
+        <h3>مرسل واتساب جماعي</h3>
+        <p>اربط رقمك بـ QR وابعت رسالة واحدة لمئات الأرقام، وكل رقم ياخد اسمه من المتغيرات.</p>
+      </div>
+      <div class="why-item">
         <h3>جهازك متفتكر</h3>
         <p>لو اخترت تفضل مسجل دخول، POP بيحفظ جلستك 14 يوم وبعدها بيقفلها لوحده.</p>
       </div>
@@ -110,12 +119,12 @@
 </main>
 
 <footer class="foot">
-  <img src="img/logo-full.png" alt="POP" width="150" height="56">
+  <img src="img/logo-full.png" alt="POP" width="150" height="56" loading="lazy" decoding="async">
   <p>POP. كل الأدوات في مكان واحد.</p>
   <p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
 </footer>
 
-<script src="config.js"></script>
-<script src="one.js"></script>
+<script src="config.js" defer></script>
+<script src="one.js" defer></script>
 </body>
 </html>

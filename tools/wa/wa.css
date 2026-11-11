@@ -594,3 +594,61 @@ td.empty {
     display: none;
   }
 }
+
+.card-head #log-clear {
+  margin-inline-start: auto;
+}
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 340px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.86rem;
+}
+
+.log li {
+  display: flex;
+  gap: 12px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--silver);
+}
+
+.log li:last-child {
+  border-bottom: 0;
+}
+
+.log time {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  direction: ltr;
+}
+
+.log .lg-sent,
+.log .lg-open,
+.log .lg-done,
+.log .lg-wiped {
+  color: var(--ok, #3ecf8e);
+}
+
+.log .lg-failed,
+.log .lg-lost,
+.log .lg-conn_failed,
+.log .lg-wipe_retry {
+  color: var(--danger);
+}
+
+.log .lg-not_wa,
+.log .lg-expired,
+.log .lg-stopped {
+  color: var(--gold);
+}
+
+.log .lg-wait {
+  opacity: 0.65;
+}

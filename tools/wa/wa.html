@@ -12,9 +12,11 @@
 <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="../../base.css">
 <link rel="stylesheet" href="../../main/main.css">
 <link rel="stylesheet" href="wa.css">
+<link rel="stylesheet" href="../../ui.css">
 </head>
 <body>
 <div class="gate" id="gate">
@@ -99,7 +101,7 @@
       <h2 id="t-vars">المتغيرات</h2>
       <span class="count" id="vars-count">0 / 6</span>
     </div>
-    <p class="hint">المتغير كلمة بتتغير في الرسالة، زي اسم العميل. اديله اسم، وحط قيمة تتكتب للكل لو مفيش قيمة خاصة للرقم.</p>
+    <p class="hint">اعمل متغير زي «الاسم» واكتب قيمه كل قيمة في سطر. في الرسالة اكتب {الاسم}: أول رقم ياخد أول قيمة، وتاني رقم تاني قيمة، وهكذا. لو الأرقام أكتر من القيم، القيم بتتكرر من الأول.</p>
     <div class="vars" id="vars"></div>
     <button class="btn ghost small" id="add-var" type="button">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -124,7 +126,7 @@
       <span class="hint">حط المؤشر في المكان اللي عايزه، ودوس الزرار واختار المتغير.</span>
     </div>
     <label class="sr" for="msg">نص الرسالة</label>
-    <textarea id="msg" rows="7" maxlength="4096" placeholder="مثال: أهلا {{الاسم}}، طلبك جاهز."></textarea>
+    <textarea id="msg" rows="7" maxlength="4096" placeholder="مثال: أهلا {الاسم} جاهز نبدأ؟"></textarea>
     <p class="alert soft" id="msg-warn" hidden></p>
   </section>
 
@@ -146,9 +148,10 @@
       </label>
       <button class="btn ghost small" id="clear-nums" type="button">مسح الأرقام</button>
     </div>
-    <p class="hint" id="nums-hint">رقم واحد في كل سطر. لو عايز قيمة مختلفة للمتغيرات لكل رقم، اكتبها بعد الرقم ومفصولة بفاصلة، بنفس ترتيب المتغيرات. ممكن تنسخ عمودين أو أكتر من إكسل وتلزقهم على طول.</p>
+    <p class="hint" id="nums-hint">رقم واحد في كل سطر. القيم بتتوزع على الأرقام بالترتيب. ولو حبيت تحدد قيمة لرقم معين، اكتبها بعده بفاصلة.</p>
     <label class="sr" for="nums">الأرقام</label>
-    <textarea id="nums" rows="7" dir="ltr" placeholder="01012345678, أحمد"></textarea>
+    <textarea id="nums" rows="7" dir="ltr" placeholder="01012345678
+01112345678"></textarea>
     <div class="stats" id="nums-stats"></div>
     <div class="table-wrap" id="table-wrap" hidden>
       <table id="table"></table>
@@ -219,6 +222,17 @@
         <table id="results"></table>
       </div>
     </div>
+  </section>
+
+  <section class="card" aria-labelledby="t-log">
+    <div class="card-head">
+      <span class="step">6</span>
+      <h2 id="t-log">سجل العمليات</h2>
+      <button class="btn ghost small" id="log-clear" type="button">مسح السجل</button>
+    </div>
+    <p class="hint">هنا بتشوف كل اللي بيحصل لحظة بلحظة: الربط، كل رسالة، الانتظار بين الرسايل، ومسح بيانات الربط.</p>
+    <p class="hint" id="log-empty">لسه مفيش حاجة حصلت.</p>
+    <ol class="log" id="log" aria-live="polite"></ol>
   </section>
 </main>
 
