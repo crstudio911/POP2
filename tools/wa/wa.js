@@ -3,14 +3,16 @@
   var LOGIN = '../../login/log.html';
   var DRAFT_KEY = 'pop_wa_d';
   var JOB_KEY = 'pop_wa_j';
+  var DAY_KEY = 'pop_wa_day';
   var MAX_VARS = 6;
   var MAX_MSG = 4096;
   var MAX_VALUE = 300;
   var NAME_RE = /^[\p{L}\p{N}_ ]{1,20}$/u;
   var TOKEN_RE = /\{\{?([^{}]{1,40})\}?\}/g;
   var MAX_LIST = 60000;
-  var SPEED_AVG = { safe: 11.5, normal: 6 };
-  var STATUS_TEXT = { s: 'اتبعتت', n: 'مش على واتساب', f: 'فشلت' };
+  var SPEED_AVG = { safe: 120, normal: 80 };
+  var WAKE_MAX = 20;
+  var STATUS_TEXT = { s: 'اتبعتت', n: 'مش على واتساب', f: 'فشلت', k: 'اتأجلت حماية لرقمك' };
   var TRASH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
 
   var $ = function (id) {
@@ -56,7 +58,21 @@
       return 'فشلت لـ +' + e.p + (e.x && why[e.x] ? ' (' + why[e.x] + ')' : '');
     },
     wait: function (e) { return 'استنى ' + e.x + ' ثانية قبل الرسالة الجاية'; },
-    lost: function () { return 'الاتصال وقع أثناء الإرسال، الباقي اتسجل فشل'; },
+    rest: function (e) { return 'استراحة ' + e.x + ' دقيقة عشان الرقم يفضل في الأمان'; },
+    cap: function (e) { return 'وصلنا ' + e.x[0] + ' رسالة في الساعة، هنكمل بعد ' + e.x[1] + ' دقيقة'; },
+    settle: function (e) { return 'الرقم لسه متربط، بنستنى ' + e.x + ' ثانية عشان الرسايل توصل مفتوحة'; },
+    resent: function () { return 'موبايل العميل طلب الرسالة تاني، وبعتناها له تلقائيًا عشان تتفتح'; },
+    invalid_rest: function (e) { return 'أرقام كتير ورا بعض مش على واتساب، استراحة ' + e.x + ' دقيقة'; },
+    invalid_stop: function () { return 'أكتر من نص الأرقام مش على واتساب، وقفنا حماية لرقمك. نضّف القايمة وابعت تاني'; },
+    day_cap: function (e) { return 'وصلت ' + e.x + ' رسالة النهارده من الرقم ده، الباقي اتأجل لبكره حماية لرقمك'; },
+    restricted: function () { return 'واتساب قيّد الرقم مؤقتًا'; },
+    restricted_stop: function () { return 'وقفنا الإرسال فورًا لأن واتساب قيّد الرقم. الربط فاضل زي ما هو'; },
+    replaced: function () { return 'الرقم اتفتح من مكان تاني، وقفنا عشان مايحصلش تعارض'; },
+    rate_pause: function (e) { return 'واتساب طلب نبطأ، هنستنى ' + e.x + ' دقيقة'; },
+    rate_stop: function () { return 'واتساب طلب نبطأ تاني، وقفنا الإرسال حماية لرقمك'; },
+    lost: function () { return 'الرقم فضل مفصول 30 دقيقة، الباقي اتأجل'; },
+    paused: function () { return 'الإرسال اتوقف مؤقتًا لحد ما الرقم يرجع يتربط'; },
+    resumed: function (e) { return 'الرقم رجع، الإرسال كمل من الرقم ' + ((e.x || 0) + 1); },
     stopping: function () { return 'طلبت إيقاف الإرسال'; },
     stopped: function (e) { return 'الإرسال وقف. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; },
     done: function (e) { return 'الإرسال خلص. اتبعتت ' + e.x[0] + '، مش على واتساب ' + e.x[1] + '، فشلت ' + e.x[2]; }
@@ -211,6 +227,17 @@
     return -1;
   }
 
+  function isSpin(name) {
+    return name.indexOf('|') >= 0;
+  }
+
+  function spinText(text, k) {
+    return text.replace(/\{([^{}]*\|[^{}]*)\}/g, function (m, body) {
+      var parts = body.split('|');
+      return parts[k % parts.length];
+    });
+  }
+
   function valueFor(row, i) {
     var own = row && row.v[i];
     if (own) return own;
@@ -232,7 +259,7 @@
   function unknownTokens() {
     var out = [];
     draft.msg.replace(TOKEN_RE, function (m, name) {
-      if (varIndex(name) < 0 && out.indexOf(name) < 0) out.push(name);
+      if (!isSpin(name) && varIndex(name) < 0 && out.indexOf(name) < 0) out.push(name);
       return m;
     });
     return out;
@@ -486,7 +513,13 @@
     var row = rows[previewAt] || null;
     var last = 0;
     draft.msg.replace(TOKEN_RE, function (m, name, at) {
-      bubble.appendChild(document.createTextNode(draft.msg.slice(last, at)));
+      bubble.appendChild(document.createTextNode(spinText(draft.msg.slice(last, at), previewAt)));
+      if (isSpin(name)) {
+        var parts = name.split('|');
+        bubble.appendChild(document.createTextNode(parts[previewAt % parts.length]));
+        last = at + m.length;
+        return m;
+      }
       var i = varIndex(name);
       var val = i >= 0 ? valueFor(row, i) : '';
       if (i >= 0 && val) bubble.appendChild(document.createTextNode(val));
@@ -498,7 +531,7 @@
       last = at + m.length;
       return m;
     });
-    bubble.appendChild(document.createTextNode(draft.msg.slice(last)));
+    bubble.appendChild(document.createTextNode(spinText(draft.msg.slice(last), previewAt)));
   }
 
   function renderMsgInfo() {
@@ -508,8 +541,58 @@
     if (unknown.length) warn.push('في الرسالة متغير مش متعرف: ' + unknown.join('، '));
     var miss = missingCount();
     if (miss) warn.push(miss + ' رقم ناقصهم قيمة متغير، والمكان ده هيفضل فاضي في رسايلهم.');
+    if (draft.msg.trim() && !usesVariety()) warn.push('نصيحة لحماية رقمك: الرسالة هتطلع واحدة بالظبط لكل الناس. حط متغير زي {الاسم} أو اكتب بدايل بالشكل ده {أهلا|مرحبا|ازيك} وكل عميل هتوصله صيغة مختلفة.');
     $('msg-warn').hidden = !warn.length;
     $('msg-warn').textContent = warn.join(' ');
+  }
+
+  function usesVariety() {
+    var found = false;
+    draft.msg.replace(TOKEN_RE, function (m, name) {
+      if (isSpin(name) || varIndex(name) >= 0) found = true;
+      return m;
+    });
+    return found || /\{[^{}]*\|[^{}]*\}/.test(draft.msg);
+  }
+
+  function dayStamp() {
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+
+  function dayRead() {
+    try {
+      var o = JSON.parse(window.localStorage.getItem(DAY_KEY) || '{}');
+      return o && typeof o === 'object' ? o : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function dayUsed(phone) {
+    var e = phone ? dayRead()[phone] : null;
+    return e && e.d === dayStamp() ? Math.max(0, Number(e.n) || 0) : 0;
+  }
+
+  function dayTrack(j) {
+    if (!wa.phone || !j || !j.id) return;
+    var all = dayRead();
+    var today = dayStamp();
+    Object.keys(all).forEach(function (k) {
+      if (!all[k] || all[k].d !== today) delete all[k];
+    });
+    var e = all[wa.phone] || { d: today, n: 0, jobs: {} };
+    e.jobs = e.jobs || {};
+    var before = Number(e.jobs[j.id]) || 0;
+    var now = Number(j.sent) || 0;
+    if (now > before) {
+      e.n = (Number(e.n) || 0) + now - before;
+      e.jobs[j.id] = now;
+    }
+    all[wa.phone] = e;
+    try {
+      window.localStorage.setItem(DAY_KEY, JSON.stringify(all));
+    } catch (x) {}
   }
 
   function jobRunning() {
@@ -567,13 +650,16 @@
   var ERR_TEXT = {
     qr_timeout: 'الكود خلص وقته من غير ما يتمسح. دوس ربط تاني عشان كود جديد.',
     expired: 'عدّت ساعة من آخر استخدام واتمسحت بيانات الربط. اربط الرقم تاني لو محتاج.',
-    logged_out: 'الرقم اتفصل من الموبايل. اربطه تاني لو محتاج.',
+    logged_out: 'الرقم اتفصل من الموبايل. لو في إرسال شغال، اربطه تاني وهيكمل من آخر رقم.',
     failed: 'معرفناش نتصل بواتساب. جرب تربط تاني.',
     busy: 'السيرفر مشغول دلوقتي. جرب كمان دقيقة.',
     unavailable: 'الخدمة مش متاحة دلوقتي. جرب كمان شوية.',
     network: 'في مشكلة في الإنترنت. اتأكد من الاتصال وجرب تاني.',
     not_open: 'الرقم مش متصل دلوقتي.',
     job_running: 'في إرسال شغال بالفعل.',
+    restricted: 'واتساب قيّد الرقم ده مؤقتًا. سيبه يوم أو اتنين من غير إرسال جماعي، واستخدمه عادي مع ناس تعرفك، وبعدها ابدأ بأعداد صغيرة.',
+    replaced: 'الرقم اتفتح في مكان تاني بنفس الربط. اقفل الصفحة التانية واربط من هنا.',
+    day_cap: 'الرقم ده بعت الحد اليومي (150 رسالة). كمل بكره عشان رقمك يفضل في الأمان.',
     invalid_request: 'في بيانات مش مظبوطة في الإرسال. راجع الرسالة والأرقام.'
   };
 
@@ -657,6 +743,7 @@
   function applyJob(j) {
     wa.job = j || null;
     if (!j) return;
+    if (jobMeta && jobMeta.id === j.id) dayTrack(j);
     if (jobMeta && !jobMeta.id && j.running) {
       jobMeta.id = j.id;
       saveJob();
@@ -682,14 +769,17 @@
     $('j-total').textContent = String(j.total);
     $('j-sent').textContent = String(j.sent);
     $('j-invalid').textContent = String(j.invalid);
-    $('j-failed').textContent = String(j.failed);
+    $('j-failed').textContent = String((j.failed || 0) + (j.skipped || 0));
+    $('j-deliv').textContent = String(j.delivered || 0);
     $('stop').hidden = !j.running;
     $('report').disabled = !results.length;
     var st = '';
-    if (j.running && j.stopped) st = 'جاري الإيقاف...';
+    if (j.running && j.paused && !j.stopped) st = 'الإرسال واقف مؤقتًا. اربط الرقم تاني من فوق وهيكمل من الرقم ' + (j.done + 1) + '. هنستنى لحد 30 دقيقة.';
+    else if (j.running && j.stopped) st = 'جاري الإيقاف...';
     else if (j.running) st = 'الإرسال شغال. خلي الصفحة مفتوحة، والتقرير بيتحفظ على جهازك بس.';
     else if (j.stopped) st = 'الإرسال وقف قبل ما يخلص. الأرقام اللي ماتبعتلهاش مش هتظهر في التقرير.';
-    else st = 'الإرسال خلص.';
+    else if (j.skipped) st = 'الإرسال وقف حماية لرقمك، و' + j.skipped + ' رقم اتأجلوا. شوف السجل تحت عشان تعرف السبب.';
+    else st = 'الإرسال خلص. عدد «وصلت» بيزيد لوحده لما موبايلات العملاء تستلم الرسايل، فسيب الصفحة مفتوحة شوية.';
     $('j-state').textContent = st;
     var table = $('results');
     var have = table.querySelectorAll('tbody tr').length;
@@ -715,7 +805,7 @@
       b.textContent = '+' + (jobMeta.phones[i] || '');
       var c = document.createElement('td');
       c.textContent = STATUS_TEXT[results[i]] || '';
-      c.className = results[i] === 's' ? 's-ok' : results[i] === 'n' ? 's-no' : 's-bad';
+      c.className = results[i] === 's' ? 's-ok' : results[i] === 'n' || results[i] === 'k' ? 's-no' : 's-bad';
       row.appendChild(a);
       row.appendChild(b);
       row.appendChild(c);
@@ -744,7 +834,7 @@
           connect('resume');
           return;
         }
-      } else if (r.error === 'waking' && wakeTries < 6) {
+      } else if (r.error === 'waking' && wakeTries < WAKE_MAX) {
         wakeTries++;
         wa.state = wa.state === 'open' ? 'open' : 'waking';
         renderLink();
@@ -769,13 +859,13 @@
         schedulePoll();
         return;
       }
-      if (r.error === 'waking' && wakeTries < 6) {
+      if (r.error === 'waking' && wakeTries < WAKE_MAX) {
         wakeTries++;
         wa.state = 'waking';
         renderLink();
         setTimeout(function () {
           connect(mode);
-        }, 4000);
+        }, Math.min(4000 + wakeTries * 1000, 15000));
         return;
       }
       wa.state = 'idle';
@@ -821,7 +911,8 @@
           })
         };
       }),
-      speed: draft.speed
+      speed: draft.speed,
+      dayUsed: dayUsed(wa.phone)
     };
     jobMeta = { id: '', phones: rows.map(function (r) {
       return r.p;

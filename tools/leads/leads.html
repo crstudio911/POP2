@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مستخرج بيانات العملاء - POP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0d0e">
+<link rel="icon" type="image/png" href="../../img/fav.png">
+<link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="../../base.css">
+<link rel="stylesheet" href="../../main/main.css">
+<link rel="stylesheet" href="../wa/wa.css">
+<link rel="stylesheet" href="leads.css">
+<link rel="stylesheet" href="../../ui.css">
+</head>
+<body>
+<div class="gate" id="gate">
+  <img src="../../img/symbol.png" alt="" width="64" height="56">
+</div>
+
+<header class="top" id="top" hidden>
+  <div class="crumbs">
+    <a href="../../main/main.html" aria-label="الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <a class="back" href="../../main/main.html">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      كل الأدوات
+    </a>
+  </div>
+  <div class="who">
+    <span id="who"></span>
+    <button class="btn ghost" id="out" type="button">تسجيل الخروج</button>
+  </div>
+</header>
+
+<main class="wa" id="view" hidden>
+  <div class="wa-head">
+    <h1>مستخرج بيانات العملاء</h1>
+    <p>اكتب نوع النشاط والمدينة، وهنجيبلك الأماكن اللي ليها رقم تليفون في شيت تقدر تفتحه في Excel أو تبعتله بأداة الواتساب.</p>
+  </div>
+
+  <details class="card about">
+    <summary>الأداة دي بتعمل إيه وإزاي تستخدمها؟ دوس عشان تشوف الشرح كله أو تخفيه</summary>
+    <div class="about-body">
+      <p>بتدورلك على محلات وشركات وعيادات في أي منطقة، وتجمعلك اسم كل مكان ورقمه وعنوانه ومكانه على الخريطة.</p>
+      <ol>
+        <li><b>اختار النشاط:</b> زي عيادات أو مطاعم أو مكاتب عقارات.</li>
+        <li><b>اكتب المدينة أو الحي:</b> كل ما المنطقة تبقى أصغر، النتايج بتطلع أسرع وأدق.</li>
+        <li><b>كلمة في الاسم (اختياري):</b> عشان تضيّق البحث، زي «أسنان».</li>
+        <li><b>دوس ابحث واستنى:</b> البحث ممكن ياخد من ثواني لكام دقيقة، وبتشوف الوقت قدامك. لو سيرفر الخرائط مشغول بنجرب سيرفر تاني لوحدنا.</li>
+        <li><b>خد النتايج:</b> نزلها شيت Excel، أو انسخ الأرقام والصقها في أداة الواتساب.</li>
+      </ol>
+      <p><b>مصدر البيانات:</b> خرائط OpenStreetMap المفتوحة، فممكن تلاقي أماكن مش موجودة عليها أو أرقام قديمة. الأداة بتجيب الأماكن اللي ليها رقم بس.</p>
+      <p><b>تنبيه:</b> قبل ما تبعت رسايل للأرقام دي، خلي رسالتك مفيدة ومحترمة، وابعت بأعداد صغيرة عشان رقمك مايتقيدش.</p>
+    </div>
+  </details>
+
+  <section class="card" aria-labelledby="t-find">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2 id="t-find">بتدور على إيه؟</h2>
+    </div>
+    <form class="lead-form" id="form">
+      <label class="field">
+        <span>النشاط</span>
+        <select id="kind"></select>
+      </label>
+      <label class="field">
+        <span>المدينة أو المنطقة</span>
+        <input id="city" type="text" maxlength="80" placeholder="مثلا: القاهرة أو مدينة نصر أو الرياض" required>
+      </label>
+      <label class="field">
+        <span>كلمة في الاسم (اختياري)</span>
+        <input id="word" type="text" maxlength="40" placeholder="مثلا: أسنان">
+      </label>
+      <button class="btn" id="go" type="submit">ابحث</button>
+    </form>
+    <p class="hint" id="state"></p>
+  </section>
+
+  <section class="card" id="res-card" hidden aria-labelledby="t-res">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2 id="t-res">النتايج</h2>
+      <span class="pill" id="count"></span>
+    </div>
+    <div class="lead-actions">
+      <button class="btn" id="xls" type="button">تنزيل شيت Excel</button>
+      <button class="btn ghost" id="copy" type="button">نسخ الأرقام لأداة الواتساب</button>
+    </div>
+    <div class="lead-table">
+      <table>
+        <thead><tr><th>الاسم</th><th>رقم الواتساب</th><th>العنوان</th><th>الموقع</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="hint">البيانات جاية من خرائط OpenStreetMap المفتوحة. مش كل الأماكن مسجل ليها رقم، والأرقام الأرضي ممكن ماتكونش على واتساب.</p>
+  </section>
+</main>
+
+<script src="../../config.js"></script>
+<script src="../../auth.js"></script>
+<script src="leads.js"></script>
+<p class="made-by">برمج و صمم هذا بواسطة <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer">MC</a></p>
+</body>
+</html>

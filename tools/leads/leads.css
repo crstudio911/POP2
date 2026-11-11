@@ -1,0 +1,9 @@
+.lead-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;align-items:end}
+.lead-form .btn{height:46px}
+.lead-actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.lead-table{overflow:auto;max-height:520px;border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.lead-table table{width:100%;border-collapse:collapse;font-size:14px}
+.lead-table th,.lead-table td{padding:10px 12px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+.lead-table th{position:sticky;top:0;background:#151517;color:#ff7a1a;font-weight:700}
+.lead-table td:nth-child(2){direction:ltr;text-align:left;white-space:nowrap}
+.lead-table a{color:#ff7a1a}
