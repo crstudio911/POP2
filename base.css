@@ -110,3 +110,19 @@ p {
     transition: none !important;
   }
 }
+
+.made-by {
+  margin: 24px auto 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+.made-by a {
+  color: #2f7bff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.made-by a:hover,
+.made-by a:focus-visible {
+  text-decoration: underline;
+}
