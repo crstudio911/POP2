@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>واجهة POP البرمجية (API) - دليل المطورين</title>
+<meta name="description" content="دليل واجهة POP البرمجية: المصادقة، والحدود، ونقاط الوصول لأدوات واتساب وبيانات العملاء وتنظيف الأرقام.">
+<meta property="og:title" content="واجهة POP البرمجية (API)">
+<meta property="og:description" content="اربط أدوات POP ببرامجك بطلبات بسيطة وآمنة.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../img/fav.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../main/main.css">
+<link rel="stylesheet" href="../tools/wa/wa.css">
+<link rel="stylesheet" href="../plans/plans.css">
+<link rel="stylesheet" href="api.css">
+<link rel="stylesheet" href="../ui.css">
+<script src="../i18n.js"></script>
+</head>
+<body>
+<div class="gate" id="gate">
+  <img src="../img/symbol.png" alt="" width="64" height="56">
+</div>
+
+<header class="top" id="top" hidden>
+  <div class="top-in">
+    <a class="brand" href="../main/main.html" aria-label="لوحة الأدوات"><img src="../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">واجهة API</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../plans/plans.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+            الباقات والاشتراكات
+          </a>
+          <a role="menuitem" href="../api/api.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg>
+            واجهة API للمطورين
+          </a>
+          <a role="menuitem" href="../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wa dv" id="view" hidden>
+  <div class="wa-head">
+    <p class="eyebrow-x" translate="no">POP API v1</p>
+    <h1>واجهة POP البرمجية للمطورين</h1>
+    <p>اربط أدوات POP ببرامجك وأنظمتك مباشرة: أرسل رسائل واتساب، واجمع بيانات العملاء، ونظّف القوائم، وأنشئ الروابط، بطلبات بسيطة وآمنة. كل الردود باللغة الإنجليزية وبصيغة JSON.</p>
+    <div class="base-url"><span>عنوان الطلبات</span><code translate="no" dir="ltr" data-base></code></div>
+  </div>
+
+  <section class="card keys" id="keys" aria-labelledby="t-keys">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2 id="t-keys">مفتاح API الخاص بك</h2>
+      <span class="badge" id="api-plan" translate="no">Free</span>
+    </div>
+    <div id="keys-guest" hidden>
+      <p class="hint">سجّل الدخول لإنشاء مفتاح API وإدارته، ولمعرفة باقتك وحدودها.</p>
+      <a class="btn" href="../login/log.html">تسجيل الدخول</a>
+    </div>
+    <div id="keys-user" hidden>
+      <dl class="kfacts">
+        <div><dt>الطلبات في الدقيقة</dt><dd><span id="k-min" translate="no">-</span></dd></div>
+        <div><dt>المستخدم اليوم</dt><dd><span id="k-day" translate="no">-</span></dd></div>
+        <div><dt>نسبة حدود الباقة</dt><dd><span id="k-share" translate="no">-</span></dd></div>
+        <div><dt>صلاحية الباقة</dt><dd id="k-exp">-</dd></div>
+      </dl>
+      <div class="kstate" id="k-state"></div>
+      <div class="kfresh" id="k-fresh" hidden>
+        <p class="alert soft">انسخ المفتاح الآن واحفظه في مكان آمن. لن نعرضه مرة أخرى، ولا يمكن لأحد، ولا حتى فريق POP، استرجاعه.</p>
+        <div class="kbox" dir="ltr"><code id="k-full" translate="no"></code><button class="btn small" id="k-copy" type="button">نسخ المفتاح</button></div>
+      </div>
+      <div class="row-actions">
+        <button class="btn" id="k-make" type="button">إنشاء مفتاح</button>
+        <button class="btn ghost" id="k-revoke" type="button" hidden>إلغاء المفتاح</button>
+        <a class="btn ghost" href="../plans/plans.html">ترقية باقة API</a>
+      </div>
+      <p class="hint" id="k-msg" role="status" aria-live="polite"></p>
+      <form class="kips" id="k-ips-form" novalidate hidden>
+        <label for="k-ips">عناوين IP المسموح لها باستخدام المفتاح (اختياري)</label>
+        <p class="hint">اكتب عناوين خوادمك مفصولة بفواصل، حتى 10 عناوين. عند تحديدها يُرفض أي طلب من عنوان آخر حتى لو تسرّب المفتاح. اتركها فارغة للسماح بأي عنوان.</p>
+        <div class="kbox" dir="ltr"><input id="k-ips" name="ips" type="text" inputmode="text" spellcheck="false" autocomplete="off" maxlength="420" placeholder="203.0.113.10, 2001:db8::1" translate="no"><button class="btn small" id="k-ips-save" type="submit">حفظ العناوين</button></div>
+        <p class="hint" id="k-ips-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="card docs" aria-labelledby="t-docs">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2 id="t-docs">دليل الاستخدام</h2>
+    </div>
+    <nav class="toc" aria-label="محتويات الدليل">
+      <a href="#start">البداية السريعة</a>
+      <a href="#auth">المصادقة</a>
+      <a href="#security">كيف نحمي كل طلب</a>
+      <a href="#format">شكل الردود</a>
+      <a href="#limits">الحدود وفترات الانتظار</a>
+      <a href="#plans">باقات API</a>
+      <a href="#endpoints">نقاط الوصول</a>
+      <a href="#errors">رموز الأخطاء</a>
+      <a href="#samples">أمثلة برمجية</a>
+    </nav>
+
+    <h3 id="start">البداية السريعة</h3>
+    <ol class="steps-list">
+      <li>أنشئ مفتاح API من الأعلى واحفظه في متغير بيئة على خادمك باسم POP_KEY.</li>
+      <li>أرسل أول طلب لمعرفة باقتك وحدودك.</li>
+      <li>استخدم نقاط الوصول بالأسفل، وتابع الحدود من ترويسات الرد.</li>
+    </ol>
+    <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">export POP_KEY=&quot;pop_yourname_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;
+curl {BASE}/me -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+
+    <h3 id="auth">المصادقة</h3>
+    <p>أرسل المفتاح في كل طلب داخل الترويسة Authorization بهذا الشكل: Bearer ثم المفتاح. ويمكنك بدلًا من ذلك استخدام الترويسة X-API-Key. يكون شكل المفتاح دائمًا: pop_ ثم اسم المستخدم ثم سلسلة عشوائية فريدة من 32 حرفًا.</p>
+    <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">Authorization: Bearer pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja
+X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
+    <ul class="warn-list">
+      <li>استخدم المفتاح من خادمك فقط. الطلبات المباشرة من المتصفح محظورة عمدًا حتى لا ينكشف المفتاح لزوار موقعك.</li>
+      <li>لكل حساب مفتاح واحد فعّال. إنشاء مفتاح جديد يلغي القديم فورًا.</li>
+      <li>نحفظ بصمة مشفّرة للمفتاح فقط، ولا نحفظ المفتاح نفسه، لذلك لا يمكن عرضه مرة أخرى.</li>
+      <li>لا تضع المفتاح أبدًا في رابط الطلب، مثل ?key=، فالروابط تُحفظ في السجلات. أي طلب يحمل المفتاح في الرابط يُرفض.</li>
+      <li>قيّد المفتاح بعناوين IP خوادمك من الأعلى، فلا يعمل المفتاح من أي مكان آخر.</li>
+    </ul>
+
+    <h3 id="security">كيف نحمي كل طلب</h3>
+    <p>عنوان الطلبات هو رابط موقع POP نفسه، وخوادم المعالجة مخفية خلفه ولا يمكن الوصول إليها مباشرة. يمر كل طلب بست مراحل تحقق بالترتيب، ولا يصل إلى الأداة إلا إذا اجتازها كلها:</p>
+    <div class="checks">
+      <div><b>1. من أين جاء الطلب؟</b><span>تُرفض الطلبات القادمة من متصفح، والطلبات التي تضع المفتاح في الرابط، وتُحجب العناوين التي تفحص الموقع أو تجرّب مفاتيح عشوائية.</span></div>
+      <div><b>2. من أرسل الطلب؟</b><span>نتحقق من شكل المفتاح ثم من بصمته المشفّرة، ونربطه بحسابك. والمحاولات المتكررة بمفاتيح خاطئة تُوقف العنوان المرسل تلقائيًا.</span></div>
+      <div><b>3. هل العنوان مسموح؟</b><span>إذا قيّدت المفتاح بعناوين IP خوادمك، يُرفض أي طلب من عنوان آخر حتى لو كان المفتاح صحيحًا.</span></div>
+      <div><b>4. هل الحساب سليم؟</b><span>إذا أُوقف الحساب لنشاط مريب، تتوقف مفاتيح API الخاصة به فورًا حتى ينتهي الإيقاف أو يُفك.</span></div>
+      <div><b>5. هل الطلب صحيح؟</b><span>نتحقق من طريقة الطلب والمسار ونوع المحتوى وحجمه، ومن كل حقل ونوعه وطوله قبل تنفيذ أي شيء.</span></div>
+      <div><b>6. هل ما زال داخل الحدود؟</b><span>نتحقق من أن باقتك تشمل الأداة، ومن حدودها وعدد الطلبات في الدقيقة واليوم وفترة الانتظار، ثم ننفذ الطلب ونعيد الرد.</span></div>
+    </div>
+
+    <h3 id="format">شكل الردود</h3>
+    <p>كل الردود بصيغة JSON وباللغة الإنجليزية. عند النجاح يكون الحقل ok بقيمة true والبيانات في data، وعند الخطأ يكون ok بقيمة false وتفاصيل الخطأ في error.</p>
+    <div class="two-code">
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { },
+  &quot;meta&quot;: {
+    &quot;api_plan&quot;: &quot;pro&quot;,
+    &quot;tier&quot;: &quot;pro&quot;,
+    &quot;requests_left_minute&quot;: 29,
+    &quot;requests_left_today&quot;: 1999
+  }
+}</code></pre>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: false,
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;cooldown&quot;,
+    &quot;message&quot;: &quot;This tool is in its cooldown period for your plan. Retry after the indicated time.&quot;,
+    &quot;retry_after&quot;: 1260,
+    &quot;available_at&quot;: &quot;2026-11-12T11:00:00.000Z&quot;
+  }
+}</code></pre>
+    </div>
+
+    <h3 id="limits">الحدود وفترات الانتظار</h3>
+    <p>لكل باقة API عدد طلبات في الدقيقة وفي اليوم. وتحصل كل أداة مدفوعة على حدود الباقة المقابلة لباقة API لديك، بنسبة أقل من حدودها في الموقع للحفاظ على استقرار الخوادم. ويوضح كل رد ما تبقى لك في هذه الترويسات:</p>
+    <div class="table-wrap"><table class="dt"><thead><tr><th>الترويسة</th><th>المعنى</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Limit-Minute</td><td>عدد الطلبات المسموح في الدقيقة.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Remaining-Minute</td><td>الطلبات المتبقية في الدقيقة الحالية.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Limit-Day</td><td>عدد الطلبات المسموح في اليوم.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Remaining-Day</td><td>الطلبات المتبقية اليوم.</td></tr><tr><td dir="ltr" translate="no" class="mono">Retry-After</td><td>عدد الثواني قبل إعادة المحاولة، ويظهر مع الرمز 429.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-Request-Id</td><td>معرّف فريد للطلب يفيد عند المتابعة.</td></tr></tbody></table></div>
+    <p>فترة الانتظار هي المدة بين كل عملية إرسال لقائمة أرقام أو عملية بحث والتي تليها، وليست بين الرسائل داخل العملية نفسها. تقصر كلما ارتفعت الباقة، ولا تُحتسب إذا فشلت العملية قبل أن تبدأ. يعيد الرد الحقل next_available_at بموعد انتهاء الانتظار، وعند رفض الطلب يعيد retry_after بالثواني وavailable_at بالموعد.</p>
+
+    <h3 id="plans">باقات API</h3>
+    <div class="api-plans" id="api-plans"></div>
+
+    <h3 id="endpoints">نقاط الوصول</h3>
+    <article class="ep" id="v1-me">
+      <div class="ep-head"><span class="m m-get" translate="no">GET</span><code translate="no" dir="ltr">/v1/me</code></div>
+      <h3>بيانات الحساب والباقة</h3>
+      <p>يعيد بيانات الحساب المرتبط بالمفتاح، وباقة API الحالية، والحدود الفعلية لكل أداة بعد تطبيق نسبة باقة API.</p>
+      
+      <h4>المعاملات</h4>
+      <p class="hint">لا يحتاج هذا الطلب إلى بيانات في جسم الطلب.</p>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl {BASE}/me \
+  -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;account&quot;: { &quot;email&quot;: &quot;you@gmail.com&quot;, &quot;first_name&quot;: &quot;Ahmed&quot;, &quot;last_name&quot;: &quot;Saleh&quot; },
+    &quot;api&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;share_percent&quot;: 60, &quot;expires_at&quot;: &quot;2026-12-31T00:00:00.000Z&quot;, &quot;per_minute&quot;: 30, &quot;per_day&quot;: 2000 },
+    &quot;tools&quot;: {
+      &quot;wa&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;limits&quot;: { &quot;max_recipients&quot;: 90, &quot;max_variables&quot;: 4, &quot;cooldown_minutes&quot;: 60, &quot;daily_cap_per_number&quot;: 90, &quot;speeds&quot;: [&quot;safe&quot;, &quot;normal&quot;] } },
+      &quot;leads&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;limits&quot;: { &quot;max_results&quot;: 180, &quot;cooldown_minutes&quot;: 20 } },
+      &quot;clean&quot;: { &quot;plan&quot;: &quot;free_tool&quot;, &quot;limits&quot;: {} },
+      &quot;link&quot;: { &quot;plan&quot;: &quot;free_tool&quot;, &quot;limits&quot;: {} }
+    }
+  },
+  &quot;meta&quot;: { &quot;api_plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;requests_left_minute&quot;: 29, &quot;requests_left_today&quot;: 1999 }
+}</code></pre>
+    </article><article class="ep" id="v1-clean">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/clean</code></div>
+      <h3>تنظيف قائمة أرقام</h3>
+      <p>يستخرج أرقام الهواتف من أي نص، ويوحّد صيغتها الدولية، ويحذف المكرر وغير الصالح. أداة مجانية بالكامل في كل الباقات.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">text</td><td dir="ltr" translate="no" class="mono">string</td><td>أحدهما</td><td>نص يحتوي على أرقام (حتى 200000 حرف).</td></tr><tr><td dir="ltr" translate="no" class="mono">numbers</td><td dir="ltr" translate="no" class="mono">string[]</td><td>أحدهما</td><td>قائمة أرقام (حتى 20000 عنصر).</td></tr><tr><td dir="ltr" translate="no" class="mono">country_code</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>رمز الدولة للأرقام المحلية، مثل "20".</td></tr><tr><td dir="ltr" translate="no" class="mono">format</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>"digits" (افتراضي) أو "plus" لإضافة علامة +.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/clean \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;text&quot;: &quot;Ahmed 01001234567, Mona +20 100 765 4321&quot;, &quot;country_code&quot;: &quot;20&quot;, &quot;format&quot;: &quot;plus&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;numbers&quot;: [&quot;+201001234567&quot;, &quot;+201007654321&quot;], &quot;valid&quot;: 2, &quot;duplicates&quot;: 0, &quot;invalid&quot;: 0 },
+  &quot;meta&quot;: { &quot;api_plan&quot;: &quot;free&quot;, &quot;tier&quot;: &quot;free&quot;, &quot;requests_left_minute&quot;: 9, &quot;requests_left_today&quot;: 199 }
+}</code></pre>
+    </article><article class="ep" id="v1-link">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/link</code></div>
+      <h3>إنشاء رابط واتساب</h3>
+      <p>ينشئ رابط wa.me يفتح محادثة مع الرقم مع رسالة جاهزة اختيارية. أداة مجانية بالكامل.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">phone</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>الرقم بالصيغة الدولية، مثل "201001234567".</td></tr><tr><td dir="ltr" translate="no" class="mono">message</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>نص الرسالة الجاهزة (حتى 2000 حرف).</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/link \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;phone&quot;: &quot;201001234567&quot;, &quot;message&quot;: &quot;Hello, I want to know more&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;phone&quot;: &quot;201001234567&quot;, &quot;url&quot;: &quot;https://wa.me/201001234567?text=Hello%2C%20I%20want%20to%20know%20more&quot; }
+}</code></pre>
+    </article><article class="ep" id="v1-leads-categories">
+      <div class="ep-head"><span class="m m-get" translate="no">GET</span><code translate="no" dir="ltr">/v1/leads/categories</code></div>
+      <h3>قائمة أنواع الأنشطة</h3>
+      <p>يعيد معرّفات أنواع الأنشطة التجارية التي يمكن البحث عنها في مستخرج بيانات العملاء.</p>
+      
+      <h4>المعاملات</h4>
+      <p class="hint">لا يحتاج هذا الطلب إلى بيانات في جسم الطلب.</p>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl {BASE}/leads/categories -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;categories&quot;: [ { &quot;id&quot;: &quot;clinics&quot;, &quot;name_ar&quot;: &quot;العيادات والأطباء&quot; }, { &quot;id&quot;: &quot;cafes&quot;, &quot;name_ar&quot;: &quot;المقاهي&quot; } ] }
+}</code></pre>
+    </article><article class="ep" id="v1-leads-search">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/leads/search</code></div>
+      <h3>البحث عن عملاء محتملين</h3>
+      <p>يجمع أسماء الأنشطة التجارية وأرقامها وعناوينها في منطقة محددة. يخضع لحد النتائج وفترة الانتظار في باقتك، ولا تُحتسب فترة الانتظار إذا لم تُعثر على نتائج.</p>
+      <p class="note-box">قد يستغرق البحث عدة دقائق في المناطق الكبيرة، لذا اضبط مهلة الطلب في برنامجك على 5 دقائق على الأقل.</p>
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">city</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>المدينة أو الحي (حتى 80 حرفًا).</td></tr><tr><td dir="ltr" translate="no" class="mono">category</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>معرّف من GET /v1/leads/categories.</td></tr><tr><td dir="ltr" translate="no" class="mono">keyword</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كلمة يجب أن يحتويها اسم النشاط (حتى 40 حرفًا).</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/leads/search \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;city&quot;: &quot;Nasr City, Cairo&quot;, &quot;category&quot;: &quot;cafes&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;area&quot;: &quot;Nasr City, Cairo, Egypt&quot;,
+    &quot;count&quot;: 2,
+    &quot;capped&quot;: false,
+    &quot;results&quot;: [
+      { &quot;name&quot;: &quot;Cafe One&quot;, &quot;phone&quot;: &quot;201001234567&quot;, &quot;address&quot;: &quot;5 Main St, Nasr City&quot;, &quot;map&quot;: &quot;https://www.google.com/maps?q=30.05,31.33&quot; }
+    ],
+    &quot;next_available_at&quot;: &quot;2026-11-12T10:20:00.000Z&quot;
+  }
+}</code></pre>
+    </article><article class="ep" id="v1-wa-connect">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/wa/connect</code></div>
+      <h3>ربط رقم واتساب</h3>
+      <p>يبدأ ربط رقم واتساب بحسابك، أو يستعيد ربطًا محفوظًا. إن احتاج الربط إلى مسح، فستجد صورة رمز QR في الحقل qr_image عند استدعاء GET /v1/wa/status. الربط مشترك مع صفحة الأداة في الموقع.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">mode</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>"resume" (افتراضي) لاستعادة الربط المحفوظ، أو "new" لطلب رمز QR جديد.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/wa/connect \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;mode&quot;: &quot;new&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;state&quot;: &quot;connecting&quot;, &quot;phone&quot;: null, &quot;qr_image&quot;: null, &quot;job&quot;: null }
+}</code></pre>
+    </article><article class="ep" id="v1-wa-status">
+      <div class="ep-head"><span class="m m-get" translate="no">GET</span><code translate="no" dir="ltr">/v1/wa/status</code></div>
+      <h3>حالة الربط والإرسال</h3>
+      <p>يعيد حالة الربط (idle أو connecting أو waiting_for_scan أو connected) وصورة رمز QR عند الحاجة، وتقدّم عملية الإرسال الحالية. استدعه كل 3 إلى 5 ثوانٍ أثناء الربط أو الإرسال، فهذا يُبقي الربط فعّالًا.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">results_from</td><td dir="ltr" translate="no" class="mono">query int</td><td>لا</td><td>رقم أول نتيجة تريدها، لتستلم النتائج الجديدة فقط.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl &quot;{BASE}/wa/status?results_from=0&quot; -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;state&quot;: &quot;connected&quot;,
+    &quot;phone&quot;: &quot;201000000000&quot;,
+    &quot;qr_image&quot;: null,
+    &quot;job&quot;: {
+      &quot;id&quot;: &quot;5b3c...&quot;, &quot;total&quot;: 3, &quot;done&quot;: 2, &quot;sent&quot;: 1, &quot;not_on_whatsapp&quot;: 1, &quot;failed&quot;: 0, &quot;postponed&quot;: 0,
+      &quot;running&quot;: true, &quot;paused&quot;: false, &quot;stopped&quot;: false,
+      &quot;results&quot;: [ { &quot;index&quot;: 0, &quot;status&quot;: &quot;sent&quot; }, { &quot;index&quot;: 1, &quot;status&quot;: &quot;not_on_whatsapp&quot; } ],
+      &quot;results_from&quot;: 0
+    }
+  }
+}</code></pre>
+    </article><article class="ep" id="v1-wa-send">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/wa/send</code></div>
+      <h3>إرسال رسالة جماعية</h3>
+      <p>يبدأ إرسال رسالة إلى قائمة أرقام من رقمك المربوط، مع متغيرات تخصّص كل رسالة. اكتب المتغير في الرسالة بهذا الشكل {name}، واكتب البدائل بهذا الشكل {Hi|Hello} لتصل إلى كل عميل صيغة مختلفة. يخضع الطلب لحد الأرقام والمتغيرات والسرعة وفترة الانتظار في باقتك.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">message</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>نص الرسالة (حتى 4096 حرفًا).</td></tr><tr><td dir="ltr" translate="no" class="mono">variables</td><td dir="ltr" translate="no" class="mono">string[]</td><td>لا</td><td>أسماء المتغيرات المستخدمة في الرسالة، بحد أقصى 6 وبحسب باقتك.</td></tr><tr><td dir="ltr" translate="no" class="mono">recipients</td><td dir="ltr" translate="no" class="mono">array</td><td>نعم</td><td>أرقام بالصيغة الدولية، كنص مباشر أو كائن {"phone", "values"}.</td></tr><tr><td dir="ltr" translate="no" class="mono">recipients[].values</td><td dir="ltr" translate="no" class="mono">array | object</td><td>لا</td><td>قيم المتغيرات بالترتيب نفسه، أو كائن مفاتيحه أسماء المتغيرات.</td></tr><tr><td dir="ltr" translate="no" class="mono">speed</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>"safe" (افتراضي) أو "normal" إن كانت باقتك تسمح بها.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/wa/send \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;message&quot;: &quot;{Hi|Hello} {name}, your order from {city} is ready.&quot;,
+    &quot;variables&quot;: [&quot;name&quot;, &quot;city&quot;],
+    &quot;recipients&quot;: [
+      { &quot;phone&quot;: &quot;201001234567&quot;, &quot;values&quot;: { &quot;name&quot;: &quot;Ahmed&quot;, &quot;city&quot;: &quot;Cairo&quot; } },
+      { &quot;phone&quot;: &quot;201007654321&quot;, &quot;values&quot;: [&quot;Mona&quot;, &quot;Giza&quot;] }
+    ],
+    &quot;speed&quot;: &quot;safe&quot;
+  }&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;state&quot;: &quot;connected&quot;,
+    &quot;phone&quot;: &quot;201000000000&quot;,
+    &quot;accepted&quot;: 2,
+    &quot;next_available_at&quot;: &quot;2026-11-12T11:00:00.000Z&quot;,
+    &quot;job&quot;: { &quot;id&quot;: &quot;5b3c...&quot;, &quot;total&quot;: 2, &quot;done&quot;: 0, &quot;sent&quot;: 0, &quot;running&quot;: true, &quot;results&quot;: [] }
+  }
+}</code></pre>
+    </article><article class="ep" id="v1-wa-stop">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/wa/stop</code></div>
+      <h3>إيقاف الإرسال</h3>
+      <p>يوقف عملية الإرسال الجارية بعد الرسالة الحالية.</p>
+      
+      <h4>المعاملات</h4>
+      <p class="hint">لا يحتاج هذا الطلب إلى بيانات في جسم الطلب.</p>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/wa/stop -H &quot;Authorization: Bearer $POP_KEY&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{}&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{ &quot;ok&quot;: true, &quot;data&quot;: { &quot;state&quot;: &quot;connected&quot;, &quot;job&quot;: { &quot;running&quot;: false, &quot;stopped&quot;: true } } }</code></pre>
+    </article><article class="ep" id="v1-wa-logout">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/wa/logout</code></div>
+      <h3>فصل الرقم وحذف الربط</h3>
+      <p>يفصل الرقم ويحذف بيانات الربط المحفوظة نهائيًا.</p>
+      
+      <h4>المعاملات</h4>
+      <p class="hint">لا يحتاج هذا الطلب إلى بيانات في جسم الطلب.</p>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/wa/logout -H &quot;Authorization: Bearer $POP_KEY&quot; -H &quot;Content-Type: application/json&quot; -d &quot;{}&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{ &quot;ok&quot;: true, &quot;data&quot;: { &quot;state&quot;: &quot;idle&quot;, &quot;phone&quot;: null, &quot;qr_image&quot;: null, &quot;job&quot;: null } }</code></pre>
+    </article><article class="ep" id="v1-links-create">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/links</code></div>
+      <h3>إنشاء رابط مختصر</h3>
+      <p>ينشئ رابطًا قصيرًا على رابط الموقع نفسه. يُحسب من حد الروابط الجديدة يوميًا ومن الحد الكلي للروابط في باقتك. الاسم المختصر وكلمة السر وتاريخ الانتهاء متاحة حسب الباقة.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">url</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>الرابط الطويل، يبدأ بـ https أو http لموقع عام (حتى 2048 حرفًا).</td></tr><tr><td dir="ltr" translate="no" class="mono">alias</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>الاسم المختصر من 3 إلى 32 حرفًا صغيرًا أو رقمًا أو شرطة. إن تركته يُنشأ اسم عشوائي.</td></tr><tr><td dir="ltr" translate="no" class="mono">password</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كلمة سر من 4 إلى 64 حرفًا لا يفتح الرابط إلا بها. تُحفظ مشفّرة ولا تظهر مرة أخرى.</td></tr><tr><td dir="ltr" translate="no" class="mono">expires_at</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>تاريخ انتهاء بصيغة ISO 8601، بعد دقيقة على الأقل.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/links \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;url&quot;: &quot;https://shop.example.com/sale&quot;, &quot;alias&quot;: &quot;offer1&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;link&quot;: { &quot;alias&quot;: &quot;offer1&quot;, &quot;short_url&quot;: &quot;https://pop.example/offer1&quot;, &quot;url&quot;: &quot;https://shop.example.com/sale&quot;, &quot;password_protected&quot;: false, &quot;expires_at&quot;: null, &quot;created_at&quot;: &quot;2026-11-12T10:00:00.000Z&quot;, &quot;state&quot;: &quot;active&quot;, &quot;clicks&quot;: 0, &quot;last_click_at&quot;: null } }
+}</code></pre>
+    </article><article class="ep" id="v1-links-list">
+      <div class="ep-head"><span class="m m-get" translate="no">GET</span><code translate="no" dir="ltr">/v1/links</code></div>
+      <h3>قائمة روابطك</h3>
+      <p>يعيد كل روابطك المختصرة مع عدد ضغطات كل رابط وحالته (active أو paused أو expired أو blocked) وحدود باقتك.</p>
+      
+      <h4>المعاملات</h4>
+      <p class="hint">لا يحتاج هذا الطلب إلى بيانات في جسم الطلب.</p>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl {BASE}/links -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;count&quot;: 1,
+    &quot;limits&quot;: { &quot;max_links&quot;: 200, &quot;custom_alias&quot;: true, &quot;password&quot;: true, &quot;expiry&quot;: true, &quot;analytics&quot;: &quot;full&quot; },
+    &quot;links&quot;: [ { &quot;alias&quot;: &quot;offer1&quot;, &quot;short_url&quot;: &quot;https://pop.example/offer1&quot;, &quot;url&quot;: &quot;https://shop.example.com/sale&quot;, &quot;password_protected&quot;: false, &quot;expires_at&quot;: null, &quot;created_at&quot;: &quot;2026-11-12T10:00:00.000Z&quot;, &quot;state&quot;: &quot;active&quot;, &quot;clicks&quot;: 0, &quot;last_click_at&quot;: null } ]
+  }
+}</code></pre>
+    </article><article class="ep" id="v1-links-stats">
+      <div class="ep-head"><span class="m m-get" translate="no">GET</span><code translate="no" dir="ltr">/v1/links/stats?alias=offer1</code></div>
+      <h3>إحصائيات رابط</h3>
+      <p>يعيد عدد الضغطات الكلي وآخر ضغطة. وفي الباقات ذات التحليلات الكاملة يعيد أيضًا الدول وأنواع الأجهزة وعدد الضغطات في آخر 30 يومًا وآخر 100 ضغطة بالوقت والدولة والجهاز. لا نحفظ عنوان IP أو بيانات متصفح الزائر.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">alias</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>الاسم المختصر، يُرسل في الرابط كمعامل استعلام.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl &quot;{BASE}/links/stats?alias=offer1&quot; -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: {
+    &quot;link&quot;: { &quot;alias&quot;: &quot;offer1&quot;, &quot;clicks&quot;: 3, &quot;state&quot;: &quot;active&quot; },
+    &quot;analytics&quot;: &quot;full&quot;,
+    &quot;tracked_clicks&quot;: 3,
+    &quot;kept_days&quot;: 90,
+    &quot;countries&quot;: { &quot;EG&quot;: 2, &quot;SA&quot;: 1 },
+    &quot;devices&quot;: { &quot;mobile&quot;: 2, &quot;desktop&quot;: 1 },
+    &quot;daily_last_30_days&quot;: { &quot;2026-11-12&quot;: 3 },
+    &quot;hours_utc&quot;: { &quot;10&quot;: 3 },
+    &quot;recent&quot;: [ { &quot;at&quot;: &quot;2026-11-12T10:05:00.000Z&quot;, &quot;country&quot;: &quot;EG&quot;, &quot;device&quot;: &quot;mobile&quot; } ]
+  }
+}</code></pre>
+    </article><article class="ep" id="v1-links-update">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/links/update</code></div>
+      <h3>تعديل رابط</h3>
+      <p>يغيّر وجهة الرابط أو كلمة سره أو تاريخ انتهائه، أو يوقفه مؤقتًا ويعيد تشغيله. أرسل الحقول التي تريد تغييرها فقط.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">alias</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>الاسم المختصر للرابط.</td></tr><tr><td dir="ltr" translate="no" class="mono">url</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>وجهة جديدة.</td></tr><tr><td dir="ltr" translate="no" class="mono">password</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كلمة سر جديدة.</td></tr><tr><td dir="ltr" translate="no" class="mono">remove_password</td><td dir="ltr" translate="no" class="mono">boolean</td><td>لا</td><td>true لإزالة كلمة السر.</td></tr><tr><td dir="ltr" translate="no" class="mono">expires_at</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>تاريخ انتهاء جديد بصيغة ISO 8601.</td></tr><tr><td dir="ltr" translate="no" class="mono">remove_expiry</td><td dir="ltr" translate="no" class="mono">boolean</td><td>لا</td><td>true لإزالة تاريخ الانتهاء.</td></tr><tr><td dir="ltr" translate="no" class="mono">status</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>active للتشغيل أو paused للإيقاف المؤقت.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/links/update \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;alias&quot;: &quot;offer1&quot;, &quot;status&quot;: &quot;paused&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
+  &quot;ok&quot;: true,
+  &quot;data&quot;: { &quot;link&quot;: { &quot;alias&quot;: &quot;offer1&quot;, &quot;state&quot;: &quot;paused&quot; } }
+}</code></pre>
+    </article><article class="ep" id="v1-links-delete">
+      <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/links/delete</code></div>
+      <h3>حذف رابط</h3>
+      <p>يحذف الرابط وكل تفاصيل زياراته نهائيًا، ويتوقف فورًا عن العمل.</p>
+      
+      <h4>المعاملات</h4>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">alias</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>الاسم المختصر للرابط.</td></tr></tbody></table></div>
+      <h4>مثال على الطلب</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/links/delete \
+  -H &quot;Authorization: Bearer $POP_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;alias&quot;: &quot;offer1&quot;}&#x27;</code></pre>
+      <h4>مثال على الرد</h4>
+      <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{ &quot;ok&quot;: true, &quot;data&quot;: { &quot;deleted&quot;: true, &quot;alias&quot;: &quot;offer1&quot; } }</code></pre>
+    </article>
+
+    <h3 id="errors">رموز الأخطاء</h3>
+    <div class="table-wrap"><table class="dt"><thead><tr><th>الرمز</th><th>HTTP</th><th>المعنى</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">missing_key</td><td dir="ltr" translate="no" class="mono">401</td><td>لم يُرسل مفتاح API.</td></tr><tr><td dir="ltr" translate="no" class="mono">invalid_key</td><td dir="ltr" translate="no" class="mono">401</td><td>المفتاح غير صحيح أو أُلغي.</td></tr><tr><td dir="ltr" translate="no" class="mono">invalid_json</td><td dir="ltr" translate="no" class="mono">400</td><td>جسم الطلب ليس JSON صالحًا.</td></tr><tr><td dir="ltr" translate="no" class="mono">invalid_request</td><td dir="ltr" translate="no" class="mono">400</td><td>بيانات الطلب غير صحيحة، والتفاصيل في الحقل details.</td></tr><tr><td dir="ltr" translate="no" class="mono">unsupported_media_type</td><td dir="ltr" translate="no" class="mono">415</td><td>يجب إرسال Content-Type: application/json.</td></tr><tr><td dir="ltr" translate="no" class="mono">payload_too_large</td><td dir="ltr" translate="no" class="mono">413</td><td>حجم الطلب أكبر من المسموح.</td></tr><tr><td dir="ltr" translate="no" class="mono">method_not_allowed</td><td dir="ltr" translate="no" class="mono">405</td><td>طريقة الطلب غير مسموحة لهذا المسار.</td></tr><tr><td dir="ltr" translate="no" class="mono">not_found</td><td dir="ltr" translate="no" class="mono">404</td><td>المسار غير موجود.</td></tr><tr><td dir="ltr" translate="no" class="mono">forbidden</td><td dir="ltr" translate="no" class="mono">403</td><td>باقة API لا تشمل هذه الأداة.</td></tr><tr><td dir="ltr" translate="no" class="mono">limit_exceeded</td><td dir="ltr" translate="no" class="mono">403</td><td>الطلب يتجاوز حدود باقتك، والحقل field يوضح السبب.</td></tr><tr><td dir="ltr" translate="no" class="mono">rate_limited</td><td dir="ltr" translate="no" class="mono">429</td><td>تجاوزت عدد الطلبات المسموح. الحقل scope يوضح النوع: minute أو day لحدود باقتك، و burst أو edge عند إرسال طلبات كثيرة جدًا في ثوانٍ. انتظر retry_after ثانية؛ تجاهل الانتظار والاستمرار في الإرسال يضاعف مدة المنع وقد يوقف المفتاح.</td></tr><tr><td dir="ltr" translate="no" class="mono">cooldown</td><td dir="ltr" translate="no" class="mono">429</td><td>الأداة في فترة الانتظار، والحقل retry_after يوضح المدة بالثواني.</td></tr><tr><td dir="ltr" translate="no" class="mono">alias_taken</td><td dir="ltr" translate="no" class="mono">409</td><td>الاسم المختصر مستخدم بالفعل.</td></tr><tr><td dir="ltr" translate="no" class="mono">link_not_found</td><td dir="ltr" translate="no" class="mono">404</td><td>لا يوجد رابط بهذا الاسم في حسابك.</td></tr><tr><td dir="ltr" translate="no" class="mono">link_blocked</td><td dir="ltr" translate="no" class="mono">403</td><td>أوقفت الإدارة هذا الرابط ولا يمكن تعديله.</td></tr><tr><td dir="ltr" translate="no" class="mono">not_connected</td><td dir="ltr" translate="no" class="mono">409</td><td>لا يوجد رقم واتساب مربوط.</td></tr><tr><td dir="ltr" translate="no" class="mono">job_running</td><td dir="ltr" translate="no" class="mono">409</td><td>توجد عملية إرسال جارية.</td></tr><tr><td dir="ltr" translate="no" class="mono">number_restricted</td><td dir="ltr" translate="no" class="mono">423</td><td>قيّد واتساب الرقم مؤقتًا.</td></tr><tr><td dir="ltr" translate="no" class="mono">daily_cap</td><td dir="ltr" translate="no" class="mono">429</td><td>بلغ الرقم الحد اليومي للحماية.</td></tr><tr><td dir="ltr" translate="no" class="mono">area_not_found</td><td dir="ltr" translate="no" class="mono">400</td><td>لم يُعثر على المنطقة.</td></tr><tr><td dir="ltr" translate="no" class="mono">area_too_big</td><td dir="ltr" translate="no" class="mono">400</td><td>المنطقة واسعة جدًا.</td></tr><tr><td dir="ltr" translate="no" class="mono">maps_busy</td><td dir="ltr" translate="no" class="mono">503</td><td>خدمة الخرائط مشغولة.</td></tr><tr><td dir="ltr" translate="no" class="mono">service_waking</td><td dir="ltr" translate="no" class="mono">503</td><td>خدمة الإرسال تبدأ العمل الآن.</td></tr><tr><td dir="ltr" translate="no" class="mono">service_unavailable</td><td dir="ltr" translate="no" class="mono">503</td><td>الخدمة غير متاحة مؤقتًا.</td></tr><tr><td dir="ltr" translate="no" class="mono">key_in_url</td><td dir="ltr" translate="no" class="mono">400</td><td>وُضع المفتاح في رابط الطلب، ويجب إرساله في الترويسة فقط.</td></tr><tr><td dir="ltr" translate="no" class="mono">ip_not_allowed</td><td dir="ltr" translate="no" class="mono">403</td><td>المفتاح مقيّد بعناوين IP أخرى.</td></tr><tr><td dir="ltr" translate="no" class="mono">browser_not_allowed</td><td dir="ltr" translate="no" class="mono">403</td><td>الطلب أُرسل من متصفح، والواجهة مخصصة للخوادم فقط.</td></tr><tr><td dir="ltr" translate="no" class="mono">account_suspended</td><td dir="ltr" translate="no" class="mono">403</td><td>الحساب موقوف مؤقتًا أو دائمًا لنشاط مريب، والحقل suspended_until يوضح موعد الانتهاء.</td></tr></tbody></table></div>
+
+    <h3 id="samples">أمثلة برمجية</h3>
+    <h4>JavaScript (Node.js 18 أو أحدث)</h4>
+    <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">const BASE = &quot;{BASE}&quot;;
+const KEY = process.env.POP_KEY;
+
+async function pop(method, path, body) {
+  const res = await fetch(BASE + path, {
+    method,
+    headers: { Authorization: &quot;Bearer &quot; + KEY, &quot;Content-Type&quot;: &quot;application/json&quot; },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error.code + &quot;: &quot; + json.error.message);
+  return json.data;
+}
+
+const clean = await pop(&quot;POST&quot;, &quot;/clean&quot;, { text: &quot;01001234567 01007654321&quot;, country_code: &quot;20&quot; });
+const job = await pop(&quot;POST&quot;, &quot;/wa/send&quot;, {
+  message: &quot;{Hi|Hello} {name}&quot;,
+  variables: [&quot;name&quot;],
+  recipients: clean.numbers.map((phone, i) =&gt; ({ phone, values: [[&quot;Ahmed&quot;, &quot;Mona&quot;][i] || &quot;&quot;] }))
+});
+console.log(job.accepted);</code></pre>
+    <h4>Python</h4>
+    <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">import os, requests
+
+BASE = &quot;{BASE}&quot;
+HEADERS = {&quot;Authorization&quot;: &quot;Bearer &quot; + os.environ[&quot;POP_KEY&quot;]}
+
+r = requests.post(BASE + &quot;/leads/search&quot;, headers=HEADERS,
+                  json={&quot;city&quot;: &quot;Nasr City, Cairo&quot;, &quot;category&quot;: &quot;cafes&quot;}, timeout=300)
+data = r.json()
+if not data[&quot;ok&quot;]:
+    print(data[&quot;error&quot;][&quot;code&quot;], data[&quot;error&quot;].get(&quot;retry_after&quot;))
+else:
+    for item in data[&quot;data&quot;][&quot;results&quot;]:
+        print(item[&quot;name&quot;], item[&quot;phone&quot;])</code></pre>
+  </section>
+</main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../index.html">عن POP</a>
+      <a href="../main/main.html">لوحة الأدوات</a>
+      <a href="../plans/plans.html">الباقات</a>
+      <a href="../api/api.html">واجهة API</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
+
+<script src="../config.js"></script>
+<script src="../guard.js"></script>
+<script src="../auth.js"></script>
+<script src="api.js"></script>
+</body>
+</html>

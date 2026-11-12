@@ -17,6 +17,11 @@
   var formLogin = $('form-login');
   var formRegister = $('form-register');
   var formCode = $('form-code');
+  var formF1 = $('form-f1');
+  var formF2 = $('form-f2');
+  var formF3 = $('form-f3');
+  var DOMAINS = ['gmail.com', 'googlemail.com', 'hotmail.com', 'hotmail.co.uk', 'hotmail.fr', 'outlook.com', 'outlook.sa', 'outlook.fr', 'live.com', 'msn.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.fr', 'ymail.com', 'icloud.com', 'me.com', 'mac.com', 'aol.com', 'proton.me', 'protonmail.com', 'zoho.com', 'yandex.com', 'gmx.com'];
+  var forgot = null;
   var statusEl = $('status');
   var codeBox = $('code');
   var digits = Array.prototype.slice.call(codeBox.querySelectorAll('input'));
@@ -28,6 +33,8 @@
 
   var MESSAGES = {
     invalid_email: 'يرجى إدخال بريد إلكتروني صحيح.',
+    email_domain: 'يُقبل التسجيل ببريد من مزوّدي البريد العالميين فقط، مثل Gmail وOutlook وHotmail وYahoo وiCloud.',
+    invalid_answers: 'الإجابات غير كافية للتحقق من ملكية الحساب. راجع إجاباتك وحاول مرة أخرى.',
     invalid_name: 'يرجى إدخال الاسم الأول واسم العائلة بشكل صحيح (حرفان على الأقل).',
     weak_password: 'كلمة المرور لا تستوفي الشروط المطلوبة.',
     mismatch: 'كلمتا المرور غير متطابقتين.',
@@ -36,7 +43,7 @@
     invalid_request: 'يرجى مراجعة البيانات المدخلة والمحاولة مرة أخرى.',
     exists: 'يوجد حساب مسجّل بهذا البريد الإلكتروني. يرجى تسجيل الدخول.',
     rate: 'محاولات كثيرة. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.',
-    locked: 'أُدخل رمز غير صحيح عدة مرات. يرجى طلب رمز جديد.',
+    locked: 'محاولات غير صحيحة كثيرة. لحماية الحساب، يرجى المحاولة بعد ساعة.',
     unavailable: 'الخدمة غير متاحة حاليًا. يرجى المحاولة بعد قليل.',
     network: 'تعذّر الاتصال. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.'
   };
@@ -47,17 +54,23 @@
   }
 
   function post(path, body, token) {
+    var G = window.POPGuard;
     var headers = { 'Content-Type': 'application/json' };
     if (token) headers.Authorization = 'Bearer ' + token;
-    return fetch(API + path, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(body || {}),
-      cache: 'no-store',
-      credentials: 'omit'
-    })
+    var req = G
+      ? G.whenClear().then(function () {
+          return G.send(path, body, headers);
+        })
+      : fetch(API + path, { method: 'POST', headers: headers, body: JSON.stringify(body || {}), cache: 'no-store', credentials: 'omit' });
+    return req
       .then(function (res) {
-        return res.json().catch(function () {
+        return res.json().then(function (j) {
+          if (j && j.error === 'banned' && G) {
+            G.banned(j);
+            return new Promise(function () {});
+          }
+          return j;
+        }, function () {
           return { ok: false, error: 'unavailable' };
         });
       })
@@ -113,11 +126,22 @@
     return v.trim().replace(/\s+/g, ' ');
   }
 
+  function domainOk(email) {
+    return DOMAINS.indexOf(String(email.split('@')[1] || '').toLowerCase()) >= 0;
+  }
+
+  post('/api/config', {}).then(function (r) {
+    if (r && r.ok && Array.isArray(r.domains) && r.domains.length) DOMAINS = r.domains;
+  });
+
   function show(which) {
     formLogin.hidden = which !== 'login';
     formRegister.hidden = which !== 'register';
     formCode.hidden = which !== 'code';
-    tabs.hidden = which === 'code';
+    formF1.hidden = which !== 'f1';
+    formF2.hidden = which !== 'f2';
+    formF3.hidden = which !== 'f3';
+    tabs.hidden = which === 'code' || which.charAt(0) === 'f';
     tabLogin.setAttribute('aria-selected', String(which === 'login'));
     tabRegister.setAttribute('aria-selected', String(which === 'register'));
     if (which !== 'code') clearInterval(timer);
@@ -148,16 +172,27 @@
     return [$('reg-email').value.trim().split('@')[0], cleanName($('reg-first').value), cleanName($('reg-last').value)];
   }
 
-  function paintRules() {
-    var value = $('reg-pass').value;
-    var bad = RULES.passwordProblems(value, personal());
-    Array.prototype.forEach.call(rulesList.querySelectorAll('li'), function (li) {
+  function paintList(value, who, list, bar) {
+    var bad = RULES.passwordProblems(value, who);
+    Array.prototype.forEach.call(list.querySelectorAll('li'), function (li) {
       li.classList.toggle('pass', !!value && bad.indexOf(li.getAttribute('data-rule')) < 0);
     });
     var score = value ? RULES.all.length - bad.length : 0;
-    meterBar.style.width = (score / RULES.all.length) * 100 + '%';
-    meterBar.className = score === RULES.all.length ? 'strong' : score >= 4 ? 'mid' : 'weak';
+    bar.style.width = (score / RULES.all.length) * 100 + '%';
+    bar.className = score === RULES.all.length ? 'strong' : score >= 4 ? 'mid' : 'weak';
     return bad;
+  }
+
+  function paintRules() {
+    return paintList($('reg-pass').value, personal(), rulesList, meterBar);
+  }
+
+  function personal2() {
+    return forgot ? [forgot.email.split('@')[0], forgot.firstName, forgot.lastName] : [];
+  }
+
+  function paintRules2() {
+    return paintList($('f-pass').value, personal2(), $('rules2'), $('meter-bar2'));
   }
 
   ['reg-pass', 'reg-email', 'reg-first', 'reg-last'].forEach(function (id) {
@@ -210,6 +245,11 @@
     }
     if (!validEmail(email)) {
       say(MESSAGES.invalid_email);
+      $('reg-email').focus();
+      return;
+    }
+    if (!domainOk(email)) {
+      say(MESSAGES.email_domain);
       $('reg-email').focus();
       return;
     }
@@ -370,7 +410,138 @@
     if (codeValue().length === 6) formCode.requestSubmit();
   }
 
+  var MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  MONTHS.forEach(function (m, i) {
+    var o = document.createElement('option');
+    o.value = String(i + 1);
+    o.textContent = m;
+    $('q-month').appendChild(o);
+  });
+  for (var y = new Date().getFullYear(); y >= 2024; y--) {
+    var o = document.createElement('option');
+    o.value = String(y);
+    o.textContent = String(y);
+    $('q-year').appendChild(o);
+  }
+
+  $('forgot').addEventListener('click', function () {
+    show('f1');
+    var e = $('login-email').value.trim();
+    if (e) $('f-email').value = e;
+    $('f-email').focus();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-back-login]'), function (b) {
+    b.addEventListener('click', function () {
+      forgot = null;
+      show('login');
+      $('login-email').focus();
+    });
+  });
+
+  formF1.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('f-email').value.trim().toLowerCase();
+    if (!validEmail(email)) {
+      say(MESSAGES.invalid_email);
+      $('f-email').focus();
+      return;
+    }
+    forgot = { email: email, firstName: '', lastName: '' };
+    $('f-who').textContent = email;
+    ['q-first', 'q-last'].forEach(function (id) { $(id).value = ''; });
+    ['q-month', 'q-year', 'q-plan'].forEach(function (id) { $(id).value = ''; });
+    show('f2');
+    $('q-first').focus();
+  });
+
+  formF2.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!forgot) return show('f1');
+    var answers = {
+      firstName: cleanName($('q-first').value),
+      lastName: cleanName($('q-last').value),
+      month: $('q-month').value,
+      year: $('q-year').value,
+      plan: $('q-plan').value
+    };
+    var filled = Object.keys(answers).filter(function (k) { return answers[k]; }).length;
+    if (filled < 4) {
+      say('يرجى الإجابة عن أربعة أسئلة على الأقل.');
+      return;
+    }
+    var btn = $('f2-btn');
+    btn.disabled = true;
+    say('');
+    post('/api/auth/forgot', { email: forgot.email, answers: answers }).then(function (r) {
+      btn.disabled = false;
+      if (!r.ok) {
+        say(MESSAGES[r.error] || MESSAGES.unavailable);
+        return;
+      }
+      forgot.firstName = answers.firstName;
+      forgot.lastName = answers.lastName;
+      $('f-who2').textContent = forgot.email;
+      $('f-min').textContent = String(r.minutes || 10);
+      $('f-code').value = '';
+      $('f-pass').value = '';
+      $('f-pass2').value = '';
+      paintRules2();
+      show('f3');
+      say('أرسلنا رمز الاستعادة إلى بريدك الإلكتروني.', true);
+      $('f-code').focus();
+    });
+  });
+
+  $('f-pass').addEventListener('input', paintRules2);
+  $('f-code').addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  formF3.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!forgot) return show('f1');
+    var code = $('f-code').value;
+    var pass = $('f-pass').value;
+    if (!/^\d{6}$/.test(code)) {
+      say('يرجى إدخال رمز الاستعادة المكوّن من 6 أرقام.');
+      $('f-code').focus();
+      return;
+    }
+    if (paintRules2().length) {
+      say(MESSAGES.weak_password);
+      $('f-pass').focus();
+      return;
+    }
+    if (pass !== $('f-pass2').value) {
+      say(MESSAGES.mismatch);
+      $('f-pass2').focus();
+      return;
+    }
+    var btn = $('f3-btn');
+    btn.disabled = true;
+    say('');
+    post('/api/auth/reset', { email: forgot.email, code: code, password: pass, firstName: forgot.firstName, lastName: forgot.lastName }).then(function (r) {
+      btn.disabled = false;
+      if (!r.ok) {
+        if (r.error === 'weak_password') paintRules2();
+        say(MESSAGES[r.error] || MESSAGES.unavailable);
+        if (r.error === 'locked') show('f1');
+        return;
+      }
+      var email = forgot.email;
+      forgot = null;
+      clearSession();
+      show('login');
+      $('login-email').value = email;
+      $('login-pass').value = '';
+      say('تم تغيير كلمة المرور بنجاح، وحُذفت القديمة نهائيًا. سجّل الدخول الآن بكلمة المرور الجديدة.', true);
+      $('login-pass').focus();
+    });
+  });
+
   if (window.location.hash === '#register') show('register');
+  if (window.location.hash === '#forgot') show('f1');
 
   var existing = readSession();
   if (existing) {

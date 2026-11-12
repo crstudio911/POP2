@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>مختصر الروابط والتحليلات - POP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../../img/fav.png">
+<link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../base.css">
+<link rel="stylesheet" href="../../main/main.css">
+<link rel="stylesheet" href="../wa/wa.css">
+<link rel="stylesheet" href="short.css">
+<link rel="stylesheet" href="../../ui.css">
+<script src="../../i18n.js"></script>
+</head>
+<body>
+<div class="gate" id="gate">
+  <img src="../../img/symbol.png" alt="" width="64" height="56">
+</div>
+
+<header class="top" id="top" hidden>
+  <div class="top-in">
+    <a class="brand" href="../../main/main.html" aria-label="لوحة الأدوات"><img src="../../img/logo-word.png" alt="POP" width="96" height="29"></a>
+    <nav class="crumbs" aria-label="مسار التنقل">
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span aria-current="page">مختصر الروابط</span>
+    </nav>
+    <div class="top-end">
+      <div data-lang-slot></div>
+      <div class="user">
+        <button class="user-btn" id="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="قائمة الحساب">
+          <span class="avatar" id="avatar" translate="no"></span>
+          <span class="user-txt"><b id="who-name" translate="no"></b><small id="who-mail" translate="no"></small></span>
+          <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="user-menu" id="user-menu" role="menu" hidden>
+          <div class="um-head">
+            <b id="um-name" translate="no"></b>
+            <small id="um-mail" translate="no"></small>
+            <span class="plan" id="um-plan">الخطة المجانية</span>
+          </div>
+          <a role="menuitem" href="../../main/main.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+            لوحة الأدوات
+          </a>
+          <a role="menuitem" href="../../plans/plans.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+            الباقات والاشتراكات
+          </a>
+          <a role="menuitem" href="../../api/api.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg>
+            واجهة API للمطورين
+          </a>
+          <a role="menuitem" href="../../index.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            عن POP
+          </a>
+          <button role="menuitem" class="um-out" id="out" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wa" id="view" hidden>
+  <div class="wa-head">
+    <h1>مختصر الروابط والتحليلات</h1>
+    <p>حوّل أي رابط طويل إلى رابط قصير باسم POP، وتابع كم مرة فُتح، ومن أي دولة، ومن أي نوع جهاز.</p>
+  </div>
+
+  <section class="planbar" id="planbar" aria-label="باقتك في هذه الأداة">
+    <div class="pb-info"><span class="pb-name" id="pb-name">باقة Free</span><span class="pb-list" id="pb-list"></span></div>
+    <a class="btn small" id="pb-up" href="../../plans/plans.html">ترقية الباقة</a>
+    <p class="pb-note">عدد الروابط في باقتك ثابت ولا يتجدد يوميًا، ولو حذفت رابطًا تقدر تنشئ رابطًا مكانه. الضغطات على روابطك لا تُحتسب من أي حد.</p>
+  </section>
+
+  <details class="card about">
+    <summary>ما وظيفة هذه الأداة وكيف تستخدمها؟ اضغط لعرض الشرح أو إخفائه</summary>
+    <div class="about-body">
+      <p>بدل أن ترسل رابطًا طويلًا ومزعجًا، تنشئ هنا رابطًا قصيرًا يبدأ باسم موقعنا، ويبقى تحت تحكمك أنت: تغيّر وجهته أو توقفه أو تحذفه وقتما تشاء.</p>
+      <ol>
+        <li><b>الصق الرابط الطويل:</b> أي رابط يبدأ بـ https أو http، مثل صفحة منتج أو ملف أو استمارة.</li>
+        <li><b>اختر الاسم المختصر (Pro وما فوقها):</b> مثل offer1 ليصبح الرابط <span dir="ltr" translate="no" class="mono" id="ex-link">pop/offer1</span>. في الباقة المجانية يُنشأ اسم عشوائي قصير.</li>
+        <li><b>كلمة سر (اختياري):</b> لن يفتح الرابط إلا لمن يكتب كلمة السر التي تحددها.</li>
+        <li><b>تاريخ انتهاء (اختياري):</b> يقفل الرابط تلقائيًا بعد ساعة أو يوم أو أسبوع، مناسب للعروض السريعة.</li>
+        <li><b>انسخ الرابط وانشره:</b> ثم تابع الضغطات من قائمة روابطك بالضغط على «الإحصائيات».</li>
+      </ol>
+      <p><b>خصوصية الزوار:</b> لا نحفظ عنوان IP ولا بيانات المتصفح. نحفظ لكل ضغطة الدولة ونوع الجهاز والوقت فقط في الباقات التي تشمل التحليلات الكاملة، وتُحذف التفاصيل تلقائيًا بعد مدة، ويبقى العدد الكلي. ولا نحتسب معاينات الروابط التي تصنعها تطبيقات مثل واتساب وفيسبوك.</p>
+      <p><b>تنبيه:</b> يُمنع اختصار روابط احتيال أو محتوى مخالف، وتُوقف الإدارة أي رابط مخالف دون إشعار.</p>
+    </div>
+  </details>
+
+  <section class="card" aria-labelledby="t-make">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2 id="t-make">أنشئ رابطًا مختصرًا</h2>
+      <button class="btn ghost small" id="cancel-edit" type="button" hidden>إلغاء التعديل</button>
+    </div>
+    <form class="sl-form" id="form" novalidate>
+      <label class="field sl-wide">
+        <span>الرابط الطويل</span>
+        <input id="url" type="text" inputmode="url" dir="ltr" maxlength="2048" spellcheck="false" autocomplete="off" placeholder="https://example.com/very/long/link" required>
+      </label>
+      <label class="field sl-wide">
+        <span>الاسم المختصر <small class="sl-lock" id="lock-alias" hidden>متاح في Pro وما فوقها</small></span>
+        <span class="sl-alias" dir="ltr"><b id="base" translate="no"></b><input id="alias" type="text" dir="ltr" maxlength="32" spellcheck="false" autocomplete="off" placeholder="offer1" translate="no"></span>
+        <small class="hint">من 3 إلى 32 حرفًا إنجليزيًا صغيرًا أو رقمًا أو شرطة (-). اتركه فارغًا لاسم عشوائي.</small>
+      </label>
+      <label class="field">
+        <span>كلمة سر للرابط (اختياري) <small class="sl-lock" id="lock-pass" hidden>متاحة في Pro وما فوقها</small></span>
+        <input id="pass" type="password" maxlength="64" autocomplete="new-password" placeholder="4 أحرف على الأقل">
+        <span class="sl-check" id="clear-pass-row" hidden><input id="clear-pass" type="checkbox"> <span>إزالة كلمة السر الحالية</span></span>
+      </label>
+      <label class="field">
+        <span>ينتهي الرابط (اختياري) <small class="sl-lock" id="lock-exp" hidden>متاح في Pro وما فوقها</small></span>
+        <select id="exp">
+          <option value="keep" hidden>كما هو</option>
+          <option value="0">دون تاريخ انتهاء</option>
+          <option value="3600000">بعد ساعة</option>
+          <option value="86400000">بعد يوم</option>
+          <option value="604800000">بعد أسبوع</option>
+          <option value="2592000000">بعد 30 يومًا</option>
+          <option value="custom">تاريخ ووقت محددان</option>
+        </select>
+        <input id="exp-at" type="datetime-local" hidden>
+      </label>
+      <div class="sl-act sl-wide">
+        <button class="btn" id="go" type="submit">اختصر الرابط</button>
+        <p class="hint" id="state" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+    <div class="sl-done" id="done" hidden>
+      <span>رابطك المختصر جاهز</span>
+      <div class="sl-out" dir="ltr"><a id="done-link" href="#" target="_blank" rel="noopener noreferrer" translate="no"></a><button class="btn small" id="done-copy" type="button">نسخ</button></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="t-list">
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2 id="t-list">روابطك</h2>
+      <span class="pill" id="used" translate="no">0</span>
+    </div>
+    <label class="field sl-find"><input id="find" type="search" placeholder="ابحث في روابطك بالاسم أو الوجهة" aria-label="ابحث في روابطك"></label>
+    <div class="sl-list" id="list"></div>
+    <p class="hint" id="empty">لم تنشئ أي رابط مختصر بعد.</p>
+  </section>
+
+  <section class="card" id="stats" hidden aria-labelledby="t-stats">
+    <div class="card-head">
+      <span class="step">3</span>
+      <h2 id="t-stats">الإحصائيات</h2>
+      <button class="btn ghost small" id="stats-close" type="button">إغلاق</button>
+    </div>
+    <p class="sl-stitle" dir="ltr" translate="no" id="st-link"></p>
+    <dl class="sl-metrics">
+      <div><dt>كل الضغطات</dt><dd id="st-total" translate="no">0</dd></div>
+      <div><dt>آخر ضغطة</dt><dd id="st-last">-</dd></div>
+      <div><dt>أُنشئ في</dt><dd id="st-made">-</dd></div>
+    </dl>
+    <div class="alert soft" id="st-basic" hidden>باقتك الحالية تعرض العدد الكلي فقط. رقِّ باقة هذه الأداة إلى Pro لتعرف الدولة ونوع الجهاز ووقت كل ضغطة. <a class="link" href="../../plans/plans.html">الباقات</a></div>
+    <div id="st-full" hidden>
+      <div class="sl-grid">
+        <div class="sl-box"><h3>الدول</h3><div class="sl-bars" id="st-countries"></div></div>
+        <div class="sl-box"><h3>نوع الجهاز</h3><div class="sl-bars" id="st-devices"></div></div>
+      </div>
+      <div class="sl-box"><h3>آخر 30 يومًا</h3><div class="sl-days" id="st-days" dir="ltr"></div></div>
+      <div class="sl-box"><h3>آخر الضغطات</h3>
+        <div class="lead-table"><table><thead><tr><th>الوقت والتاريخ</th><th>الدولة</th><th>الجهاز</th></tr></thead><tbody id="st-recent"></tbody></table></div>
+      </div>
+      <p class="hint" id="st-keep"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot app">
+  <div class="sf-in">
+    <div class="sf-brand">
+      <img src="../../img/logo-word.png" alt="POP" width="80" height="24" loading="lazy" decoding="async">
+      <span>منصة أدوات عملية لأصحاب الأعمال.</span>
+    </div>
+    <nav class="sf-links" aria-label="روابط التذييل">
+      <a href="../../index.html">عن POP</a>
+      <a href="../../main/main.html">لوحة الأدوات</a>
+      <a href="../../plans/plans.html">الباقات</a>
+      <a href="../../api/api.html">واجهة API</a>
+    </nav>
+    <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+  </div>
+</footer>
+
+<script src="../../config.js"></script>
+<script src="../../guard.js"></script>
+<script src="../../auth.js"></script>
+<script src="short.js"></script>
+</body>
+</html>

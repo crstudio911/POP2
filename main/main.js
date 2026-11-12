@@ -26,22 +26,29 @@
   function apply(r) {
     A.user(r);
     $('hello').textContent = r.firstName || String(r.email || '').split('@')[0];
+    var subs = r.subs || {};
+    var free = Array.isArray(r.free) ? r.free : ['clean', 'link'];
     var cards = document.querySelectorAll('.tcard');
-    var allowed = Array.isArray(r.tools) ? r.tools : [];
-    var count = 0;
     Array.prototype.forEach.call(cards, function (c) {
-      var ok = allowed.indexOf(c.dataset.tool) >= 0;
-      if (ok) count++;
-      c.classList.toggle('locked', !ok);
+      var id = c.dataset.tool;
       var st = c.querySelector('[data-state]');
-      st.textContent = ok ? 'متاحة في خطتك' : 'غير متاحة في خطتك';
-      if (!ok) c.setAttribute('aria-disabled', 'true');
+      st.className = 'tcard-state';
+      if (free.indexOf(id) >= 0) {
+        st.textContent = 'مجانية بالكامل';
+        st.classList.add('is-free');
+        return;
+      }
+      var s = subs[id] || { plan: 'free' };
+      st.textContent = 'باقة ' + A.planName(s.plan) + (s.plan !== 'free' && s.expiresAt ? ' حتى ' + A.fmtDate(s.expiresAt) : '');
+      if (s.plan !== 'free') st.classList.add('is-paid');
     });
-    $('f-tools').textContent = String(count);
-    $('f-all').textContent = String(cards.length);
+    var paid = 0;
+    Object.keys(subs).forEach(function (k) {
+      if (k !== 'api' && subs[k] && subs[k].plan !== 'free') paid++;
+    });
+    $('f-plan').textContent = paid ? paid + (paid === 1 ? ' اشتراك' : ' اشتراكات') : 'لا يوجد';
+    $('f-api').textContent = A.planName((subs.api && subs.api.plan) || 'free');
     if (r.expires) $('f-exp').textContent = fmtDate(Number(r.expires), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-    var plan = document.getElementById('um-plan');
-    if (plan) $('f-plan').textContent = plan.textContent;
     show();
   }
 
@@ -65,15 +72,10 @@
         leave();
         return;
       }
-      A.deny('offline', 'main.html', load);
+      A.goError(r.status ? 'server' : 'net');
     });
   }
   load();
-
-  document.addEventListener('click', function (e) {
-    var c = e.target.closest && e.target.closest('.tcard.locked');
-    if (c) e.preventDefault();
-  });
 
   var filter = 'all';
   function refilter() {

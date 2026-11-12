@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-guard="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>تم تأمين اتصالك - POP</title>
+<meta name="description" content="أوقف POP الوصول مؤقتًا من هذا الجهاز أو الحساب لحماية المنصة.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="تم تأمين اتصالك - POP">
+<meta property="og:description" content="أوقف POP الوصول مؤقتًا من هذا الجهاز أو الحساب لحماية المنصة.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../img/fav.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../ui.css">
+<link rel="stylesheet" href="er.css">
+<script src="../i18n.js"></script>
+</head>
+<body>
+<main class="er">
+  <a class="er-logo" href="../index.html" aria-label="POP"><img src="../img/logo-word.png" alt="POP" width="110" height="33"></a>
+  <section class="er-card er-sec" role="alert" aria-live="polite">
+    <span class="er-icon shield" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+    </span>
+    <p class="er-code" translate="no">POP</p>
+    <h1>تم تأمين اتصالك</h1>
+    <p>رصدنا من هذا الجهاز أو الحساب نشاطًا لا يتوافق مع الاستخدام الطبيعي، مثل فتح أدوات المطوّر أو فحص الموقع أو التلاعب بالطلبات. لحماية المنصة وحسابات المستخدمين أوقفنا الوصول مؤقتًا، ويشمل الإيقاف كل أدوات الموقع ومفاتيح API المرتبطة بالحساب.</p>
+    <div class="er-ban" id="ban">
+      <small id="ban-label">ينتهي الإيقاف بعد</small>
+      <b id="ban-left" dir="ltr" translate="no">--:--</b>
+      <span id="ban-at"></span>
+    </div>
+    <div class="er-state" id="state"><span class="dot" aria-hidden="true"></span><span id="state-text">جارٍ التحقق من حالة الإيقاف...</span></div>
+    <form class="er-unlock" id="unlock" autocomplete="off" novalidate>
+      <label for="code">لديك كود فك الإيقاف؟</label>
+      <div class="er-unlock-row">
+        <input id="code" name="code" dir="ltr" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="22" placeholder="UNL-XXXX-XXXX-XXXX" required>
+        <button class="btn" id="unlock-btn" type="submit">فك الإيقاف</button>
+      </div>
+      <p class="er-unlock-msg" id="unlock-msg" role="status"></p>
+    </form>
+    <ul class="er-tips">
+      <li>تزداد مدة الإيقاف تلقائيًا عند تكرار النشاط نفسه، وقد يصبح الإيقاف دائمًا.</li>
+      <li>أكواد فك الإيقاف تصدرها إدارة POP فقط، ويُستخدم كل كود مرة واحدة.</li>
+      <li>بعد انتهاء الإيقاف أو فكّه تعود إلى استخدام POP بشكل طبيعي دون فقد أي بيانات.</li>
+    </ul>
+  </section>
+  <p class="er-foot"><span>© <span id="yr" translate="no">2026</span> POP</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+</main>
+<script src="../config.js"></script>
+<script src="../guard.js"></script>
+<script src="sec.js"></script>
+</body>
+</html>

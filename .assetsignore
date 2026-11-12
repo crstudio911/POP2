@@ -1,0 +1,8 @@
+edge.js
+wrangler.jsonc
+wrangler.toml
+.assetsignore
+.git
+.github
+node_modules
+README.md

@@ -3,18 +3,18 @@
   var LOGIN = '../../login/log.html';
   var $ = function (id) { return document.getElementById(id); };
 
-  if (!A.read()) {
-    A.clear();
-    window.location.replace(LOGIN);
-    return;
-  }
 
-  A.access('link', { login: LOGIN, home: '../../main/main.html' }, function () {
-    $('gate').hidden = true;
-    $('top').hidden = false;
-    $('view').hidden = false;
+  A.guest({ login: LOGIN });
+  $('gate').hidden = true;
+  $('top').hidden = false;
+  $('view').hidden = false;
+  var out = $('out');
+  if (out) out.addEventListener('click', function () {
+    var s0 = A.read();
+    var done = function () { A.clear(); window.location.replace(LOGIN); };
+    if (s0) A.call('/api/session/end', s0.t).then(done, done);
+    else done();
   });
-
   function digits(v) {
     return v.replace(/[\u0660-\u0669]/g, function (c) { return String(c.charCodeAt(0) - 0x660); }).replace(/\D/g, '');
   }
@@ -52,10 +52,4 @@
     );
   });
 
-  document.getElementById('out').addEventListener('click', function () {
-    var s = A.read();
-    var go = function () { A.clear(); window.location.replace(LOGIN); };
-    if (!s) return go();
-    A.call('/api/session/end', s.t).then(go, go);
-  });
 })();

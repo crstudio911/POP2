@@ -4,11 +4,6 @@
   var $ = function (id) { return document.getElementById(id); };
   var result = [];
 
-  if (!A.read()) {
-    A.clear();
-    window.location.replace(LOGIN);
-    return;
-  }
 
   function show() {
     $('gate').hidden = true;
@@ -16,7 +11,15 @@
     $('view').hidden = false;
   }
 
-  A.access('clean', { login: LOGIN, home: '../../main/main.html' }, show);
+  A.guest({ login: LOGIN });
+  show();
+  var out = $('out');
+  if (out) out.addEventListener('click', function () {
+    var s0 = A.read();
+    var done = function () { A.clear(); window.location.replace(LOGIN); };
+    if (s0) A.call('/api/session/end', s0.t).then(done, done);
+    else done();
+  });
 
   document.getElementById('result').addEventListener('focus', function () { this.select(); });
 
@@ -102,10 +105,4 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
   });
 
-  document.getElementById('out').addEventListener('click', function () {
-    var s = A.read();
-    var go = function () { A.clear(); window.location.replace(LOGIN); };
-    if (!s) return go();
-    A.call('/api/session/end', s.t).then(go, go);
-  });
 })();

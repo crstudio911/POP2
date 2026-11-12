@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>تسجيل الدخول - POP</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0e0e10">
@@ -54,12 +54,89 @@
           </button>
         </div>
 
-        <label class="check" for="login-remember">
-          <input id="login-remember" type="checkbox">
-          <span>تذكّر هذا الجهاز لمدة 14 يومًا</span>
-        </label>
+        <div class="row between">
+          <label class="check" for="login-remember">
+            <input id="login-remember" type="checkbox">
+            <span>تذكّر هذا الجهاز لمدة 14 يومًا</span>
+          </label>
+          <button class="link" id="forgot" type="button">نسيت كلمة المرور؟</button>
+        </div>
 
         <button class="btn" id="login-btn" type="submit">تسجيل الدخول</button>
+      </form>
+
+      <form id="form-f1" novalidate hidden>
+        <p class="steps" aria-hidden="true"><b>1</b><i></i><span>2</span><i></i><span>3</span></p>
+        <h1>استعادة كلمة المرور</h1>
+        <p class="sub">أدخل البريد الإلكتروني المسجّل في حسابك. ستجيب بعد ذلك عن أسئلة تخص حسابك للتحقق من هويتك، ثم يصلك رمز لتعيين كلمة مرور جديدة.</p>
+        <label for="f-email">البريد الإلكتروني</label>
+        <input class="field" id="f-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
+        <button class="btn" type="submit">متابعة</button>
+        <div class="row"><button class="link" type="button" data-back-login>العودة إلى تسجيل الدخول</button></div>
+      </form>
+
+      <form id="form-f2" novalidate hidden>
+        <p class="steps" aria-hidden="true"><span>1</span><i></i><b>2</b><i></i><span>3</span></p>
+        <h1>أسئلة التحقق من الحساب</h1>
+        <p class="sub">أجب عن هذه الأسئلة الخاصة بحساب <strong id="f-who" dir="ltr"></strong>. يجب أن تكون معظم الإجابات صحيحة حتى نرسل إليك رمز الاستعادة.</p>
+        <div class="two">
+          <div>
+            <label for="q-first">الاسم الأول المسجّل في الحساب</label>
+            <input class="field" id="q-first" type="text" autocomplete="off" maxlength="40">
+          </div>
+          <div>
+            <label for="q-last">اسم العائلة المسجّل في الحساب</label>
+            <input class="field" id="q-last" type="text" autocomplete="off" maxlength="40">
+          </div>
+        </div>
+        <div class="two">
+          <div>
+            <label for="q-month">في أي شهر أنشأت حسابك؟</label>
+            <select class="field" id="q-month"><option value="">لا أتذكر</option></select>
+          </div>
+          <div>
+            <label for="q-year">في أي سنة أنشأت حسابك؟</label>
+            <select class="field" id="q-year"><option value="">لا أتذكر</option></select>
+          </div>
+        </div>
+        <label for="q-plan">ما باقتك الحالية في أداة مرسل واتساب الجماعي؟</label>
+        <select class="field" id="q-plan">
+          <option value="">لا أتذكر</option>
+          <option value="free">Free (المجانية)</option>
+          <option value="pro">Pro</option>
+          <option value="max">Max</option>
+          <option value="unlimited">Unlimited</option>
+        </select>
+        <button class="btn" id="f2-btn" type="submit">التحقق من الإجابات</button>
+        <div class="row"><button class="link" type="button" data-back-login>العودة إلى تسجيل الدخول</button></div>
+      </form>
+
+      <form id="form-f3" novalidate hidden>
+        <p class="steps" aria-hidden="true"><span>1</span><i></i><span>2</span><i></i><b>3</b></p>
+        <h1>تعيين كلمة مرور جديدة</h1>
+        <p class="sub">أرسلنا رمزًا من 6 أرقام إلى <strong id="f-who2" dir="ltr"></strong>، وهو صالح لمدة <span id="f-min">10</span> دقائق. ستُحذف كلمة المرور القديمة نهائيًا، ويُسجَّل الخروج من كل الأجهزة.</p>
+        <label for="f-code">رمز الاستعادة</label>
+        <input class="field code-one" id="f-code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" dir="ltr">
+        <label for="f-pass">كلمة المرور الجديدة</label>
+        <div class="pass">
+          <input class="field" id="f-pass" type="password" dir="ltr" autocomplete="new-password" maxlength="64" aria-describedby="rules2">
+          <button class="eye" type="button" aria-label="إظهار كلمة المرور" data-for="f-pass">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="meter" aria-hidden="true"><i id="meter-bar2"></i></div>
+        <ul class="rules" id="rules2">
+          <li data-rule="len"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>8 أحرف على الأقل</li>
+          <li data-rule="upper"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>حرفان كبيران على الأقل (A-Z)</li>
+          <li data-rule="digit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>رقم واحد على الأقل</li>
+          <li data-rule="special"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>رمز خاص واحد على الأقل مثل ! @ # $</li>
+          <li data-rule="ascii"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>أحرف إنجليزية فقط ودون مسافات</li>
+          <li data-rule="repeat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>دون تكرار، ولا تتضمن اسمك أو بريدك الإلكتروني</li>
+        </ul>
+        <label for="f-pass2">تأكيد كلمة المرور الجديدة</label>
+        <input class="field" id="f-pass2" type="password" dir="ltr" autocomplete="new-password" maxlength="64">
+        <button class="btn" id="f3-btn" type="submit">حفظ كلمة المرور الجديدة</button>
+        <div class="row"><button class="link" type="button" data-back-login>العودة إلى تسجيل الدخول</button></div>
       </form>
 
       <form id="form-register" novalidate hidden>
@@ -78,7 +155,8 @@
         </div>
 
         <label for="reg-email">البريد الإلكتروني</label>
-        <input class="field" id="reg-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
+        <input class="field" id="reg-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required aria-describedby="mail-note">
+        <p class="mail-note" id="mail-note">يُقبل التسجيل ببريد من مزوّدي البريد العالميين فقط، مثل Gmail وOutlook وHotmail وYahoo وiCloud.</p>
 
         <label for="reg-pass">كلمة المرور</label>
         <div class="pass">
@@ -138,6 +216,7 @@
 </div>
 
 <script src="../config.js"></script>
+<script src="../guard.js"></script>
 <script src="../rules.js"></script>
 <script src="log.js"></script>
 </body>

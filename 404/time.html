@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-guard="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>اضبط وقت جهازك - POP</title>
+<meta name="description" content="وقت جهازك أو منطقته الزمنية غير مضبوطة. اضبطها للمتابعة في POP.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="اضبط وقت جهازك - POP">
+<meta property="og:description" content="وقت جهازك أو منطقته الزمنية غير مضبوطة. اضبطها للمتابعة في POP.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" type="image/png" href="../img/fav.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../ui.css">
+<link rel="stylesheet" href="er.css">
+<script src="../i18n.js"></script>
+</head>
+<body>
+<main class="er">
+  <a class="er-logo" href="../index.html" aria-label="POP"><img src="../img/logo-word.png" alt="POP" width="110" height="33"></a>
+  <section class="er-card" role="alert" aria-live="polite">
+    <span class="er-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>
+    </span>
+    <p class="er-code" translate="no">POP</p>
+    <h1 id="title">وقت جهازك غير مضبوط</h1>
+    <p id="text">يعتمد POP على الوقت الصحيح لحماية حسابك وحساب فترات الانتظار بدقة. يرجى ضبط التاريخ والوقت والمنطقة الزمنية على جهازك، ثم المتابعة.</p>
+    <div class="er-times">
+      <div><small>الوقت على جهازك</small><b id="dev-time">--:--</b><span id="dev-zone"></span></div>
+      <div class="good"><small>الوقت الصحيح في منطقتك</small><b id="real-time">--:--</b><span id="real-zone"></span></div>
+    </div>
+    <div class="er-state" id="state"><span class="dot" aria-hidden="true"></span><span id="state-text">نتحقق من وقت جهازك تلقائيًا كل بضع ثوانٍ...</span></div>
+    <div class="er-actions">
+      <button class="btn" id="retry" type="button">ضبطت الوقت، تحقّق الآن</button>
+    </div>
+    <ul class="er-tips">
+      <li><b>أندرويد:</b> الإعدادات ثم النظام ثم التاريخ والوقت، وفعّل «ضبط الوقت تلقائيًا» و«المنطقة الزمنية تلقائيًا».</li>
+      <li><b>آيفون:</b> الإعدادات ثم عام ثم التاريخ والوقت، وفعّل «الضبط تلقائيًا».</li>
+      <li><b>ويندوز:</b> الإعدادات ثم الوقت واللغة ثم التاريخ والوقت، وفعّل «تعيين الوقت تلقائيًا» و«تعيين المنطقة الزمنية تلقائيًا»، ثم «المزامنة الآن».</li>
+      <li><b>ماك:</b> إعدادات النظام ثم عام ثم التاريخ والوقت، وفعّل الضبط التلقائي.</li>
+    </ul>
+  </section>
+  <p class="er-foot"><span>© <span id="yr" translate="no">2026</span> POP</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
+</main>
+<script src="../config.js"></script>
+<script src="../guard.js"></script>
+<script src="time.js"></script>
+</body>
+</html>

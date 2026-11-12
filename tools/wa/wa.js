@@ -28,6 +28,11 @@
   var draft = loadDraft();
   var parsed = { rows: [], invalid: 0, dupes: 0 };
   var perSend = 500;
+  var maxVars = 6;
+  var plan = 'free';
+  var speedOk = true;
+  var nextAt = 0;
+  var cdTimer = null;
   var ticket = null;
   var ticketExp = 0;
   var wa = { state: 'idle', expiresAt: 0, phone: null, job: null };
@@ -137,9 +142,63 @@
       }
       ticket = r.ticket;
       ticketExp = Number(r.expires) || 0;
-      if (Number(r.perSend) > 0) perSend = Number(r.perSend);
+      applyLimits(r);
       return ticket;
     });
+  }
+
+  function applyLimits(r) {
+    var l = r.limits || {};
+    if (r.plan) plan = r.plan;
+    perSend = Number(l.perSend) > 0 ? Number(l.perSend) : 5000;
+    maxVars = Number(l.vars) >= 0 && l.vars !== undefined ? Math.min(MAX_VARS, Number(l.vars)) : MAX_VARS;
+    speedOk = l.speed !== 'safe';
+    if (r.nextAt !== undefined) nextAt = Number(r.nextAt) || 0;
+    renderPlan(l);
+  }
+
+  function renderPlan(l) {
+    var box = $('planbar');
+    if (!box) return;
+    l = l || {};
+    $('pb-name').textContent = 'باقة ' + A.planName(plan);
+    var items = [];
+    items.push(Number(l.perSend) > 0 ? 'الأرقام في كل إرسال: حتى ' + l.perSend : 'الأرقام في كل إرسال: دون حد');
+    items.push('المتغيرات: حتى ' + maxVars);
+    items.push(Number(l.cooldown) > 0 ? 'الانتظار بين كل عملية إرسال والتالية: ' + l.cooldown + ' دقيقة' : 'دون فترة انتظار');
+    if (!speedOk) items.push('السرعة الآمنة فقط');
+    $('pb-list').textContent = items.join(' · ');
+    $('pb-up').hidden = plan === 'unlimited';
+    var opt = document.querySelector('#speed option[value="normal"]');
+    if (opt) {
+      opt.disabled = !speedOk;
+      opt.textContent = opt.textContent.replace(/ \(.*\)$/, '') + (speedOk ? '' : ' (متاحة في Pro وما فوقها)');
+    }
+    if (!speedOk && draft.speed === 'normal') {
+      draft.speed = 'safe';
+      if ($('speed')) $('speed').value = 'safe';
+    }
+    $('vars-count').textContent = draft.vars.length + ' / ' + maxVars;
+    $('add-var').disabled = draft.vars.length >= maxVars;
+    tickCooldown();
+  }
+
+  function tickCooldown() {
+    var left = nextAt - A.now();
+    var el = $('pb-cd');
+    if (left > 0) {
+      el.hidden = false;
+      $('pb-cd-left').textContent = A.fmtLeft(left);
+      $('pb-cd-at').textContent = 'عند ' + A.fmtAt(nextAt);
+      if (!cdTimer) cdTimer = setInterval(tickCooldown, 1000);
+    } else {
+      el.hidden = true;
+      if (cdTimer) {
+        clearInterval(cdTimer);
+        cdTimer = null;
+        renderSend();
+      }
+    }
   }
 
   function waCall(path, body, retried) {
@@ -369,8 +428,8 @@
       row.appendChild(del);
       box.appendChild(row);
     });
-    $('vars-count').textContent = draft.vars.length + ' / ' + MAX_VARS;
-    $('add-var').disabled = draft.vars.length >= MAX_VARS;
+    $('vars-count').textContent = draft.vars.length + ' / ' + maxVars;
+    $('add-var').disabled = draft.vars.length >= maxVars;
   }
 
   function nameOk(i) {
@@ -452,7 +511,7 @@
     chip(parsed.rows.length + ' رقم صحيح');
     if (parsed.dupes) chip(parsed.dupes + ' مكرر حُذف', 'warn');
     if (parsed.invalid) chip(parsed.invalid + ' رقم غير صحيح', 'bad');
-    if (parsed.rows.length > perSend) chip('الحد الأقصى في المرة الواحدة ' + perSend + ' رقم', 'bad');
+    if (parsed.rows.length > perSend) chip('حد باقتك في المرة الواحدة ' + perSend + ' رقم', 'bad');
     $('nums-count').textContent = String(parsed.rows.length);
 
     var wrap = $('table-wrap');
@@ -607,7 +666,9 @@
     else if (!allNamesOk()) reason = 'يجب أن يكون لكل متغير اسم مختلف دون رموز.';
     else if (unknownTokens().length) reason = 'يرجى تصحيح المتغيرات غير المعرّفة في الرسالة.';
     else if (!parsed.rows.length) reason = 'يرجى إضافة رقم واحد على الأقل.';
-    else if (parsed.rows.length > perSend) reason = 'الحد الأقصى في المرة الواحدة ' + perSend + ' رقم.';
+    else if (parsed.rows.length > perSend) reason = 'تسمح باقتك بإرسال ' + perSend + ' رقم كحد أقصى في المرة الواحدة. قلّل الأرقام أو رقِّ باقتك.';
+    else if (draft.vars.length > maxVars) reason = 'تسمح باقتك بـ ' + maxVars + ' متغير فقط. احذف المتغيرات الزائدة أو رقِّ باقتك.';
+    else if (nextAt > A.now()) reason = 'أنت في فترة الانتظار بين عمليات الإرسال. يمكنك بدء إرسال جديد عند ' + A.fmtAt(nextAt) + ' (بعد ' + A.fmtWait(nextAt - A.now()) + ').';
     $('send').disabled = !!reason;
     if (reason) {
       $('send-hint').textContent = reason;
@@ -659,8 +720,12 @@
     job_running: 'توجد عملية إرسال جارية بالفعل.',
     restricted: 'قيّد واتساب هذا الرقم مؤقتًا. اتركه يومًا أو يومين دون إرسال جماعي، واستخدمه استخدامًا عاديًا مع معارفك، ثم ابدأ بأعداد صغيرة.',
     replaced: 'فُتح الرقم في مكان آخر بالربط نفسه. أغلق الصفحة الأخرى ثم اربط من هنا.',
-    day_cap: 'بلغ هذا الرقم الحد اليومي (150 رسالة). يرجى المتابعة غدًا للحفاظ على أمان رقمك.',
-    no_access: 'هذه الأداة غير متاحة في خطتك الحالية.',
+    day_cap: 'بلغ هذا الرقم الحد اليومي في باقتك. يرجى المتابعة غدًا للحفاظ على أمان رقمك.',
+    no_access: 'هذه الأداة غير متاحة في باقتك الحالية.',
+    cooldown: 'أنت في فترة الانتظار الخاصة بباقتك، ويمكنك الإرسال مجددًا بعد انتهائها.',
+    limit_count: 'عدد الأرقام أكبر من حد باقتك في المرة الواحدة.',
+    limit_vars: 'عدد المتغيرات أكبر من المسموح في باقتك.',
+    limit_speed: 'السرعة العادية متاحة في باقة Pro وما فوقها. اختر السرعة الآمنة.',
     invalid_request: 'بعض بيانات الإرسال غير صحيحة. يرجى مراجعة الرسالة والأرقام.'
   };
 
@@ -925,9 +990,17 @@
       if (!r.ok) {
         jobMeta = null;
         saveJob();
+        if (r.error === 'cooldown' && r.nextAt) {
+          nextAt = Number(r.nextAt) || 0;
+          tickCooldown();
+        }
         setError(ERR_TEXT[r.error] || ERR_TEXT.unavailable);
         renderSend();
         return;
+      }
+      if (r.nextAt) {
+        nextAt = Number(r.nextAt) || 0;
+        tickCooldown();
       }
       if (r.job) {
         jobMeta.id = r.job.id;
@@ -971,7 +1044,7 @@
     $('speed').value = draft.speed;
 
     $('add-var').addEventListener('click', function () {
-      if (draft.vars.length >= MAX_VARS) return;
+      if (draft.vars.length >= maxVars) return;
       draft.vars.push({ n: '', d: '' });
       renderVars();
       refresh(true);
@@ -1044,7 +1117,8 @@
     });
 
     $('speed').addEventListener('change', function () {
-      draft.speed = $('speed').value === 'normal' ? 'normal' : 'safe';
+      draft.speed = $('speed').value === 'normal' && speedOk ? 'normal' : 'safe';
+      $('speed').value = draft.speed;
       refresh(false);
     });
     $('prev-back').addEventListener('click', function () {
@@ -1089,7 +1163,8 @@
     });
   }
 
-  A.access('wa', { login: LOGIN, home: '../../main/main.html' }, function () {
+  A.access('wa', { login: LOGIN, home: '../../main/main.html' }, function (r) {
+    applyLimits(r);
     $('gate').hidden = true;
     $('top').hidden = false;
     $('view').hidden = false;

@@ -1,36 +1,46 @@
 (function () {
   var A = window.POPAuth;
   var LOGIN = '../../login/log.html';
-  var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
-  var ROUNDS = 3;
-  var WAIT_MS = 240000;
   var KINDS = [
-    ['العيادات والأطباء', '["amenity"~"^(clinic|doctors|dentist)$"]'],
-    ['الصيدليات', '["amenity"="pharmacy"]'],
-    ['المستشفيات', '["amenity"="hospital"]'],
-    ['المطاعم', '["amenity"="restaurant"]'],
-    ['المقاهي', '["amenity"="cafe"]'],
-    ['الصالات والأندية الرياضية', '["leisure"="fitness_centre"]'],
-    ['صالونات التجميل والحلاقة', '["shop"~"^(hairdresser|beauty)$"]'],
-    ['متاجر الملابس', '["shop"="clothes"]'],
-    ['المتاجر الكبرى والبقالات', '["shop"~"^(supermarket|convenience)$"]'],
-    ['متاجر الهواتف والإلكترونيات', '["shop"~"^(mobile_phone|electronics|computer)$"]'],
-    ['معارض السيارات ووكالاتها', '["shop"="car"]'],
-    ['ورش صيانة السيارات', '["shop"="car_repair"]'],
-    ['المدارس ورياض الأطفال', '["amenity"~"^(school|kindergarten)$"]'],
-    ['المراكز التعليمية', '["amenity"~"^(college|language_school|training)$"]'],
-    ['الفنادق', '["tourism"~"^(hotel|guest_house)$"]'],
-    ['الشركات والمكاتب', '["office"]'],
-    ['شركات المقاولات', '["craft"~"^(builder|construction)$"]'],
-    ['مكاتب المحاماة', '["office"="lawyer"]'],
-    ['المكاتب العقارية', '["office"="estate_agent"]'],
-    ['متاجر الأثاث', '["shop"~"^(furniture|interior_decoration)$"]'],
-    ['أي نشاط تجاري', '["shop"]']
+    ['clinics', 'العيادات والأطباء'],
+    ['pharmacies', 'الصيدليات'],
+    ['hospitals', 'المستشفيات'],
+    ['restaurants', 'المطاعم'],
+    ['cafes', 'المقاهي'],
+    ['gyms', 'الصالات والأندية الرياضية'],
+    ['beauty', 'صالونات التجميل والحلاقة'],
+    ['clothes', 'متاجر الملابس'],
+    ['supermarkets', 'المتاجر الكبرى والبقالات'],
+    ['electronics', 'متاجر الهواتف والإلكترونيات'],
+    ['car_dealers', 'معارض السيارات ووكالاتها'],
+    ['car_repair', 'ورش صيانة السيارات'],
+    ['schools', 'المدارس ورياض الأطفال'],
+    ['education', 'المراكز التعليمية'],
+    ['hotels', 'الفنادق'],
+    ['offices', 'الشركات والمكاتب'],
+    ['contractors', 'شركات المقاولات'],
+    ['lawyers', 'مكاتب المحاماة'],
+    ['real_estate', 'المكاتب العقارية'],
+    ['furniture', 'متاجر الأثاث'],
+    ['shops', 'أي نشاط تجاري']
   ];
-  var MAX = 2000;
+  var ERR = {
+    area_not_found: 'لم يُعثر على هذه المنطقة، يرجى كتابتها بصيغة أخرى.',
+    area_too_big: 'المنطقة واسعة جدًا، يرجى كتابة مدينة أو حي بدلًا من دولة.',
+    maps_busy: 'خدمة الخرائط مشغولة حاليًا. يرجى المحاولة بعد بضع دقائق، أو تضييق المنطقة. لم تُحتسب هذه المحاولة من فترة الانتظار.',
+    cooldown: 'أنت في فترة الانتظار الخاصة بباقتك، ويمكنك البحث مجددًا بعد انتهائها.',
+    invalid_request: 'يرجى مراجعة بيانات البحث.',
+    no_access: 'هذه الأداة غير متاحة في باقتك الحالية.',
+    unavailable: 'تعذّر إتمام البحث الآن. يرجى المحاولة بعد قليل.',
+    network: 'تعذّر الاتصال. يرجى التحقق من الإنترنت.'
+  };
   var $ = function (id) { return document.getElementById(id); };
   var list = [];
   var busy = false;
+  var plan = 'free';
+  var limits = {};
+  var nextAt = 0;
+  var cdTimer = null;
 
   var session = A.read();
   if (!session) { leave(); return; }
@@ -38,12 +48,43 @@
   function leave() { A.clear(); window.location.replace(LOGIN); }
   function show() { $('gate').hidden = true; $('top').hidden = false; $('view').hidden = false; }
 
-  A.access('leads', { login: LOGIN, home: '../../main/main.html' }, show);
+  function renderPlan() {
+    $('pb-name').textContent = 'باقة ' + A.planName(plan);
+    var items = [];
+    items.push(Number(limits.results) > 0 ? 'النتائج في كل بحث: حتى ' + limits.results : 'النتائج في كل بحث: كل المتاح');
+    items.push(Number(limits.cooldown) > 0 ? 'الانتظار بين كل بحث والتالي: ' + limits.cooldown + ' دقيقة' : 'دون فترة انتظار');
+    $('pb-list').textContent = items.join(' · ');
+    $('pb-up').hidden = plan === 'unlimited';
+    tickCooldown();
+  }
+
+  function tickCooldown() {
+    var left = nextAt - A.now();
+    if (left > 0) {
+      $('pb-cd').hidden = false;
+      $('pb-cd-left').textContent = A.fmtLeft(left);
+      $('pb-cd-at').textContent = 'عند ' + A.fmtAt(nextAt);
+      if (!busy) $('go').disabled = true;
+      if (!cdTimer) cdTimer = setInterval(tickCooldown, 1000);
+    } else {
+      $('pb-cd').hidden = true;
+      if (!busy) $('go').disabled = false;
+      if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
+    }
+  }
+
+  A.access('leads', { login: LOGIN, home: '../../main/main.html' }, function (r) {
+    plan = r.plan || 'free';
+    limits = r.limits || {};
+    nextAt = Number(r.nextAt) || 0;
+    renderPlan();
+    show();
+  });
   $('out').addEventListener('click', function () { A.call('/api/session/end', session.t).then(leave, leave); });
 
-  KINDS.forEach(function (k, i) {
+  KINDS.forEach(function (k) {
     var o = document.createElement('option');
-    o.value = i; o.textContent = k[0];
+    o.value = k[0]; o.textContent = k[1];
     $('kind').appendChild(o);
   });
 
@@ -55,59 +96,11 @@
     var sec = started ? Math.floor((Date.now() - started) / 1000) : 0;
     $('state').textContent = sayText + (busy && sec >= 5 ? ' (' + sec + ' ثانية)' : '');
   }
-  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-
-  function area(city, n) {
-    n = n || 0;
-    var u = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ar&q=' + encodeURIComponent(city);
-    return fetch(u, { headers: { Accept: 'application/json' }, credentials: 'omit' }).then(function (r) {
-      if (!r.ok) throw new Error('geo');
-      return r.json();
-    }).catch(function (e) {
-      if (n < 3) return sleep(3000 * (n + 1)).then(function () { return area(city, n + 1); }).then(function (x) { return { retried: x }; });
-      throw e;
-    }).then(function (j) {
-      if (j && j.retried) return j.retried;
-      if (!j || !j[0] || !j[0].boundingbox) throw new Error('nf');
-      var b = j[0].boundingbox.map(Number);
-      return { s: b[0], n: b[1], w: b[2], e: b[3], name: j[0].display_name };
-    });
-  }
-
-  function overpass(q, i) {
-    i = i || 0;
-    var ctl = window.AbortController ? new AbortController() : null;
-    var timer = ctl ? setTimeout(function () { ctl.abort(); }, WAIT_MS) : null;
-    var srv = i % OVERPASS.length;
-    return fetch(OVERPASS[srv], { signal: ctl ? ctl.signal : undefined, method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, credentials: 'omit' })
-      .then(function (r) { if (!r.ok) throw new Error('op'); return r.json(); })
-      .then(function (j) { clearTimeout(timer); return j; }, function (e) {
-        clearTimeout(timer);
-        if (i + 1 < OVERPASS.length * ROUNDS) {
-          say('خدمة الخرائط تشهد ضغطًا، وجارٍ إعادة المحاولة... يرجى الانتظار، فقد يستغرق البحث بضع دقائق');
-          return sleep(i + 1 < OVERPASS.length ? 1500 : 8000).then(function () { return overpass(q, i + 1); });
-        }
-        throw e;
-      });
-  }
-
-  function cleanPhone(raw) {
-    var d = String(raw || '').split(/[;,\/]/)[0].replace(/[^\d+]/g, '');
-    if (d.indexOf('00') === 0) d = d.slice(2);
-    d = d.replace(/^\+/, '');
-    if (/^01[0125]\d{8}$/.test(d)) d = '2' + d;
-    if (/^05\d{8}$/.test(d)) d = '966' + d.slice(1);
-    return d.length >= 8 && d.length <= 15 ? d : '';
-  }
-
-  function addr(t) {
-    var parts = [t['addr:street'] && ((t['addr:housenumber'] ? t['addr:housenumber'] + ' ' : '') + t['addr:street']), t['addr:suburb'] || t['addr:district'], t['addr:city']];
-    return parts.filter(Boolean).join('، ') || t['addr:full'] || '';
-  }
 
   function search(ev) {
     ev.preventDefault();
     if (busy) return;
+    if (nextAt > A.now()) { say(ERR.cooldown + ' متاح عند ' + A.fmtAt(nextAt) + '.'); return; }
     var city = $('city').value.trim();
     var word = $('word').value.trim().replace(/["\\]/g, '');
     if (!city) return;
@@ -115,33 +108,26 @@
     started = Date.now();
     clearInterval(clock);
     clock = setInterval(tick, 1000);
-    say('جارٍ البحث عن المنطقة...');
-    area(city).then(function (b) {
-      if ((b.n - b.s) * (b.e - b.w) > 9) throw new Error('big');
-      say('جارٍ جمع الأماكن في ' + b.name + '... قد يستغرق البحث بعض الوقت، يرجى إبقاء الصفحة مفتوحة');
-      var tag = KINDS[$('kind').value][1];
-      var nm = word ? '["name"~"' + word + '",i]' : '';
-      var bb = '(' + b.s + ',' + b.w + ',' + b.n + ',' + b.e + ')';
-      var q = '[out:json][timeout:180];(nwr' + tag + '["phone"]' + nm + bb + ';nwr' + tag + '["contact:phone"]' + nm + bb + ';nwr' + tag + '["contact:whatsapp"]' + nm + bb + ';nwr' + tag + '["contact:mobile"]' + nm + bb + ';);out center tags ' + MAX + ';';
-      return overpass(q);
-    }).then(function (j) {
-      var seen = {};
-      list = [];
-      (j.elements || []).forEach(function (el) {
-        var t = el.tags || {};
-        var p = cleanPhone(t['contact:whatsapp'] || t['contact:mobile'] || t.phone || t['contact:phone'] || t.mobile);
-        if (!p || seen[p]) return;
-        seen[p] = 1;
-        var lat = el.lat || (el.center && el.center.lat);
-        var lon = el.lon || (el.center && el.center.lon);
-        list.push({ name: t['name:ar'] || t.name || 'دون اسم', phone: p, address: addr(t), map: lat ? 'https://www.google.com/maps?q=' + lat + ',' + lon : '' });
+    say('جارٍ البحث وجمع الأماكن... قد يستغرق البحث بضع دقائق في المناطق الكبيرة، يرجى إبقاء الصفحة مفتوحة');
+    A.call('/api/leads/search', session.t, { city: city, kind: $('kind').value, word: word }).then(function (r) {
+      busy = false; started = 0; clearInterval(clock);
+      if (!r.ok) {
+        if (r.error === 'invalid_session') return leave();
+        if (r.error === 'cooldown' && r.nextAt) nextAt = Number(r.nextAt) || 0;
+        say(ERR[r.error] || ERR.unavailable);
+        tickCooldown();
+        return;
+      }
+      if (r.nextAt) nextAt = Number(r.nextAt) || 0;
+      list = (r.items || []).map(function (x) {
+        return { name: x.name || 'دون اسم', phone: x.phone, address: x.address || '', map: x.map || '' };
       });
       render();
-      say(list.length ? 'عُثر على ' + list.length + ' مكان له رقم.' : 'لم يُعثر على أماكن لها أرقام هنا. جرّب منطقة أوسع أو نشاطًا آخر.');
-    }).catch(function (e) {
-      var m = e && e.message;
-      say(m === 'nf' ? 'لم يُعثر على هذه المنطقة، يرجى كتابتها بصيغة أخرى.' : m === 'big' ? 'المنطقة واسعة جدًا، يرجى كتابة مدينة أو حي بدلًا من دولة.' : 'خدمة الخرائط مشغولة حاليًا. يرجى المحاولة بعد بضع دقائق، أو تضييق المنطقة.');
-    }).then(function () { busy = false; started = 0; clearInterval(clock); tick(); $('go').disabled = false; });
+      var msg = list.length ? 'عدد الأماكن التي لها رقم' + (r.area ? ' في ' + r.area : '') + ': ' + list.length + '.' : 'لم يُعثر على أماكن لها أرقام هنا. جرّب منطقة أوسع أو نشاطًا آخر. لم تُحتسب هذه المحاولة من فترة الانتظار.';
+      if (r.capped && r.cap) msg += ' عرضنا أول ' + r.cap + ' نتيجة بحسب حد باقتك، ويمكنك الترقية للحصول على نتائج أكثر.';
+      say(msg);
+      tickCooldown();
+    });
   }
 
   function render() {

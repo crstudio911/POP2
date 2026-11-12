@@ -388,3 +388,73 @@ input[dir='ltr'] {
     gap: 0;
   }
 }
+
+.row.between {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 16px 0 26px;
+}
+
+.row.between .check {
+  margin: 0;
+}
+
+select.field {
+  cursor: pointer;
+}
+
+.code-one {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+
+.mail-note {
+  margin: -10px 0 18px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.steps b,
+.steps span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.steps b {
+  background: var(--orange);
+  color: var(--orange-ink);
+}
+
+.steps span {
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+}
+
+.steps i {
+  flex: 0 0 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+
+#f-who {
+  display: inline-block;
+  unicode-bidi: isolate;
+}

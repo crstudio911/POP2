@@ -498,3 +498,8 @@
     flex: 1 1 auto;
   }
 }
+
+.pillars a {
+  color: var(--orange);
+  text-underline-offset: 4px;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "pop",
+  "main": "edge.js",
+  "compatibility_date": "2025-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "ratelimits": [
+    { "name": "SITE_LIMITER", "namespace_id": "7101", "simple": { "limit": 400, "period": 60 } },
+    { "name": "API_LIMITER", "namespace_id": "7102", "simple": { "limit": 600, "period": 60 } }
+  ],
+  "vars": {
+    "UPSTREAMS": "https://pop-api-1.uuuuouuuuuuouuu.workers.dev",
+    "PANEL_ORIGINS": "",
+    "TZ_CHECK": "on",
+    "TIME_SKEW": "120",
+    "RATE_SCALE": "1"
+  }
+}

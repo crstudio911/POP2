@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>لوحة الأدوات - POP</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0e0e10">
@@ -44,6 +44,14 @@
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
             لوحة الأدوات
           </a>
+          <a role="menuitem" href="../plans/plans.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+            الباقات والاشتراكات
+          </a>
+          <a role="menuitem" href="../api/api.html">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg>
+            واجهة API للمطورين
+          </a>
           <a role="menuitem" href="../index.html">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
             عن POP
@@ -63,11 +71,15 @@
     <div class="welcome-copy">
       <p class="eyebrow"><i aria-hidden="true"></i><span id="today" translate="no"></span></p>
       <h1>مرحبًا، <span id="hello" translate="no"></span></h1>
-      <p>اختر الأداة التي تريد العمل بها. تتحقق كل أداة من صلاحيات حسابك قبل أن تبدأ.</p>
+      <p>اختر الأداة التي تريد العمل بها. لكل أداة مدفوعة باقة مجانية تبدأ بها، ويمكنك الترقية في أي وقت بكود اشتراك.</p>
+      <div class="welcome-act">
+        <a class="btn small" href="../plans/plans.html">الباقات والاشتراكات</a>
+        <a class="btn ghost small" href="../api/api.html">واجهة API للمطورين</a>
+      </div>
     </div>
     <dl class="facts">
-      <div><dt>خطتك الحالية</dt><dd id="f-plan">الخطة المجانية</dd></div>
-      <div><dt>الأدوات المتاحة</dt><dd><span id="f-tools" translate="no">0</span> من <span id="f-all" translate="no">0</span></dd></div>
+      <div><dt>الاشتراكات المدفوعة</dt><dd id="f-plan">لا يوجد</dd></div>
+      <div><dt>باقة API</dt><dd id="f-api" translate="no">Free</dd></div>
       <div><dt>تنتهي الجلسة في</dt><dd id="f-exp" translate="no">-</dd></div>
     </dl>
   </section>
@@ -79,6 +91,7 @@
         <button type="button" class="chip on" data-filter="all">الكل</button>
         <button type="button" class="chip" data-filter="msg">المراسلة</button>
         <button type="button" class="chip" data-filter="data">البيانات</button>
+        <button type="button" class="chip" data-filter="mkt">التسويق</button>
       </div>
       <label class="search">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -110,6 +123,21 @@
           </span>
           <strong>مستخرج بيانات العملاء</strong>
           <span class="tcard-desc">اجمع أسماء الأنشطة التجارية وأرقامها وعناوينها في أي مدينة، في جدول جاهز.</span>
+          <span class="tcard-foot">
+            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          </span>
+        </span>
+      </a>
+      <a class="tcard" href="../tools/short/short.html" data-tool="short" data-cat="mkt">
+        <span class="tcard-art"><img src="../img/short-card.webp" alt="" width="800" height="450" decoding="async" loading="lazy"></span>
+        <span class="tcard-body">
+          <span class="tcard-top">
+            <span class="tcard-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M7 15V11M12 15V7M17 15v-3"/></svg></span>
+            <span class="tcard-cat">التسويق</span>
+          </span>
+          <strong>مختصر الروابط والتحليلات</strong>
+          <span class="tcard-desc">اختصر أي رابط طويل باسم POP، واحمِه بكلمة سر أو تاريخ انتهاء، وتابع ضغطاته بالدولة والجهاز والوقت.</span>
           <span class="tcard-foot">
             <span class="tcard-state" data-state>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
@@ -160,12 +188,15 @@
     <nav class="sf-links" aria-label="روابط التذييل">
       <a href="../index.html">عن POP</a>
       <a href="../main/main.html">لوحة الأدوات</a>
+      <a href="../plans/plans.html">الباقات</a>
+      <a href="../api/api.html">واجهة API</a>
     </nav>
     <p class="sf-copy"><span>© <span id="yr" translate="no">2026</span> POP. جميع الحقوق محفوظة.</span><span class="made-by">برمجة وتصميم <a href="https://crstudio911.github.io/MC/" target="_blank" rel="noopener noreferrer" translate="no">MC</a></span></p>
   </div>
 </footer>
 
 <script src="../config.js"></script>
+<script src="../guard.js"></script>
 <script src="../auth.js"></script>
 <script src="main.js"></script>
 </body>

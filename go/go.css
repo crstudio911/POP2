@@ -1,0 +1,6 @@
+.go-form{display:grid;gap:12px;width:100%;margin-top:6px;text-align:start}
+.go-form input{width:100%;direction:ltr}
+.go-form .btn{width:100%}
+.go-form .hint{min-height:1.2em;text-align:center}
+.er-icon.lock{background:rgba(224,180,80,.12);color:var(--gold)}
+.er-icon.gone{background:rgba(255,107,94,.1);color:var(--danger)}
