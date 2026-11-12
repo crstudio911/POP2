@@ -14,7 +14,7 @@
   ],
   "vars": {
     "UPSTREAMS": "https://pop-api-1.uuuuouuuuuuouuu.workers.dev",
-    "PANEL_ORIGINS": "",
+    "PANEL_ORIGINS": "https://crstudio911.github.io/dhkgj-5yghfH55jf597hj49tj-g, https://crstudio911.github.io",
     "TZ_CHECK": "on",
     "TIME_SKEW": "120",
     "RATE_SCALE": "1"
