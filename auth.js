@@ -207,7 +207,37 @@
     if (el) el.textContent = v;
   }
 
+  function ready() {
+    document.documentElement.classList.remove('pop-loading');
+  }
+
+  function paintMe(me) {
+    var name = [me.firstName, me.lastName].filter(Boolean).join(' ');
+    setText('avatar', initials(me.firstName, me.lastName, me.email));
+    setText('who-name', name || me.email || '');
+    setText('who-mail', me.email || '');
+    setText('um-name', name || me.email || '');
+    setText('um-mail', me.email || '');
+  }
+
+  function early() {
+    var gate = document.getElementById('gate');
+    var view = document.getElementById('view');
+    var top = document.getElementById('top');
+    if (!gate || !view || gate.hidden || !read()) return;
+    var me = cached();
+    if (!me) return;
+    document.documentElement.classList.add('pop-loading');
+    paintMe(me);
+    gate.hidden = true;
+    view.hidden = false;
+    if (top) top.hidden = false;
+    setText('yr', String(new Date().getFullYear()));
+    setTimeout(ready, 20000);
+  }
+
   function user(r) {
+    ready();
     var name = [r.firstName, r.lastName].filter(Boolean).join(' ');
     setText('avatar', initials(r.firstName, r.lastName, r.email));
     setText('who-name', name || r.email || '');
@@ -252,8 +282,11 @@
       goError('net');
       return;
     }
+    ready();
     var gate = document.getElementById('gate');
     if (gate) gate.hidden = true;
+    var view = document.getElementById('view');
+    if (view) view.hidden = true;
     var foot = document.querySelector('.site-foot');
     if (foot) foot.hidden = true;
     var box = document.createElement('section');
@@ -336,7 +369,11 @@
     return false;
   }
 
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', early);
+  else early();
+
   window.POPAuth = Object.freeze({
+    ready: ready,
     read: read,
     clear: clear,
     post: post,

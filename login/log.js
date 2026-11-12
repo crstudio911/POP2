@@ -30,6 +30,8 @@
 
   var pending = null;
   var timer = null;
+  var LANG = (window.POPLang && window.POPLang.current) || 'ar';
+  var latin = window.POPBusy ? window.POPBusy.latin : function (v) { return String(v); };
 
   var MESSAGES = {
     invalid_email: 'يرجى إدخال بريد إلكتروني صحيح.',
@@ -266,7 +268,7 @@
     pending = {
       email: email,
       remember: $('reg-remember').checked,
-      body: { firstName: first, lastName: last, email: email, password: pass }
+      body: { firstName: first, lastName: last, email: email, password: pass, lang: LANG }
     };
     var btn = $('reg-btn');
     btn.disabled = true;
@@ -343,8 +345,49 @@
     });
   });
 
+  function readClip(done) {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      done('');
+      return;
+    }
+    navigator.clipboard.readText().then(function (t) {
+      var m = latin(t || '').match(/\d[\d\s-]{4,10}\d/);
+      done(m ? m[0].replace(/\D/g, '').slice(0, 6) : '');
+    }, function () {
+      done('');
+    });
+  }
+
+  $('paste-code').addEventListener('click', function () {
+    readClip(function (code) {
+      if (code.length === 6) {
+        fill(code, 0);
+        return;
+      }
+      digits[0].focus();
+      say('انسخ الرمز من البريد ثم اضغط مطولًا على أول خانة واختر لصق.');
+    });
+  });
+
+  $('paste-f').addEventListener('click', function () {
+    readClip(function (code) {
+      if (code.length === 6) {
+        $('f-code').value = code;
+        $('f-pass').focus();
+        return;
+      }
+      $('f-code').focus();
+      say('انسخ الرمز من البريد ثم اضغط مطولًا على الخانة واختر لصق.');
+    });
+  });
+
   $('resend').addEventListener('click', function () {
     var resend = $('resend');
+    if (!pending || !pending.body) {
+      show('register');
+      say('أدخل بياناتك مرة أخرى لإرسال رمز جديد.');
+      return;
+    }
     resend.disabled = true;
     clearDigits();
     sendRegister().then(function (ok) {
@@ -388,7 +431,7 @@
     });
 
     input.addEventListener('paste', function (e) {
-      var text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      var text = latin((e.clipboardData || window.clipboardData).getData('text')).replace(/\D/g, '');
       if (!text) return;
       e.preventDefault();
       fill(text, i);
@@ -473,7 +516,7 @@
     var btn = $('f2-btn');
     btn.disabled = true;
     say('');
-    post('/api/auth/forgot', { email: forgot.email, answers: answers }).then(function (r) {
+    post('/api/auth/forgot', { email: forgot.email, answers: answers, lang: LANG }).then(function (r) {
       btn.disabled = false;
       if (!r.ok) {
         say(MESSAGES[r.error] || MESSAGES.unavailable);
@@ -540,10 +583,42 @@
     });
   });
 
-  if (window.location.hash === '#register') show('register');
-  if (window.location.hash === '#forgot') show('f1');
+  function fromLink() {
+    var h = window.location.hash.slice(1);
+    var m = /^(verify|reset)=(\d{6})&e=([^&]+)$/.exec(h);
+    if (!m) return false;
+    var email = '';
+    try {
+      email = decodeURIComponent(m[3]).trim().toLowerCase();
+    } catch (e) {}
+    try {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    } catch (e) {}
+    if (!validEmail(email)) return false;
+    if (m[1] === 'verify') {
+      pending = { email: email, remember: false, body: null };
+      show('code');
+      $('who').textContent = email;
+      clearDigits();
+      $('resend').disabled = false;
+      fill(m[2], 0);
+      return true;
+    }
+    forgot = { email: email, firstName: '', lastName: '' };
+    show('f3');
+    $('f-who2').textContent = email;
+    $('f-code').value = m[2];
+    paintRules2();
+    say('كتبنا رمز الاستعادة تلقائيًا. اختر كلمة المرور الجديدة.', true);
+    $('f-pass').focus();
+    return true;
+  }
 
-  var existing = readSession();
+  var linked = fromLink();
+  if (!linked && window.location.hash === '#register') show('register');
+  if (!linked && window.location.hash === '#forgot') show('f1');
+
+  var existing = linked ? null : readSession();
   if (existing) {
     post('/api/session/check', {}, existing.t).then(function (r) {
       if (r.ok) window.location.replace(HOME);

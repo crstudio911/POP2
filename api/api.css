@@ -386,3 +386,100 @@ html[dir='ltr'] .ep-head {
   border-color: var(--orange);
   outline: none;
 }
+
+.kmeter {
+  margin: 4px 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--bg-2);
+}
+.kmeter-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.kmeter-top b {
+  color: var(--white);
+  font-size: 1.2rem;
+}
+.kbar {
+  height: 8px;
+  margin: 10px 0 8px;
+  border-radius: 99px;
+  background: var(--panel-2);
+  overflow: hidden;
+}
+.kbar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ok), var(--gold));
+  transition: width 0.5s var(--ease);
+}
+.kbar i.warn { background: linear-gradient(90deg, var(--gold), var(--orange)); }
+.kbar i.full { background: var(--danger); }
+.klist {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+.kcard {
+  padding: 14px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.kcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.kcard-head .kname { color: var(--white); }
+.kcard code {
+  display: inline-block;
+  color: var(--orange);
+  word-break: break-all;
+}
+.kcard .hint.warn,
+.badge.warn { color: var(--gold); }
+.kcard details.kips { margin-top: 8px; }
+.kcard details.kips summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.btn.danger { color: var(--danger); }
+.kmove { margin: 14px 0; }
+.kmake { margin-top: 10px; }
+.kmake label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--silver);
+  font-size: 0.9rem;
+}
+#k-msg.ok { color: var(--ok); }
+.guides {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 10px 0 18px;
+}
+.guide {
+  padding: 14px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--bg-2);
+}
+.guide b { color: var(--white); }
+.guide ol {
+  margin: 8px 0 0;
+  padding-inline-start: 1.2em;
+  font-size: 0.9rem;
+}

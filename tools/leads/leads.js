@@ -27,7 +27,7 @@
   var ERR = {
     area_not_found: 'لم يُعثر على هذه المنطقة، يرجى كتابتها بصيغة أخرى.',
     area_too_big: 'المنطقة واسعة جدًا، يرجى كتابة مدينة أو حي بدلًا من دولة.',
-    maps_busy: 'خدمة الخرائط مشغولة حاليًا. يرجى المحاولة بعد بضع دقائق، أو تضييق المنطقة. لم تُحتسب هذه المحاولة من فترة الانتظار.',
+    maps_busy: 'خدمة الخرائط مشغولة حاليًا. جرّب مرة أخرى بعد دقيقة، أو اكتب اسم حي أو منطقة أصغر. لم تُحتسب هذه المحاولة من فترة الانتظار.',
     cooldown: 'أنت في فترة الانتظار الخاصة بباقتك، ويمكنك البحث مجددًا بعد انتهائها.',
     invalid_request: 'يرجى مراجعة بيانات البحث.',
     no_access: 'هذه الأداة غير متاحة في باقتك الحالية.',
@@ -92,9 +92,23 @@
   var started = 0;
   var clock = null;
   function say(t) { sayText = t; tick(); }
+  var STAGES = [
+    [0, 'نحدد المنطقة على الخريطة'],
+    [4, 'نبحث عن الأماكن داخل المنطقة'],
+    [14, 'نجمع أرقام التواصل ونحذف المكرر'],
+    [35, 'نراجع آخر النتائج، لحظات ونعرضها لك'],
+    [70, 'الخرائط مزدحمة قليلًا الآن، ما زلنا نحاول من أكثر من خادم']
+  ];
   function tick() {
     var sec = started ? Math.floor((Date.now() - started) / 1000) : 0;
-    $('state').textContent = sayText + (busy && sec >= 5 ? ' (' + sec + ' ثانية)' : '');
+    if (!busy) {
+      $('state').textContent = sayText;
+      return;
+    }
+    var stage = STAGES[0][1];
+    STAGES.forEach(function (s) { if (sec >= s[0]) stage = s[1]; });
+    var pct = Math.min(95, Math.round(100 * (1 - Math.exp(-sec / 28))));
+    $('state').textContent = stage + '... ' + pct + '%';
   }
 
   function search(ev) {
@@ -108,7 +122,7 @@
     started = Date.now();
     clearInterval(clock);
     clock = setInterval(tick, 1000);
-    say('جارٍ البحث وجمع الأماكن... قد يستغرق البحث بضع دقائق في المناطق الكبيرة، يرجى إبقاء الصفحة مفتوحة');
+    say('');
     A.call('/api/leads/search', session.t, { city: city, kind: $('kind').value, word: word }).then(function (r) {
       busy = false; started = 0; clearInterval(clock);
       if (!r.ok) {
@@ -125,6 +139,7 @@
       render();
       var msg = list.length ? 'عدد الأماكن التي لها رقم' + (r.area ? ' في ' + r.area : '') + ': ' + list.length + '.' : 'لم يُعثر على أماكن لها أرقام هنا. جرّب منطقة أوسع أو نشاطًا آخر. لم تُحتسب هذه المحاولة من فترة الانتظار.';
       if (r.capped && r.cap) msg += ' عرضنا أول ' + r.cap + ' نتيجة بحسب حد باقتك، ويمكنك الترقية للحصول على نتائج أكثر.';
+      if (r.trimmed) msg += ' المنطقة كبيرة، لذلك بحثنا في وسطها. اكتب اسم حي أو منطقة أصغر لنتائج أدق.';
       say(msg);
       tickCooldown();
     });

@@ -87,6 +87,12 @@
           else if (p === 'pro') top.appendChild(el('span', 'tag', 'الأكثر طلبًا'));
           card.appendChild(top);
           card.appendChild(el('p', 'pcard-tag', TAG[p] || ''));
+          if (t.plans[p].price && p !== 'free') {
+            var price = el('p', 'pcard-price');
+            price.appendChild(el('b', '', t.plans[p].price));
+            price.appendChild(el('span', '', ' ' + (cfg.currency || '') + (cfg.period ? ' / ' + cfg.period : '')));
+            card.appendChild(price);
+          }
           var ul = el('ul', 'feats');
           (t.plans[p].features || []).forEach(function (f) { ul.appendChild(el('li', '', f)); });
           card.appendChild(ul);

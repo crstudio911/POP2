@@ -70,7 +70,7 @@
   <section class="welcome">
     <div class="welcome-copy">
       <p class="eyebrow"><i aria-hidden="true"></i><span id="today" translate="no"></span></p>
-      <h1>مرحبًا، <span id="hello" translate="no"></span></h1>
+      <h1>مرحبًا، <span id="hello" data-live translate="no"></span></h1>
       <p>اختر الأداة التي تريد العمل بها. لكل أداة مدفوعة باقة مجانية تبدأ بها، ويمكنك الترقية في أي وقت بكود اشتراك.</p>
       <div class="welcome-act">
         <a class="btn small" href="../plans/plans.html">الباقات والاشتراكات</a>
@@ -78,9 +78,9 @@
       </div>
     </div>
     <dl class="facts">
-      <div><dt>الاشتراكات المدفوعة</dt><dd id="f-plan">لا يوجد</dd></div>
-      <div><dt>باقة API</dt><dd id="f-api" translate="no">Free</dd></div>
-      <div><dt>تنتهي الجلسة في</dt><dd id="f-exp" translate="no">-</dd></div>
+      <div><dt>الاشتراكات المدفوعة</dt><dd id="f-plan" data-live>لا يوجد</dd></div>
+      <div><dt>باقة API</dt><dd id="f-api" data-live translate="no">Free</dd></div>
+      <div><dt>تنتهي الجلسة في</dt><dd id="f-exp" data-live translate="no">-</dd></div>
     </dl>
   </section>
 
@@ -109,7 +109,7 @@
           <strong>مرسل واتساب جماعي</strong>
           <span class="tcard-desc">أرسل رسالة واحدة إلى عدد كبير من الأرقام من رقمك، مع متغيرات تخصّص كل رسالة.</span>
           <span class="tcard-foot">
-            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-state" data-state data-live>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           </span>
         </span>
@@ -124,7 +124,7 @@
           <strong>مستخرج بيانات العملاء</strong>
           <span class="tcard-desc">اجمع أسماء الأنشطة التجارية وأرقامها وعناوينها في أي مدينة، في جدول جاهز.</span>
           <span class="tcard-foot">
-            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-state" data-state data-live>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           </span>
         </span>
@@ -139,7 +139,7 @@
           <strong>مختصر الروابط والتحليلات</strong>
           <span class="tcard-desc">اختصر أي رابط طويل باسم POP، واحمِه بكلمة سر أو تاريخ انتهاء، وتابع ضغطاته بالدولة والجهاز والوقت.</span>
           <span class="tcard-foot">
-            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-state" data-state data-live>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           </span>
         </span>
@@ -154,7 +154,7 @@
           <strong>منظّف قوائم الأرقام</strong>
           <span class="tcard-desc">استخرج الأرقام من أي نص، ووحّد صيغتها الدولية، واحذف المكرر وغير الصالح.</span>
           <span class="tcard-foot">
-            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-state" data-state data-live>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           </span>
         </span>
@@ -169,7 +169,7 @@
           <strong>منشئ روابط واتساب</strong>
           <span class="tcard-desc">أنشئ رابطًا يفتح محادثة مع رقمك ورسالة جاهزة، لموقعك وحساباتك وإعلاناتك.</span>
           <span class="tcard-foot">
-            <span class="tcard-state" data-state>متاحة في خطتك</span>
+            <span class="tcard-state" data-state data-live>متاحة في خطتك</span>
             <span class="tcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           </span>
         </span>
@@ -195,6 +195,7 @@
   </div>
 </footer>
 
+<script src="../forms.js"></script>
 <script src="../config.js"></script>
 <script src="../guard.js"></script>
 <script src="../auth.js"></script>

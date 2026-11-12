@@ -87,37 +87,45 @@
   <section class="card keys" id="keys" aria-labelledby="t-keys">
     <div class="card-head">
       <span class="step">1</span>
-      <h2 id="t-keys">مفتاح API الخاص بك</h2>
-      <span class="badge" id="api-plan" translate="no">Free</span>
+      <h2 id="t-keys">مفاتيح API الخاصة بك</h2>
+      <span class="badge" id="api-plan" data-live translate="no">Free</span>
     </div>
     <div id="keys-guest" hidden>
-      <p class="hint">سجّل الدخول لإنشاء مفتاح API وإدارته، ولمعرفة باقتك وحدودها.</p>
+      <p class="hint">سجّل الدخول لإنشاء مفاتيح API وإدارتها، ولمعرفة باقتك وحدودها اليومية.</p>
       <a class="btn" href="../login/log.html">تسجيل الدخول</a>
     </div>
     <div id="keys-user" hidden>
+      <div class="kmeter">
+        <div class="kmeter-top"><span>طلبات اليوم لحسابك</span><b id="k-day" data-live translate="no" dir="ltr">-</b></div>
+        <div class="kbar" aria-hidden="true"><i id="k-bar"></i></div>
+        <p class="hint">الحد اليومي يخص حسابك كله ويُقسم على كل مفاتيحك، ولا يزيد بإنشاء مفاتيح أكثر. يتجدد العداد بعد 24 ساعة من أول طلب.</p>
+      </div>
       <dl class="kfacts">
-        <div><dt>الطلبات في الدقيقة</dt><dd><span id="k-min" translate="no">-</span></dd></div>
-        <div><dt>المستخدم اليوم</dt><dd><span id="k-day" translate="no">-</span></dd></div>
-        <div><dt>نسبة حدود الباقة</dt><dd><span id="k-share" translate="no">-</span></dd></div>
-        <div><dt>صلاحية الباقة</dt><dd id="k-exp">-</dd></div>
+        <div><dt>الطلبات في الدقيقة</dt><dd><span id="k-min" data-live translate="no">-</span></dd></div>
+        <div><dt>عدد المفاتيح</dt><dd><span id="k-count" data-live translate="no">-</span></dd></div>
+        <div><dt>نسبة حدود الباقة</dt><dd><span id="k-share" data-live translate="no">-</span></dd></div>
+        <div><dt>صلاحية الباقة</dt><dd id="k-exp" data-live>-</dd></div>
       </dl>
-      <div class="kstate" id="k-state"></div>
+      <div class="alert soft kmove" id="k-move" hidden>
+        <p id="k-move-text"></p>
+        <div class="row-actions">
+          <button class="btn small" id="k-move-yes" type="button">انقل المفاتيح للباقة الجديدة</button>
+          <button class="btn ghost small" id="k-move-no" type="button">أبقِها على حدودها الحالية</button>
+        </div>
+      </div>
+      <div class="klist" id="k-list"></div>
       <div class="kfresh" id="k-fresh" hidden>
         <p class="alert soft">انسخ المفتاح الآن واحفظه في مكان آمن. لن نعرضه مرة أخرى، ولا يمكن لأحد، ولا حتى فريق POP، استرجاعه.</p>
-        <div class="kbox" dir="ltr"><code id="k-full" translate="no"></code><button class="btn small" id="k-copy" type="button">نسخ المفتاح</button></div>
+        <div class="kbox" dir="ltr"><code id="k-full" translate="no"></code><button class="btn small" id="k-copy" type="button" data-nobusy>نسخ المفتاح</button></div>
       </div>
+      <form class="kmake" id="k-make-form" novalidate>
+        <label for="k-name">اسم المفتاح الجديد (اختياري)</label>
+        <div class="kbox"><input id="k-name" type="text" maxlength="40" autocomplete="off" placeholder="مثل: موقعي أو خادم الطلبات"><button class="btn" id="k-make" type="submit">إنشاء مفتاح</button></div>
+      </form>
       <div class="row-actions">
-        <button class="btn" id="k-make" type="button">إنشاء مفتاح</button>
-        <button class="btn ghost" id="k-revoke" type="button" hidden>إلغاء المفتاح</button>
         <a class="btn ghost" href="../plans/plans.html">ترقية باقة API</a>
       </div>
       <p class="hint" id="k-msg" role="status" aria-live="polite"></p>
-      <form class="kips" id="k-ips-form" novalidate hidden>
-        <label for="k-ips">عناوين IP المسموح لها باستخدام المفتاح (اختياري)</label>
-        <p class="hint">اكتب عناوين خوادمك مفصولة بفواصل، حتى 10 عناوين. عند تحديدها يُرفض أي طلب من عنوان آخر حتى لو تسرّب المفتاح. اتركها فارغة للسماح بأي عنوان.</p>
-        <div class="kbox" dir="ltr"><input id="k-ips" name="ips" type="text" inputmode="text" spellcheck="false" autocomplete="off" maxlength="420" placeholder="203.0.113.10, 2001:db8::1" translate="no"><button class="btn small" id="k-ips-save" type="submit">حفظ العناوين</button></div>
-        <p class="hint" id="k-ips-msg" role="status" aria-live="polite"></p>
-      </form>
     </div>
   </section>
 
@@ -129,7 +137,7 @@
     <nav class="toc" aria-label="محتويات الدليل">
       <a href="#start">البداية السريعة</a>
       <a href="#auth">المصادقة</a>
-      <a href="#security">كيف نحمي كل طلب</a>
+      <a href="#guides">الربط مع كل أداة</a>
       <a href="#format">شكل الردود</a>
       <a href="#limits">الحدود وفترات الانتظار</a>
       <a href="#plans">باقات API</a>
@@ -153,22 +161,11 @@ curl {BASE}/me -H &quot;Authorization: Bearer $POP_KEY&quot;</code></pre>
 X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
     <ul class="warn-list">
       <li>استخدم المفتاح من خادمك فقط. الطلبات المباشرة من المتصفح محظورة عمدًا حتى لا ينكشف المفتاح لزوار موقعك.</li>
-      <li>لكل حساب مفتاح واحد فعّال. إنشاء مفتاح جديد يلغي القديم فورًا.</li>
-      <li>نحفظ بصمة مشفّرة للمفتاح فقط، ولا نحفظ المفتاح نفسه، لذلك لا يمكن عرضه مرة أخرى.</li>
+      <li>يمكنك إنشاء حتى 3 مفاتيح في حسابك، مثلًا مفتاح لكل موقع أو خادم. كل المفاتيح تشترك في حدود حسابك اليومية، ويمكنك إلغاء أي مفتاح وحده دون التأثير على الباقي.</li>
+      <li>يظهر المفتاح كاملًا مرة واحدة فقط عند إنشائه، فاحفظه فورًا في مكان آمن.</li>
       <li>لا تضع المفتاح أبدًا في رابط الطلب، مثل ?key=، فالروابط تُحفظ في السجلات. أي طلب يحمل المفتاح في الرابط يُرفض.</li>
-      <li>قيّد المفتاح بعناوين IP خوادمك من الأعلى، فلا يعمل المفتاح من أي مكان آخر.</li>
+      <li>يمكنك تقييد كل مفتاح بعناوين IP خوادمك من الأعلى، فلا يعمل من أي مكان آخر.</li>
     </ul>
-
-    <h3 id="security">كيف نحمي كل طلب</h3>
-    <p>عنوان الطلبات هو رابط موقع POP نفسه، وخوادم المعالجة مخفية خلفه ولا يمكن الوصول إليها مباشرة. يمر كل طلب بست مراحل تحقق بالترتيب، ولا يصل إلى الأداة إلا إذا اجتازها كلها:</p>
-    <div class="checks">
-      <div><b>1. من أين جاء الطلب؟</b><span>تُرفض الطلبات القادمة من متصفح، والطلبات التي تضع المفتاح في الرابط، وتُحجب العناوين التي تفحص الموقع أو تجرّب مفاتيح عشوائية.</span></div>
-      <div><b>2. من أرسل الطلب؟</b><span>نتحقق من شكل المفتاح ثم من بصمته المشفّرة، ونربطه بحسابك. والمحاولات المتكررة بمفاتيح خاطئة تُوقف العنوان المرسل تلقائيًا.</span></div>
-      <div><b>3. هل العنوان مسموح؟</b><span>إذا قيّدت المفتاح بعناوين IP خوادمك، يُرفض أي طلب من عنوان آخر حتى لو كان المفتاح صحيحًا.</span></div>
-      <div><b>4. هل الحساب سليم؟</b><span>إذا أُوقف الحساب لنشاط مريب، تتوقف مفاتيح API الخاصة به فورًا حتى ينتهي الإيقاف أو يُفك.</span></div>
-      <div><b>5. هل الطلب صحيح؟</b><span>نتحقق من طريقة الطلب والمسار ونوع المحتوى وحجمه، ومن كل حقل ونوعه وطوله قبل تنفيذ أي شيء.</span></div>
-      <div><b>6. هل ما زال داخل الحدود؟</b><span>نتحقق من أن باقتك تشمل الأداة، ومن حدودها وعدد الطلبات في الدقيقة واليوم وفترة الانتظار، ثم ننفذ الطلب ونعيد الرد.</span></div>
-    </div>
 
     <h3 id="format">شكل الردود</h3>
     <p>كل الردود بصيغة JSON وباللغة الإنجليزية. عند النجاح يكون الحقل ok بقيمة true والبيانات في data، وعند الخطأ يكون ok بقيمة false وتفاصيل الخطأ في error.</p>
@@ -178,9 +175,13 @@ X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
   &quot;data&quot;: { },
   &quot;meta&quot;: {
     &quot;api_plan&quot;: &quot;pro&quot;,
+    &quot;account_plan&quot;: &quot;pro&quot;,
     &quot;tier&quot;: &quot;pro&quot;,
+    &quot;key&quot;: &quot;My server&quot;,
     &quot;requests_left_minute&quot;: 29,
-    &quot;requests_left_today&quot;: 1999
+    &quot;requests_used_today&quot;: 1,
+    &quot;requests_left_today&quot;: 1999,
+    &quot;daily_limit&quot;: 2000
   }
 }</code></pre>
       <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">{
@@ -199,8 +200,24 @@ X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
     <div class="table-wrap"><table class="dt"><thead><tr><th>الترويسة</th><th>المعنى</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Limit-Minute</td><td>عدد الطلبات المسموح في الدقيقة.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Remaining-Minute</td><td>الطلبات المتبقية في الدقيقة الحالية.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Limit-Day</td><td>عدد الطلبات المسموح في اليوم.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-RateLimit-Remaining-Day</td><td>الطلبات المتبقية اليوم.</td></tr><tr><td dir="ltr" translate="no" class="mono">Retry-After</td><td>عدد الثواني قبل إعادة المحاولة، ويظهر مع الرمز 429.</td></tr><tr><td dir="ltr" translate="no" class="mono">X-Request-Id</td><td>معرّف فريد للطلب يفيد عند المتابعة.</td></tr></tbody></table></div>
     <p>فترة الانتظار هي المدة بين كل عملية إرسال لقائمة أرقام أو عملية بحث والتي تليها، وليست بين الرسائل داخل العملية نفسها. تقصر كلما ارتفعت الباقة، ولا تُحتسب إذا فشلت العملية قبل أن تبدأ. يعيد الرد الحقل next_available_at بموعد انتهاء الانتظار، وعند رفض الطلب يعيد retry_after بالثواني وavailable_at بالموعد.</p>
 
+    <h4>الحدود على مستوى الحساب</h4>
+    <ul class="steps-list">
+      <li>كل الحدود اليومية وحدود الدقيقة وفترات الانتظار تُحسب لحسابك كله، وليس لكل مفتاح. لو كانت باقتك 2000 طلب يوميًا واستخدمتها من مفتاح واحد، فلن تعمل باقي المفاتيح حتى يتجدد العداد.</li>
+      <li>كل مفتاح يعمل بالباقة التي أُنشئ عليها. عند ترقية باقة API نسألك في صفحة المفاتيح: هل تنقل المفاتيح القديمة إلى الباقة الجديدة أم تبقيها على حدودها الحالية، مثلًا لو أعطيت مفتاحًا لشخص آخر وتريد حدودًا أقل له.</li>
+      <li>عند انتهاء اشتراك API تعمل كل المفاتيح تلقائيًا بحدود الباقة المجانية، دون أن تتوقف أو تحتاج إلى إنشاء مفاتيح جديدة.</li>
+      <li>تجد ما تبقى لك اليوم في الحقل meta.requests_left_today في كل رد، وفي صفحة المفاتيح بالأعلى.</li>
+    </ul>
+
     <h3 id="plans">باقات API</h3>
     <div class="api-plans" id="api-plans"></div>
+
+    <h3 id="guides">الربط مع كل أداة</h3>
+    <div class="guides">
+      <div class="guide"><b>واتساب الجماعي</b><ol><li>أرسل POST /wa/connect.</li><li>اطلب GET /wa/status كل 3 ثوانٍ واعرض qr_image للمستخدم حتى تصبح الحالة connected.</li><li>أرسل الرسالة والأرقام إلى POST /wa/send.</li><li>تابع التقدم من GET /wa/status عبر الحقل job، ويمكنك الإيقاف بـ POST /wa/stop.</li></ol></div>
+      <div class="guide"><b>مستخرج بيانات العملاء</b><ol><li>اجلب أنواع الأنشطة مرة واحدة من GET /leads/categories واحفظها.</li><li>أرسل المدينة أو الحي ونوع النشاط إلى POST /leads/search، ويمكنك إضافة country بكود الدولة مثل EG لنتائج أدق.</li><li>قد يستغرق البحث حتى دقيقتين، فاجعل مهلة الطلب في برنامجك 150 ثانية على الأقل.</li></ol></div>
+      <div class="guide"><b>منظف الأرقام ورابط واتساب</b><ol><li>أرسل نصًا أو قائمة أرقام إلى POST /clean لتحصل على أرقام دولية نظيفة بلا تكرار.</li><li>أرسل رقمًا ورسالة إلى POST /link لتحصل على رابط wa.me جاهز. الأداتان مجانيتان في كل الباقات.</li></ol></div>
+      <div class="guide"><b>مختصر الروابط</b><ol><li>أنشئ الرابط بـ POST /links واحفظ short_url.</li><li>اعرض روابطك بـ GET /links وإحصائيات رابط بـ GET /links/stats?alias=...</li><li>عدّل الوجهة أو أوقف الرابط بـ POST /links/update، واحذفه بـ POST /links/delete.</li></ol></div>
+    </div>
 
     <h3 id="endpoints">نقاط الوصول</h3>
     <article class="ep" id="v1-me">
@@ -218,7 +235,8 @@ X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
   &quot;ok&quot;: true,
   &quot;data&quot;: {
     &quot;account&quot;: { &quot;email&quot;: &quot;you@gmail.com&quot;, &quot;first_name&quot;: &quot;Ahmed&quot;, &quot;last_name&quot;: &quot;Saleh&quot; },
-    &quot;api&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;share_percent&quot;: 60, &quot;expires_at&quot;: &quot;2026-12-31T00:00:00.000Z&quot;, &quot;per_minute&quot;: 30, &quot;per_day&quot;: 2000 },
+    &quot;api&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;account_plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;share_percent&quot;: 60, &quot;expires_at&quot;: &quot;2026-12-31T00:00:00.000Z&quot;, &quot;per_minute&quot;: 30, &quot;per_day&quot;: 2000, &quot;used_today&quot;: 1, &quot;left_today&quot;: 1999, &quot;quota_scope&quot;: &quot;account&quot; },
+    &quot;key&quot;: { &quot;id&quot;: &quot;K7GQ2MXA&quot;, &quot;name&quot;: &quot;My server&quot; },
     &quot;tools&quot;: {
       &quot;wa&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;limits&quot;: { &quot;max_recipients&quot;: 90, &quot;max_variables&quot;: 4, &quot;cooldown_minutes&quot;: 60, &quot;daily_cap_per_number&quot;: 90, &quot;speeds&quot;: [&quot;safe&quot;, &quot;normal&quot;] } },
       &quot;leads&quot;: { &quot;plan&quot;: &quot;pro&quot;, &quot;limits&quot;: { &quot;max_results&quot;: 180, &quot;cooldown_minutes&quot;: 20 } },
@@ -226,7 +244,7 @@ X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
       &quot;link&quot;: { &quot;plan&quot;: &quot;free_tool&quot;, &quot;limits&quot;: {} }
     }
   },
-  &quot;meta&quot;: { &quot;api_plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;requests_left_minute&quot;: 29, &quot;requests_left_today&quot;: 1999 }
+  &quot;meta&quot;: { &quot;api_plan&quot;: &quot;pro&quot;, &quot;account_plan&quot;: &quot;pro&quot;, &quot;tier&quot;: &quot;pro&quot;, &quot;key&quot;: &quot;My server&quot;, &quot;requests_left_minute&quot;: 29, &quot;requests_used_today&quot;: 1, &quot;requests_left_today&quot;: 1999, &quot;daily_limit&quot;: 2000 }
 }</code></pre>
     </article><article class="ep" id="v1-clean">
       <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/clean</code></div>
@@ -281,9 +299,9 @@ X-API-Key: pop_ahmed_7Gk2Lm9QwXz4Rt8Vb1Nc6Hy3Pd5Fs0Ja</code></pre>
       <div class="ep-head"><span class="m m-post" translate="no">POST</span><code translate="no" dir="ltr">/v1/leads/search</code></div>
       <h3>البحث عن عملاء محتملين</h3>
       <p>يجمع أسماء الأنشطة التجارية وأرقامها وعناوينها في منطقة محددة. يخضع لحد النتائج وفترة الانتظار في باقتك، ولا تُحتسب فترة الانتظار إذا لم تُعثر على نتائج.</p>
-      <p class="note-box">قد يستغرق البحث عدة دقائق في المناطق الكبيرة، لذا اضبط مهلة الطلب في برنامجك على 5 دقائق على الأقل.</p>
+      <p class="note-box">يستغرق البحث عادة أقل من دقيقة، وقد يصل إلى دقيقتين عند ازدحام خدمة الخرائط، لذا اضبط مهلة الطلب في برنامجك على 150 ثانية على الأقل. المناطق الكبيرة جدًا يُبحث في وسطها، فاكتب اسم حي لنتائج أدق.</p>
       <h4>المعاملات</h4>
-      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">city</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>المدينة أو الحي (حتى 80 حرفًا).</td></tr><tr><td dir="ltr" translate="no" class="mono">category</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>معرّف من GET /v1/leads/categories.</td></tr><tr><td dir="ltr" translate="no" class="mono">keyword</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كلمة يجب أن يحتويها اسم النشاط (حتى 40 حرفًا).</td></tr></tbody></table></div>
+      <div class="table-wrap"><table class="dt"><thead><tr><th>الحقل</th><th>النوع</th><th>إلزامي</th><th>الوصف</th></tr></thead><tbody><tr><td dir="ltr" translate="no" class="mono">city</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>المدينة أو الحي (حتى 80 حرفًا).</td></tr><tr><td dir="ltr" translate="no" class="mono">category</td><td dir="ltr" translate="no" class="mono">string</td><td>نعم</td><td>معرّف من GET /v1/leads/categories.</td></tr><tr><td dir="ltr" translate="no" class="mono">country</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كود الدولة من حرفين مثل EG أو SA، لتحديد المدينة الصحيحة عند تشابه الأسماء.</td></tr><tr><td dir="ltr" translate="no" class="mono">keyword</td><td dir="ltr" translate="no" class="mono">string</td><td>لا</td><td>كلمة يجب أن يحتويها اسم النشاط (حتى 40 حرفًا).</td></tr></tbody></table></div>
       <h4>مثال على الطلب</h4>
       <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">curl -X POST {BASE}/leads/search \
   -H &quot;Authorization: Bearer $POP_KEY&quot; \
@@ -514,6 +532,17 @@ const job = await pop(&quot;POST&quot;, &quot;/wa/send&quot;, {
   recipients: clean.numbers.map((phone, i) =&gt; ({ phone, values: [[&quot;Ahmed&quot;, &quot;Mona&quot;][i] || &quot;&quot;] }))
 });
 console.log(job.accepted);</code></pre>
+    <h4>PHP</h4>
+    <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">&lt;?php
+$ch = curl_init(&quot;{BASE}/links&quot;);
+curl_setopt_array($ch, [
+  CURLOPT_POST =&gt; true,
+  CURLOPT_RETURNTRANSFER =&gt; true,
+  CURLOPT_HTTPHEADER =&gt; [&quot;Authorization: Bearer &quot; . getenv(&quot;POP_KEY&quot;), &quot;Content-Type: application/json&quot;],
+  CURLOPT_POSTFIELDS =&gt; json_encode([&quot;url&quot; =&gt; &quot;https://example.com/offer&quot;]),
+]);
+$res = json_decode(curl_exec($ch), true);
+echo $res[&quot;ok&quot;] ? $res[&quot;data&quot;][&quot;link&quot;][&quot;short_url&quot;] : $res[&quot;error&quot;][&quot;code&quot;];</code></pre>
     <h4>Python</h4>
     <pre class="code" dir="ltr"><button class="copy" type="button" aria-label="نسخ">نسخ</button><code translate="no">import os, requests
 
@@ -521,7 +550,7 @@ BASE = &quot;{BASE}&quot;
 HEADERS = {&quot;Authorization&quot;: &quot;Bearer &quot; + os.environ[&quot;POP_KEY&quot;]}
 
 r = requests.post(BASE + &quot;/leads/search&quot;, headers=HEADERS,
-                  json={&quot;city&quot;: &quot;Nasr City, Cairo&quot;, &quot;category&quot;: &quot;cafes&quot;}, timeout=300)
+                  json={&quot;city&quot;: &quot;Nasr City, Cairo&quot;, &quot;category&quot;: &quot;cafes&quot;, &quot;country&quot;: &quot;EG&quot;}, timeout=150)
 data = r.json()
 if not data[&quot;ok&quot;]:
     print(data[&quot;error&quot;][&quot;code&quot;], data[&quot;error&quot;].get(&quot;retry_after&quot;))
@@ -547,6 +576,7 @@ else:
   </div>
 </footer>
 
+<script src="../forms.js"></script>
 <script src="../config.js"></script>
 <script src="../guard.js"></script>
 <script src="../auth.js"></script>

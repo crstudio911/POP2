@@ -337,3 +337,18 @@ html[dir='rtl'] .feats li::before {
   font-size: 0.9rem;
   line-height: 1.8;
 }
+
+.pcard-price {
+  margin: 4px 0 10px;
+  color: var(--white);
+  font-size: 0.95rem;
+}
+.pcard-price b {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--orange);
+  letter-spacing: 0.01em;
+}
+.pcard-price span {
+  color: var(--muted);
+}

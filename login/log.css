@@ -458,3 +458,9 @@ select.field {
   display: inline-block;
   unicode-bidi: isolate;
 }
+
+.link.paste {
+  display: block;
+  margin: 10px auto 2px;
+  font-size: 0.86rem;
+}
