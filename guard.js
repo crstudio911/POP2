@@ -260,6 +260,8 @@
   var openSince = 0;
   var closedRuns = 0;
   var reported = false;
+  var detectedRuns = 0;
+  var geometryWarned = false;
 
   function showVeil() {
     if (veil || !document.body) return;
@@ -310,13 +312,14 @@
   function probe() {
     if (!sample) {
       sample = [];
-      for (var i = 0; i < 50; i++) {
+      for (var i = 0; i < 8; i++) {
         var o = {};
-        for (var j = 0; j < 500; j++) o[j] = j;
+        for (var j = 0; j < 40; j++) o[j] = j;
         sample.push(o);
       }
     }
     var c = window.console;
+    if (!c || typeof c.table !== 'function' || typeof c.log !== 'function') return false;
     var a = window.performance.now();
     c.table(sample);
     var tableMs = window.performance.now() - a;
@@ -324,8 +327,12 @@
     c.log(sample);
     var logMs = window.performance.now() - b;
     maxLog = Math.max(maxLog, logMs);
-    c.clear();
-    return tableMs > 0 && maxLog > 0 && tableMs > maxLog * 10;
+    return tableMs > 2 && maxLog > 0 && tableMs > maxLog * 10;
+  }
+
+  function docked() {
+    if (!desktop() || window.outerWidth < 1 || window.outerHeight < 1) return false;
+    return window.outerWidth - window.innerWidth > 180 || window.outerHeight - window.innerHeight > 240;
   }
 
   function flagged() {
@@ -352,15 +359,23 @@
   }
 
   function watchTools() {
+    if (document.hidden) return;
+    var geometry = docked();
+    if (geometry && !geometryWarned) {
+      notify('لو أدوات المطوّر مفتوحة، أغلقها لمتابعة الاستخدام.');
+      geometryWarned = true;
+    } else if (!geometry) geometryWarned = false;
     var open = false;
     try {
       open = probe();
     } catch (e) {}
-    if (open) {
+    detectedRuns = open ? detectedRuns + 1 : 0;
+    if (open && detectedRuns >= 2) {
       closedRuns = 0;
       if (!openSince) {
         openSince = Date.now();
         if (flagged()) {
+          showVeil();
           strike('devtools_refresh');
           return;
         }
@@ -394,12 +409,6 @@
     var t = e.target;
     if (t && t.closest && t.closest('input, textarea, [contenteditable="true"]')) return;
     e.preventDefault();
-  }
-
-  function chromium() {
-    var brands = navigator.userAgentData && navigator.userAgentData.brands;
-    if (brands && brands.some(function (b) { return /Chromium|Google Chrome|Microsoft Edge|Opera|Brave/i.test(b.brand); })) return true;
-    return !!window.chrome && /Chrome\//.test(navigator.userAgent);
   }
 
   function desktop() {
@@ -442,9 +451,9 @@
     window.addEventListener('contextmenu', blockMenu, true);
     if (navigator.webdriver === true) strike('automation');
     setInterval(watchTamper, 3000);
-    if (desktop() && chromium()) {
+    if (desktop()) {
       watchTools();
-      setInterval(watchTools, 1500);
+      setInterval(watchTools, 3000);
     }
   }
 

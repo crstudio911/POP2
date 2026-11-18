@@ -233,7 +233,6 @@
     view.hidden = false;
     if (top) top.hidden = false;
     setText('yr', String(new Date().getFullYear()));
-    setTimeout(ready, 20000);
   }
 
   function user(r) {

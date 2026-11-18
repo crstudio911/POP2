@@ -1,8 +1,9 @@
 const SCAN_RE = /(^|\/)(\.env|\.git|\.svn|\.hg|\.htaccess|\.htpasswd|\.ds_store|\.aws|\.ssh|id_rsa|wp-admin|wp-login\.php|wp-content|wp-includes|xmlrpc\.php|phpmyadmin|pma|myadmin|adminer\.php|admin\.php|config\.(php|json|ya?ml|inc)|server-status|cgi-bin|vendor\/|composer\.(json|lock)|package(-lock)?\.json|backup\.(zip|sql|tar|gz)|dump\.sql|db\.sql|shell\.php|eval-stdin\.php|actuator|telescope|_ignition|boaform|HNAP1)/i;
+const STREAM_PASS = ['range', 'user-agent', 'accept'];
 const PASS_HEADERS = ['content-type', 'authorization', 'x-wa-ticket', 'x-api-key', 'x-pop-device', 'user-agent', 'accept', 'origin'];
 const MAX_BODY = 4500000;
 const UPSTREAM_TIMEOUT = 120000;
-const PAGE_CSP = "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://translate.googleapis.com; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests";
+const PAGE_CSP = "default-src 'none'; script-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://translate.googleapis.com; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests";
 const SECURITY = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
@@ -16,7 +17,7 @@ const GO_RE = /^\/([A-Za-z0-9][A-Za-z0-9-]{1,30}[A-Za-z0-9])\/?$/;
 const RESERVED = { api: 1, v1: 1, v2: 1, go: 1, '404': 1, img: 1, login: 1, main: 1, plans: 1, tools: 1, panel: 1, panal: 1, admin: 1, index: 1, www: 1, static: 1, assets: 1, app: 1, help: 1, about: 1, terms: 1, privacy: 1, pop: 1, mc: 1, short: 1, link: 1, links: 1, favicon: 1, robots: 1, sitemap: 1, 'well-known': 1 };
 const SEEN = new Map();
 const EDGE_BUCKETS = new Map();
-const EDGE_LIMITS = { site: [300, 6], api: [400, 12] };
+const EDGE_LIMITS = { site: [300, 6], api: [400, 12], stream: [600, 25] };
 
 function list(v) {
   return String(v || '')
@@ -121,11 +122,18 @@ function targets(env, ip) {
   return out;
 }
 
-async function upstream(env, ip, path, init) {
+async function upstream(env, ip, path, init, long) {
   const list = targets(env, ip);
   for (const t of list) {
     try {
       if (t.binding) return await t.binding.fetch(new Request('https://pop-api.internal' + path, init));
+      if (long) {
+        const ac = new AbortController();
+        const timer = setTimeout(() => ac.abort(), 25000);
+        const r = await fetch(t.url + path, Object.assign({}, init, { redirect: 'manual', signal: ac.signal }));
+        clearTimeout(timer);
+        return r;
+      }
       return await fetch(t.url + path, Object.assign({}, init, { redirect: 'manual', signal: AbortSignal.timeout(UPSTREAM_TIMEOUT) }));
     } catch (e) {}
   }
@@ -187,6 +195,37 @@ async function proxy(request, env, url) {
   return out;
 }
 
+async function streamProxy(request, env, url) {
+  if (!edgeReady(env)) return json(503, { ok: false, error: 'unavailable' });
+  if (request.method !== 'GET') return json(405, { ok: false, error: 'method' });
+  const site = request.headers.get('Sec-Fetch-Site');
+  if (site && site !== 'same-origin' && site !== 'none') return json(403, { ok: false, error: 'forbidden' });
+  if (url.search.length > 6000) return json(414, { ok: false, error: 'invalid_request' });
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (ip) {
+    const k = Math.min(100, Math.max(0.5, Number(env.RATE_SCALE) || 1));
+    const wait = edgeTake('stream:' + ip, EDGE_LIMITS.stream[0] * k, EDGE_LIMITS.stream[1] * k);
+    if (wait) return tooMany(wait, false, null);
+  }
+  const headers = new Headers();
+  STREAM_PASS.forEach((k) => {
+    const v = request.headers.get(k);
+    if (v) headers.set(k, v);
+  });
+  headers.set('X-POP-Edge', env.EDGE_KEY);
+  headers.set('X-POP-IP', ip);
+  headers.set('X-POP-Country', (request.cf && request.cf.country) || '');
+  headers.set('X-POP-Site', url.origin);
+  const res = await upstream(env, ip, url.pathname + url.search, { method: 'GET', headers }, true);
+  if (!res) return json(503, { ok: false, error: 'unavailable' });
+  const out = new Response(res.body, res);
+  Object.keys(SECURITY).forEach((k) => out.headers.set(k, SECURITY[k]));
+  out.headers.set('Content-Security-Policy', "sandbox; default-src 'none'");
+  out.headers.delete('Server');
+  out.headers.delete('Access-Control-Allow-Origin');
+  return out;
+}
+
 async function reportScan(env, request, url) {
   const ip = request.headers.get('CF-Connecting-IP') || '';
   if (!ip || !edgeReady(env)) return;
@@ -244,6 +283,7 @@ export default {
     const path = url.pathname;
     if (path === '/api/time') return timeInfo(request, env);
     const read = request.method === 'GET' || request.method === 'HEAD';
+    if (path === '/api/stream/s') return streamProxy(request, env, url);
     if ((path.startsWith('/api/') && !read) || path === '/v1' || path.startsWith('/v1/')) return proxy(request, env, url);
     if (SCAN_RE.test(decoded(path))) {
       const job = reportScan(env, request, url).catch(() => {});
